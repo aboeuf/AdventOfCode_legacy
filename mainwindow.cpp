@@ -112,7 +112,15 @@ void MainWindow::on_m_push_button_solve_clicked()
 
 void MainWindow::on_m_push_button_update_cookies_clicked()
 {
+#ifdef WIN32
+  QString appdata = QProcessEnvironment::systemEnvironment().value("APPDATA");
+  appdata.replace("\\", "/");
+  if (!appdata.endsWith("/"))
+    appdata += "/";
+  QDir firefox(appdata + "Mozilla/Firefox/Profiles");
+#elif
   QDir firefox(QDir::homePath() + "/.mozilla/firefox");
+#endif
   QString db_path;
   for (QFileInfo& di : firefox.entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot)) {
     for (QFileInfo& fi : QDir(di.absoluteFilePath()).entryInfoList(QDir::AllEntries)) {
@@ -154,8 +162,8 @@ void MainWindow::on_m_push_button_update_cookies_clicked()
   } else
     QMessageBox(QMessageBox::Warning,
                 "Advent Of Code",
-                "Cannot open sqlite database \"" + db_path + "\".\n"
-                                                             "Close Firefox and retry.").exec();
+                "Can!open sqlite database \"" + db_path + "\".\n" +
+                "Close Firefox  and retry.").exec();
 }
 
 void MainWindow::on_m_spin_box_year_valueChanged(int)
@@ -174,7 +182,7 @@ void MainWindow::on_m_push_button_input_clicked()
   if (std::system(command.toStdString().c_str()) != 0)
     QMessageBox(QMessageBox::Warning,
                 "Advent Of Code",
-                "Cannot edit input file with Sublime Text\nCommand: " + command).exec();
+                "Can!edit input file with Sublime Text\nCommand: " + command).exec();
 }
 
 void MainWindow::on_m_push_button_output_clicked()

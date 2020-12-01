@@ -5,14 +5,14 @@ namespace common {
 
 QStringList splitLines(const QString& input) {
   QStringList res = input.split('\n');
-  while (not res.isEmpty() and res.back().isEmpty())
+  while (!res.isEmpty() && res.back().isEmpty())
     res.pop_back();
   return res;
 }
 
 QStringList splitValues(const QString& input) {
   QStringList res = input.split(',');
-  while (not res.isEmpty() and (res.back().isEmpty() or res.back() == "\n"))
+  while (!res.isEmpty() && (res.back().isEmpty() || res.back() == "\n"))
     res.pop_back();
   return res;
 }
@@ -28,7 +28,6 @@ std::vector<int> toIntValues(const QString& input)
       int int_value = string_value.toInt(&conversion_ok);
       if (conversion_ok)
         int_values.push_back(int_value);
-
     }
   }
   return int_values;

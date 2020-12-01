@@ -1,6 +1,7 @@
 #include <2019/puzzle_2019_2.h>
 #include <common.h>
 #include <QDebug>
+#include <array>
 
 namespace intcode_computer {
 
