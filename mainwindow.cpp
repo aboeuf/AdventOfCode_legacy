@@ -64,7 +64,10 @@ MainWindow::~MainWindow()
 void MainWindow::replyFinished(QNetworkReply* reply)
 {
   ui->m_plain_text_edit_input->clear();
-  ui->m_plain_text_edit_input->appendPlainText(QString(reply->readAll()));
+  QString input(reply->readAll());
+  while (!input.isEmpty() && input.back() == '\n')
+    input.chop(1);
+  ui->m_plain_text_edit_input->appendPlainText(input);
   ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
   ui->m_plain_text_edit_input->ensureCursorVisible();
   QFile file("input");

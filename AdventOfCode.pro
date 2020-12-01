@@ -16,13 +16,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    2019/puzzle_1.cpp \
+    2019/puzzle_2019_1.cpp \
+    2019/puzzle_2019_2.cpp \
+    2020/puzzle_2020_1.cpp \
+    common.cpp \
     main.cpp \
     mainwindow.cpp \
     solvers.cpp
 
 HEADERS += \
-    2019/puzzle_1.h \
+    2019/puzzle_2019_1.h \
+    2019/puzzle_2019_2.h \
+    2020/puzzle_2020_1.h \
+    common.h \
     mainwindow.h \
     solvers.h
 
