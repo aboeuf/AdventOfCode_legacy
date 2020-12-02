@@ -3,15 +3,6 @@
 
 namespace puzzle_2020_2 {
 
-int howManyIn(const QChar& c, const QString& s)
-{
-  int count = 0;
-  for (const QChar& cc : s)
-    if (cc == c)
-      ++count;
-  return count;
-}
-
 bool extractParameters(const QString& input, int& i0, int& i1, QChar& c, QString& password)
 {
   QStringList list = input.split(' ');
@@ -34,18 +25,18 @@ bool extractParameters(const QString& input, int& i0, int& i1, QChar& c, QString
   return true;
 }
 
-bool isValid_old_policy(const QString& input)
+bool isValidSlendRental(const QString& input)
 {
   int min, max;
   QChar c;
   QString password;
   if (!extractParameters( input, min, max, c, password))
     return false;
-  int count = howManyIn(c, password);
+  int count = password.count(c);
   return min <= count && count <= max;
 }
 
-bool isValid_new_policy(const QString& input)
+bool isValidToboganCorporate(const QString& input)
 {
   int i0, i1;
   QChar c;
@@ -61,12 +52,22 @@ bool isValid_new_policy(const QString& input)
 
 }
 
-PuzzleSolver Puzzle_2020_2::solver = [](const QString& input)
+PuzzleSolver Puzzle_2020_2::solver_1 = [](const QString& input)
 {
   QStringList lines = common::splitLines(input);
   unsigned int nb_valids = 0u;
   for (const QString& line : lines)
-    if (puzzle_2020_2::isValid_new_policy(line))
+    if (puzzle_2020_2::isValidSlendRental(line))
+      ++nb_valids;
+  return QString::number(nb_valids);
+};
+
+PuzzleSolver Puzzle_2020_2::solver_2 = [](const QString& input)
+{
+  QStringList lines = common::splitLines(input);
+  unsigned int nb_valids = 0u;
+  for (const QString& line : lines)
+    if (puzzle_2020_2::isValidToboganCorporate(line))
       ++nb_valids;
   return QString::number(nb_valids);
 };

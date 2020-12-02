@@ -29,10 +29,12 @@ MainWindow::MainWindow(QWidget *parent)
     if (data.size() > 1)
       ui->m_spin_box_day->setValue(data[1].toInt());
     if (data.size() > 2)
-      ui->m_check_box_use_last_input->setChecked(static_cast<bool>(data[2].toInt()));
+      ui->m_spin_box_puzzle->setValue(data[2].toInt());
+    if (data.size() > 3)
+      ui->m_check_box_use_last_input->setChecked(static_cast<bool>(data[3].toInt()));
     for (int i = 0; i < static_cast<int>(m_cookies_names.size()); ++i) {
-      if (data.size() > i + 3)
-        m_cookies_values[i] = data[i + 3];
+      if (data.size() > i + 4)
+        m_cookies_values[i] = data[i + 4];
     }
     file.close();
   }
@@ -52,6 +54,7 @@ MainWindow::~MainWindow()
     QTextStream out(&file);
     out << ui->m_spin_box_year->value() << ","
         << ui->m_spin_box_day->value() << ","
+        << ui->m_spin_box_puzzle->value() << ","
         << (ui->m_check_box_use_last_input->isChecked() ? "1" : "0");
     for (const auto& value : m_cookies_values)
       out << "," << value;
@@ -70,6 +73,7 @@ void MainWindow::replyFinished(QNetworkReply* reply)
   ui->m_plain_text_edit_input->appendPlainText(input);
   ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
   ui->m_plain_text_edit_input->ensureCursorVisible();
+  ui->m_check_box_use_last_input->setChecked(true);
   QFile file("input");
   if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
     QTextStream out(&file);
@@ -101,6 +105,7 @@ void MainWindow::on_m_push_button_solve_clicked()
       ui->m_plain_text_edit_input->clear();
       ui->m_plain_text_edit_input->appendPlainText(QString(file.readAll()));
       ui->m_plain_text_edit_output->moveCursor(QTextCursor::Start);
+      ui->m_plain_text_edit_output->ensureCursorVisible();
       file.close();
       solve();
     } else {
