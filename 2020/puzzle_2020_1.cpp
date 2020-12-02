@@ -1,7 +1,7 @@
 #include <2020/puzzle_2020_1.h>
 #include <common.h>
 
-Solvers::Solver Puzzle_2020_1::solver = [](const QString& input)
+PuzzleSolver Puzzle_2020_1::solver = [](const QString& input)
 {
   QStringList lines = common::splitLines(input);
   for (int i = 0; i < lines.size(); ++i) {

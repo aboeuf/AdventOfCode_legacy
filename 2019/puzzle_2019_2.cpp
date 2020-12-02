@@ -100,7 +100,7 @@ bool run(std::vector<int>& progam)
 
 }
 
-Solvers::Solver Puzzle_2019_2::solver = [](const QString& input) {
+PuzzleSolver Puzzle_2019_2::solver = [](const QString& input) {
   const auto program = common::toIntValues(input);
   if (program.size() < 3)
     return QString{"BAD SIZE"};

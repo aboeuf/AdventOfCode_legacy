@@ -118,7 +118,7 @@ void MainWindow::on_m_push_button_update_cookies_clicked()
   if (!appdata.endsWith("/"))
     appdata += "/";
   QDir firefox(appdata + "Mozilla/Firefox/Profiles");
-#elif
+#else
   QDir firefox(QDir::homePath() + "/.mozilla/firefox");
 #endif
   QString db_path;
@@ -195,6 +195,7 @@ void MainWindow::solve()
   ui->m_plain_text_edit_output->clear();
   ui->m_plain_text_edit_output->appendPlainText(m_solvers(ui->m_spin_box_year->value(),
                                                           ui->m_spin_box_day->value(),
+                                                          ui->m_spin_box_puzzle->value() == 1,
                                                           ui->m_plain_text_edit_input->toPlainText()));
   ui->m_plain_text_edit_output->moveCursor(QTextCursor::Start);
   ui->m_plain_text_edit_output->ensureCursorVisible();

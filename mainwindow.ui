@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>746</width>
+    <width>878</width>
     <height>576</height>
    </rect>
   </property>
@@ -48,6 +48,23 @@
         </property>
         <property name="maximum">
          <number>25</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="m_label_puzzle">
+        <property name="text">
+         <string>Puzzle</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="m_spin_box_puzzle">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>2</number>
         </property>
        </widget>
       </item>

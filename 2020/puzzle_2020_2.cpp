@@ -61,7 +61,7 @@ bool isValid_new_policy(const QString& input)
 
 }
 
-Solvers::Solver Puzzle_2020_2::solver = [](const QString& input)
+PuzzleSolver Puzzle_2020_2::solver = [](const QString& input)
 {
   QStringList lines = common::splitLines(input);
   unsigned int nb_valids = 0u;

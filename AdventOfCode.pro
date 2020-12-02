@@ -2,7 +2,7 @@ QT       += core gui network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     2019/puzzle_2019_1.cpp \
     2019/puzzle_2019_2.cpp \
+    2019/puzzle_2019_3.cpp \
     2020/puzzle_2020_1.cpp \
     2020/puzzle_2020_2.cpp \
     common.cpp \
@@ -28,6 +29,7 @@ SOURCES += \
 HEADERS += \
     2019/puzzle_2019_1.h \
     2019/puzzle_2019_2.h \
+    2019/puzzle_2019_3.h \
     2020/puzzle_2020_1.h \
     2020/puzzle_2020_2.h \
     common.h \
