@@ -7,14 +7,19 @@
 #include <2020/puzzle_2020_1.h>
 #include <2020/puzzle_2020_2.h>
 
-Solver::Solver() :
-  std::pair<PuzzleSolverOpt, PuzzleSolverOpt>{std::nullopt, std::nullopt} {}
+const PuzzleSolver default_solver = [](const QString&) { return QString{"Not implemented"}; };
 
-Solver::Solver(const PuzzleSolver& solver_1) :
-  std::pair<PuzzleSolverOpt, PuzzleSolverOpt>{solver_1, std::nullopt} {}
+Solver::Solver(const PuzzleSolver& solver_1 = default_solver,
+               const PuzzleSolver& solver_2 = default_solver) :
+  m_solver_1{solver_1},
+  m_solver_2{solver_2}
+{
+}
 
-Solver::Solver(const PuzzleSolver& solver_1, const PuzzleSolver& solver_2) :
-  std::pair<PuzzleSolverOpt, PuzzleSolverOpt>{solver_1, solver_2} {}
+QString Solver::operator() (const QString& input, bool puzzle_1) const
+{
+  return puzzle_1 ? m_solver_1(input) : m_solver_2(input);
+}
 
 Solvers::Solvers()
 {
@@ -26,19 +31,13 @@ Solvers::Solvers()
   m_solvers[2020][2] = Solver{Puzzle_2020_2::solver_1, Puzzle_2020_2::solver_2};
 }
 
-QString Solvers::operator () (int year, int day, bool puzzle_1, const QString& input) const
+QString Solvers::operator () (const QString& input, int year, int day, bool puzzle_1) const
 {
   const auto year_it = m_solvers.find(year);
   if (year_it != m_solvers.end()) {
     const auto day_it = year_it->second.find(day);
     if (day_it != year_it->second.end()) {
-      if (puzzle_1) {
-        if (day_it->second.first)
-          return (*(day_it->second.first))(input);
-      } else {
-        if (day_it->second.second)
-          return (*(day_it->second.second))(input);
-      }
+      return day_it->second(input, puzzle_1);
     }
   }
   return QString{"Not implemented"};

@@ -104,8 +104,8 @@ void MainWindow::on_m_push_button_solve_clicked()
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
       ui->m_plain_text_edit_input->clear();
       ui->m_plain_text_edit_input->appendPlainText(QString(file.readAll()));
-      ui->m_plain_text_edit_output->moveCursor(QTextCursor::Start);
-      ui->m_plain_text_edit_output->ensureCursorVisible();
+      ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
+      ui->m_plain_text_edit_input->ensureCursorVisible();
       file.close();
       solve();
     } else {
@@ -198,10 +198,10 @@ void MainWindow::on_m_push_button_output_clicked()
 void MainWindow::solve()
 {
   ui->m_plain_text_edit_output->clear();
-  ui->m_plain_text_edit_output->appendPlainText(m_solvers(ui->m_spin_box_year->value(),
+  ui->m_plain_text_edit_output->appendPlainText(m_solvers(ui->m_plain_text_edit_input->toPlainText(),
+                                                          ui->m_spin_box_year->value(),
                                                           ui->m_spin_box_day->value(),
-                                                          ui->m_spin_box_puzzle->value() == 1,
-                                                          ui->m_plain_text_edit_input->toPlainText()));
+                                                          ui->m_spin_box_puzzle->value() == 1));
   ui->m_plain_text_edit_output->moveCursor(QTextCursor::Start);
   ui->m_plain_text_edit_output->ensureCursorVisible();
   on_m_push_button_output_clicked();
