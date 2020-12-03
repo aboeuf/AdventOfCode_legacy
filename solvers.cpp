@@ -26,7 +26,7 @@ Solvers::Solvers()
 {
   m_solvers[2019][1] = Solver{Puzzle_2019_1::solver_1, Puzzle_2019_1::solver_2};
   m_solvers[2019][2] = Solver{Puzzle_2019_2::solver_1, Puzzle_2019_2::solver_2};
-  m_solvers[2019][3] = Solver{Puzzle_2019_3::solver_1};
+  m_solvers[2019][3] = Solver{Puzzle_2019_3::solver_1, Puzzle_2019_3::solver_2};
 
   m_solvers[2020][1] = Solver{Puzzle_2020_1::solver_1, Puzzle_2020_1::solver_2};
   m_solvers[2020][2] = Solver{Puzzle_2020_2::solver_1, Puzzle_2020_2::solver_2};

@@ -10,7 +10,6 @@ Map getMap(const QString& input)
 {
   Map map;
   QStringList lines = common::splitLines(input);
-
   map.resize(lines.size());
   std::size_t i = 0u;
   for (const QString& line : lines) {

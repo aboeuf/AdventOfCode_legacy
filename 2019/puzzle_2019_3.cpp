@@ -1,126 +1,147 @@
 #include <2019/puzzle_2019_3.h>
 #include <common.h>
-#include <QPointF>
+#include <QPoint>
 #include <QDebug>
+#include <list>
 
 namespace puzzle_2019_3 {
 
-struct VerticalSegment
+using Wire = std::vector<QPoint>;
+
+void getWire(const QString& input, Wire& wire) {
+  wire.clear();
+  const QStringList moves = common::splitValues(input);
+  wire.reserve(input.size() + 1);
+  wire.emplace_back(0, 0);
+  for (QString move : moves) {
+    if (move.size() < 2)
+      continue;
+    const QChar dir = move.front();
+    move.remove(0, 1);
+    bool ok;
+    int value = move.toInt(&ok);
+    if (!ok)
+      continue;
+    if (dir == 'R')
+      wire.emplace_back(wire.back().x() + value, wire.back().y());
+    else if (dir == 'L')
+      wire.emplace_back(wire.back().x() - value, wire.back().y());
+    else if (dir == 'U')
+      wire.emplace_back(wire.back().x(), wire.back().y() + value);
+    else if (dir == 'D')
+      wire.emplace_back(wire.back().x(), wire.back().y() - value);
+  }
+}
+
+void getWires(const QString& input, Wire& wire_A, Wire& wire_B)
 {
-  VerticalSegment(int x, int y1, int y2) :
-    x{x},
-    y_min{std::min(y1, y2)},
-    y_max{std::max(y1, y2)} {}
-
-  int x;
-  int y_min;
-  int y_max;
-
-  QString toString() {
-    return QString("V(%1, %2, %3)").arg(x).arg(y_min).arg(y_max);
-  }
-};
-
-struct HorizontalSegment
-{
-  HorizontalSegment(int y, int x1, int x2) :
-    y{y},
-    x_min{std::min(x1, x2)},
-    x_max{std::max(x1, x2)} {}
-
-  bool intersects(const VerticalSegment& seg, QPoint& intersection) const
-  {
-    if (x_min <= seg.x && seg.x <= x_max && seg.y_min <= y && y <= seg.y_max) {
-      intersection.setX(seg.x);
-      intersection.setY(y);
-      return true;
-    }
-    return false;
-  }
-
-  int y;
-  int x_min;
-  int x_max;
-
-  QString toString() {
-    return QString("H(%1, %2, %3)").arg(y).arg(x_min).arg(x_max);
-  }
-};
+  const QStringList lines = common::splitLines(input);
+  if (lines.size() > 0)
+    getWire(lines[0], wire_A);
+  if (lines.size() > 1)
+    getWire(lines[1], wire_B);
+}
 
 int manhattanNorm(const QPoint& pt)
 {
   return std::abs(pt.x()) + std::abs(pt.y());
 }
 
-void generateSegments(const QStringList& inputs,
-                      std::vector<VerticalSegment>& vertical,
-                      std::vector<HorizontalSegment>& horizontal)
+int manhattanDist(const QPoint& A, const QPoint& B)
 {
-  vertical.clear();
-  horizontal.clear();
-  vertical.reserve(inputs.size());
-  horizontal.reserve(inputs.size());
-  QPoint current(0, 0);
-  for (QString input : inputs) {
-    if (input.size() < 2)
-      continue;
-    const QChar dir = input.front();
-    input.remove(0, 1);
-    bool ok;
-    int value = input.toInt(&ok);
-    if (!ok)
-      continue;
-    if (dir == 'R') {
-      int x = current.x() + value;
-      horizontal.emplace_back(current.y(), current.x(), x);
-      current.setX(x);
-    } else if (dir == 'L') {
-      int x = current.x() - value;
-      horizontal.emplace_back(current.y(), x, current.x());
-      current.setX(x);
-    } else if (dir == 'U') {
-      int y = current.y() + value;
-      vertical.emplace_back(current.x(), current.y(), y);
-      current.setY(y);
-    } else if (dir == 'D') {
-      int y = current.y() - value;
-      vertical.emplace_back(current.x(), y, current.y());
-      current.setY(y);
-    }
-  }
+  return std::abs(A.x() - B.x()) + std::abs(A.y() - B.y());
 }
 
-void getNearestIntersectionDistance(const std::vector<VerticalSegment>& vertical,
-                                    const std::vector<HorizontalSegment>& horizontal,
-                                    int& dist_min)
+bool computeIntersection(const QPoint& beg_A, const QPoint& end_A,
+                         const QPoint& beg_B, const QPoint& end_B,
+                         QPoint& intersection)
 {
+  int min_A_x = std::min(beg_A.x(), end_A.x());
+  int max_A_x = std::max(beg_A.x(), end_A.x());
+  int min_A_y = std::min(beg_A.y(), end_A.y());
+  int max_A_y = std::max(beg_A.y(), end_A.y());
+  int min_B_x = std::min(beg_B.x(), end_B.x());
+  int max_B_x = std::max(beg_B.x(), end_B.x());
+  int min_B_y = std::min(beg_B.y(), end_B.y());
+  int max_B_y = std::max(beg_B.y(), end_B.y());
+
+  if (min_A_x == max_A_x && min_B_y == max_B_y) {
+    if (min_A_x == 0 && min_B_y == 0)
+      return false;
+    if (min_B_x <= min_A_x && min_A_x <= max_B_x &&
+        min_A_y <= min_B_y && min_B_y <= max_A_y) {
+      intersection.setX(min_A_x);
+      intersection.setY(min_B_y);
+      return true;
+    }
+    return false;
+  }
+
+  if (min_B_x == max_B_x && min_A_y == max_A_y) {
+    if (min_B_x == 0 && min_A_y == 0)
+      return false;
+    if (min_A_x <= min_B_x && min_B_x <= max_A_x &&
+        min_B_y <= min_A_y && min_A_y <= max_B_y) {
+      intersection.setX(min_B_x);
+      intersection.setY(min_A_y);
+      return true;
+    }
+    return false;
+  }
+
+  return false;
+}
+
+int getNearestIntersection(const Wire& wire_A, const Wire& wire_B)
+{
+  int min_dist = std::numeric_limits<int>::max();
   QPoint intersection;
-  for (const HorizontalSegment& h : horizontal) {
-    for (const VerticalSegment& v : vertical) {
-      if (h.intersects(v, intersection)) {
+  for (auto end_A = std::next(wire_A.begin()); end_A != wire_A.end(); ++end_A) {
+    for (auto end_B = std::next(wire_B.begin()); end_B != wire_B.end(); ++end_B) {
+      if (computeIntersection(*std::prev(end_A), *end_A, *std::prev(end_B), *end_B, intersection)) {
         int dist = manhattanNorm(intersection);
-        if (dist != 0 && dist < dist_min)
-          dist_min = dist;
+        if (dist < min_dist)
+          min_dist = dist;
       }
     }
   }
+  return min_dist;
+}
+
+int getMinimumDelay(const Wire& wire_A, const Wire& wire_B)
+{
+  int min_delay = std::numeric_limits<int>::max();
+  QPoint intersection;
+  int delay_a = 0;
+  for (auto end_A = std::next(wire_A.begin()); end_A != wire_A.end(); ++end_A) {
+    int delay_b = 0;
+    for (auto end_B = std::next(wire_B.begin()); end_B != wire_B.end(); ++end_B) {
+      if (computeIntersection(*std::prev(end_A), *end_A, *std::prev(end_B), *end_B, intersection)) {
+        int delay = delay_a + delay_b +
+            manhattanDist(*std::prev(end_A), intersection) +
+            manhattanDist(*std::prev(end_B), intersection);
+        if (delay < min_delay)
+          min_delay = delay;
+      }
+      delay_b += manhattanDist(*std::prev(end_B), *end_B);
+    }
+    delay_a += manhattanDist(*std::prev(end_A), *end_A);
+  }
+  return min_delay;
 }
 
 }
 
 PuzzleSolver Puzzle_2019_3::solver_1 = [](const QString& input) {
   using namespace puzzle_2019_3;
-  const QStringList lines = common::splitLines(input);
-  if (lines.size() < 2)
-    return QString("Bad number of lines (%1)").arg(lines.size());
-  std::vector<VerticalSegment> vertical_A, vertical_B;
-  std::vector<HorizontalSegment> horizontal_A, horizontal_B;
-  generateSegments(common::splitValues(lines[0]), vertical_A, horizontal_A);
-  generateSegments(common::splitValues(lines[1]), vertical_B, horizontal_B);
-  int dist_min = std::numeric_limits<int>::max();
-  getNearestIntersectionDistance(vertical_A, horizontal_B, dist_min);
-  getNearestIntersectionDistance(vertical_B, horizontal_A, dist_min);
-  if (dist_min == std::numeric_limits<int>::max())
-    return QString{"No intersections"};
-  return QString::number(dist_min);
+  Wire wire_A, wire_B;
+  getWires(input, wire_A, wire_B);
+  return QString::number(getNearestIntersection(wire_A, wire_B));
+};
+
+PuzzleSolver Puzzle_2019_3::solver_2 = [](const QString& input) {
+  using namespace puzzle_2019_3;
+  Wire wire_A, wire_B;
+  getWires(input, wire_A, wire_B);
+  return QString::number(getMinimumDelay(wire_A, wire_B));
 };
