@@ -35,6 +35,7 @@ HEADERS += \
     2020/puzzle_2020_2.h \
     2020/puzzle_2020_3.h \
     common.h \
+    jsonhelper.h \
     mainwindow.h \
     solvers.h
 

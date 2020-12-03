@@ -5,10 +5,27 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <solvers.h>
+#include <jsonhelper.h>
+#include <unordered_map>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+struct Configuration
+{
+  Configuration() = default;
+  void reset();
+  QString load(const QString& filepath);
+  bool save(const QString& filepath) const;
+  void updateCookies(QWidget* parent = nullptr);
+  int m_year{};
+  int m_day{};
+  bool m_puzzle_1{};
+  bool m_use_last_input{};
+  std::unordered_map<std::string, QString> m_cookies{};
+  std::unordered_map<int, std::vector<QString>> m_leaderboards{};
+};
 
 class MainWindow : public QMainWindow
 {
@@ -31,8 +48,8 @@ private:
   void solve();
   Ui::MainWindow *ui;
   QNetworkAccessManager *m_manager;
-  std::vector<QString> m_cookies_names;
-  std::vector<QString> m_cookies_values;
   Solvers m_solvers;
+  Configuration m_config;
+  QString m_dir_path;
 };
 #endif // MAINWINDOW_H

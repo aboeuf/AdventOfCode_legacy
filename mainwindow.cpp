@@ -12,110 +12,69 @@
 #include <QSqlError>
 #include <QClipboard>
 #include <solvers.h>
+#include <jsonhelper.h>
 
-MainWindow::MainWindow(QWidget *parent)
-  : QMainWindow(parent)
-  , ui(new Ui::MainWindow)
-  , m_cookies_names{{"_ga", "_gid", "session"}}
+void Configuration::reset()
 {
-  m_cookies_values.resize(m_cookies_names.size());
-  ui->setupUi(this);
-  QFile file("config");
-  if (file.open(QIODevice::ReadOnly | QIODevice::Text) && !file.atEnd()) {
-    QByteArray line = file.readLine();
-    QStringList data = QString(line).split(',');
-    if (data.size() > 0)
-      ui->m_spin_box_year->setValue(data[0].toInt());
-    if (data.size() > 1)
-      ui->m_spin_box_day->setValue(data[1].toInt());
-    if (data.size() > 2)
-      ui->m_spin_box_puzzle->setValue(data[2].toInt());
-    if (data.size() > 3)
-      ui->m_check_box_use_last_input->setChecked(static_cast<bool>(data[3].toInt()));
-    for (int i = 0; i < static_cast<int>(m_cookies_names.size()); ++i) {
-      if (data.size() > i + 4)
-        m_cookies_values[i] = data[i + 4];
-    }
-    file.close();
-  }
-  for (const auto& cookie : m_cookies_values)
-    if (cookie.isEmpty()) {
-      on_m_push_button_update_cookies_clicked();
-      break;
-    }
-  m_manager = new QNetworkAccessManager(this);
-  connect(m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+  m_year = 2017;
+  m_day = 1;
+  m_puzzle_1 = true;
+  m_use_last_input = false;
+  m_cookies = {{"_ga", ""}, {"_gid", ""}, {"session", ""}};
+  m_leaderboards.clear();
 }
 
-MainWindow::~MainWindow()
+QString Configuration::load(const QString& filepath)
 {
-  QFile file("config");
-  if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-    QTextStream out(&file);
-    out << ui->m_spin_box_year->value() << ","
-        << ui->m_spin_box_day->value() << ","
-        << ui->m_spin_box_puzzle->value() << ","
-        << (ui->m_check_box_use_last_input->isChecked() ? "1" : "0");
-    for (const auto& value : m_cookies_values)
-      out << "," << value;
-    file.close();
-  }
-  delete m_manager;
-  delete ui;
+  JsonHelper helper;
+  QJsonObject parsed;
+  if (!helper.read(filepath, parsed))
+    return helper.error();
+  if (!helper.read(parsed, "year", m_year))
+    return "Cannot parse field \"year\"\n" + helper.error();
+  if (!helper.read(parsed, "day", m_day))
+    return "Cannot parse field \"day\"\n" + helper.error();
+  if (!helper.read(parsed, "puzzle_1", m_puzzle_1))
+    return "Cannot parse field \"puzzle_1\"\n" + helper.error();
+  if (!helper.read(parsed, "use_last_input", m_use_last_input))
+    return "Cannot parse field \"use_last_input\"\n" + helper.error();
+  QJsonObject cookies;
+  if (!helper.read(parsed, "cookies", cookies))
+    return "Cannot parse field \"cookies\"\n" + helper.error();
+  QString str;
+  if (!helper.read(cookies, "_ga", str))
+    return "Cannot parse cookie \"_ga\"\n" + helper.error();
+  m_cookies["_ga"] = str;
+  if (!helper.read(cookies, "_gid", str))
+    return "Cannot parse cookie \"_gid\"\n" + helper.error();
+  m_cookies["_gid"] = str;
+  if (!helper.read(cookies, "session", str))
+    return "Cannot parse cookie \"session\"\n" + helper.error();
+  m_cookies["session"] = str;
+  return QString{};
 }
 
-void MainWindow::replyFinished(QNetworkReply* reply)
+bool Configuration::save(const QString& filepath) const
 {
-  ui->m_plain_text_edit_input->clear();
-  QString input(reply->readAll());
-  while (!input.isEmpty() && input.back() == '\n')
-    input.chop(1);
-  ui->m_plain_text_edit_input->appendPlainText(input);
-  ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
-  ui->m_plain_text_edit_input->ensureCursorVisible();
-  ui->m_check_box_use_last_input->setChecked(true);
-  QFile file("input");
-  if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-    QTextStream out(&file);
-    out << ui->m_plain_text_edit_input->toPlainText();
-    file.close();
-  }
-  reply->deleteLater();
-  solve();
+  QFile file(filepath);
+  if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    return false;
+  QJsonObject conf;
+  conf.insert("year", QJsonValue{m_year});
+  conf.insert("day", QJsonValue{m_day});
+  conf.insert("puzzle_1", QJsonValue{m_puzzle_1});
+  conf.insert("use_last_input", QJsonValue{m_use_last_input});
+  QJsonObject cookies;
+  for (auto it = m_cookies.begin(); it != m_cookies.end(); ++it)
+    cookies.insert(QString{it->first.c_str()}, QJsonValue{it->second});
+  conf.insert("cookies", cookies);
+  QTextStream out(&file);
+  out << QJsonDocument(conf).toJson();
+  file.close();
+  return true;
 }
 
-void MainWindow::on_m_push_button_solve_clicked()
-{
-  if (!ui->m_check_box_use_last_input->isChecked()) {
-    QNetworkRequest request;
-    request.setUrl(QUrl(QString("https://adventofcode.com/%1/day/%2/input")
-                        .arg(ui->m_spin_box_year->value())
-                        .arg(ui->m_spin_box_day->value())));
-    QString cookies;
-    for (auto i = 0u; i < m_cookies_names.size(); ++i) {
-      cookies += m_cookies_names[i] + "=" + m_cookies_values[i];
-      if (i + 1 < m_cookies_names.size())
-        cookies += "; ";
-    }
-    request.setRawHeader("Cookie", cookies.toUtf8());
-    m_manager->get(request);
-  } else {
-    QFile file("input");
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-      ui->m_plain_text_edit_input->clear();
-      ui->m_plain_text_edit_input->appendPlainText(QString(file.readAll()));
-      ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
-      ui->m_plain_text_edit_input->ensureCursorVisible();
-      file.close();
-      solve();
-    } else {
-      ui->m_check_box_use_last_input->setChecked(false);
-      on_m_push_button_solve_clicked();
-    }
-  }
-}
-
-void MainWindow::on_m_push_button_update_cookies_clicked()
+void Configuration::updateCookies(QWidget* parent)
 {
 #ifdef WIN32
   QString appdata = QProcessEnvironment::systemEnvironment().value("APPDATA");
@@ -135,23 +94,23 @@ void MainWindow::on_m_push_button_update_cookies_clicked()
     }
   }
   if (db_path.isEmpty())
-    db_path = QFileDialog::getOpenFileName(this,
-                                           tr("Open Cookies Sqlite Database"),
+    db_path = QFileDialog::getOpenFileName(parent,
+                                           "Open Cookies Sqlite Database",
                                            QDir::homePath(),
-                                           tr("Sqlite file (*.sqlite)"));
+                                           "Sqlite file (*.sqlite)");
   if (db_path.isEmpty())
     return;
   QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
   db.setDatabaseName(db_path);
   if (db.open()) {
     QSqlQuery query(db);
-    for (auto i = 0u; i < m_cookies_names.size(); ++i) {
+    for (auto it = m_cookies.begin(); it != m_cookies.end(); ++it) {
       const QString query_str = QString("SELECT value FROM moz_cookies "
                                         "WHERE host=\".adventofcode.com\" "
-                                        "AND name=\"%1\"").arg(m_cookies_names[i]);
+                                        "AND name=\"%1\"").arg(it->first.c_str());
       if(query.exec(query_str)) {
         if (query.next())
-          m_cookies_values[i] = query.value(0).toString();
+          m_cookies[it->first] = query.value(0).toString();
         else
           QMessageBox(QMessageBox::Warning,
                       "Advent Of Code",
@@ -171,6 +130,120 @@ void MainWindow::on_m_push_button_update_cookies_clicked()
                 "Close Firefox  and retry.").exec();
 }
 
+MainWindow::MainWindow(QWidget *parent)
+  : QMainWindow(parent)
+  , ui(new Ui::MainWindow)
+{
+  ui->setupUi(this);
+
+#ifdef WIN32
+  m_dir_path = QProcessEnvironment::systemEnvironment().value("APPDATA");
+  m_dir_path.replace("\\", "/");
+  if (!m_dir_path.endsWith("/"))
+    m_dir_path += "/";
+#else
+  m_dir_path = QProcessEnvironment::systemEnvironment().value("HOME");
+  if (!m_dir_path.endsWith("/"))
+    m_dir_path += "/";
+  m_dir_path += ".config/";
+#endif
+  m_dir_path += "AdventOfCode/";
+  if (!QDir(m_dir_path).exists())
+    QDir().mkdir(m_dir_path);
+
+  if (QFile(m_dir_path + "config.json").exists()) {
+    const QString error = m_config.load(m_dir_path + "config.json");
+    if (!error.isEmpty()) {
+      QMessageBox(QMessageBox::Warning,
+                  "Advent Of Code",
+                  QString("Failed to load configuration from file \"%1\"\n").arg(m_dir_path + "config.json") + error).exec();
+      m_config.reset();
+      m_config.updateCookies(this);
+    }
+  } else {
+    m_config.reset();
+    m_config.updateCookies(this);
+  }
+
+  ui->m_spin_box_year->setValue(m_config.m_year);
+  ui->m_spin_box_day->setValue(m_config.m_day);
+  ui->m_spin_box_day->setValue(m_config.m_puzzle_1 ? 1 : 2);
+  ui->m_check_box_use_last_input->setChecked(m_config.m_use_last_input);
+
+  m_manager = new QNetworkAccessManager(this);
+  connect(m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+}
+
+MainWindow::~MainWindow()
+{
+  m_config.m_year = ui->m_spin_box_year->value();
+  m_config.m_day = ui->m_spin_box_day->value();
+  m_config.m_puzzle_1 = ui->m_spin_box_puzzle->value() == 1;
+  m_config.m_use_last_input = ui->m_check_box_use_last_input->isChecked();
+  if (!m_config.save(m_dir_path + "config.json"))
+    QMessageBox(QMessageBox::Warning,
+                "Advent Of Code",
+                QString("Failed to save configuration to file \"%1\"").arg(m_dir_path + "config.json")).exec();
+  delete m_manager;
+  delete ui;
+}
+
+void MainWindow::replyFinished(QNetworkReply* reply)
+{
+  ui->m_plain_text_edit_input->clear();
+  QString input(reply->readAll());
+  while (!input.isEmpty() && input.back() == '\n')
+    input.chop(1);
+  ui->m_plain_text_edit_input->appendPlainText(input);
+  ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
+  ui->m_plain_text_edit_input->ensureCursorVisible();
+  ui->m_check_box_use_last_input->setChecked(true);
+  QFile file(m_dir_path + "last_input.txt");
+  if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QTextStream out(&file);
+    out << ui->m_plain_text_edit_input->toPlainText();
+    file.close();
+  }
+  reply->deleteLater();
+  solve();
+}
+
+void MainWindow::on_m_push_button_solve_clicked()
+{
+  if (!ui->m_check_box_use_last_input->isChecked()) {
+    QNetworkRequest request;
+    request.setUrl(QUrl(QString("https://adventofcode.com/%1/day/%2/input")
+                        .arg(ui->m_spin_box_year->value())
+                        .arg(ui->m_spin_box_day->value())));
+    QString cookies;
+    for (auto it = m_config.m_cookies.begin(); it != m_config.m_cookies.end(); ++it) {
+      cookies += QString{it->first.c_str()} + "=" + it->second;
+      if (std::next(it) != m_config.m_cookies.end())
+        cookies += "; ";
+    }
+    request.setRawHeader("Cookie", cookies.toUtf8());
+    m_manager->get(request);
+  } else {
+    QFile file(m_dir_path + "last_input.txt");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      ui->m_plain_text_edit_input->clear();
+      ui->m_plain_text_edit_input->appendPlainText(QString(file.readAll()));
+      ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
+      ui->m_plain_text_edit_input->ensureCursorVisible();
+      file.close();
+      solve();
+    } else {
+      ui->m_check_box_use_last_input->setChecked(false);
+      on_m_push_button_solve_clicked();
+    }
+  }
+}
+
+void MainWindow::on_m_push_button_update_cookies_clicked()
+{
+ m_config.updateCookies(this);
+}
+
 void MainWindow::on_m_spin_box_year_valueChanged(int)
 {
   ui->m_check_box_use_last_input->setChecked(false);
@@ -183,11 +256,11 @@ void MainWindow::on_m_spin_box_day_valueChanged(int)
 
 void MainWindow::on_m_push_button_input_clicked()
 {
-  const QString command = "subl " + QFileInfo(QFile("input")).absoluteFilePath();
+  const QString command = "subl " + QFileInfo(QFile(m_dir_path + "last_input.txt")).absoluteFilePath();
   if (std::system(command.toStdString().c_str()) != 0)
     QMessageBox(QMessageBox::Warning,
                 "Advent Of Code",
-                "Can!edit input file with Sublime Text\nCommand: " + command).exec();
+                "Cannot edit input file with Sublime Text\nCommand: " + command).exec();
 }
 
 void MainWindow::on_m_push_button_output_clicked()
