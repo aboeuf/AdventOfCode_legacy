@@ -10,8 +10,8 @@ QStringList splitLines(const QString& input) {
   return res;
 }
 
-QStringList splitValues(const QString& input) {
-  QStringList res = input.split(',');
+QStringList splitValues(const QString& input, const QChar& split_char) {
+  QStringList res = input.split(split_char);
   while (!res.isEmpty() && (res.back().isEmpty() || res.back() == "\n"))
     res.pop_back();
   return res;

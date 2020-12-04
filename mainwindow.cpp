@@ -177,7 +177,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   ui->m_spin_box_year->setValue(m_config.m_year);
   ui->m_spin_box_day->setValue(m_config.m_day);
-  ui->m_spin_box_day->setValue(m_config.m_puzzle_1 ? 1 : 2);
+  ui->m_spin_box_puzzle->setValue(m_config.m_puzzle_1 ? 1 : 2);
   ui->m_check_box_use_last_input->setChecked(m_config.m_use_last_input);
 
   m_manager = new QNetworkAccessManager(this);
@@ -185,7 +185,7 @@ MainWindow::MainWindow(QWidget *parent)
   connect(this, SIGNAL(updateLeaderboards()), this, SLOT(onUpdateLeaderboardsRequested()));
   m_last_network_request = NONE;
   m_udating_year = ui->m_spin_box_year->minimum();
-  emit updateLeaderboards();
+  // emit updateLeaderboards();
 }
 
 MainWindow::~MainWindow()
