@@ -9,6 +9,7 @@
 #include <2020/puzzle_2020_3.h>
 #include <2020/puzzle_2020_4.h>
 #include <2020/puzzle_2020_5.h>
+#include <2020/puzzle_2020_6.h>
 
 const PuzzleSolver default_solver = [](const QString&) { return QString{"Not implemented"}; };
 
@@ -35,6 +36,7 @@ Solvers::Solvers()
   m_solvers[2020][3] = Solver{Puzzle_2020_3::solver_1, Puzzle_2020_3::solver_2};
   m_solvers[2020][4] = Solver{Puzzle_2020_4::solver_1, Puzzle_2020_4::solver_2};
   m_solvers[2020][5] = Solver{Puzzle_2020_5::solver_1, Puzzle_2020_5::solver_2};
+  m_solvers[2020][6] = Solver{Puzzle_2020_6::solver_1, Puzzle_2020_6::solver_2};
 }
 
 QString Solvers::operator () (const QString& input, int year, int day, bool puzzle_1) const
