@@ -182,10 +182,6 @@ MainWindow::MainWindow(QWidget *parent)
 
   m_manager = new QNetworkAccessManager(this);
   connect(m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
-  connect(this, SIGNAL(updateLeaderboards()), this, SLOT(onUpdateLeaderboardsRequested()));
-  m_last_network_request = NONE;
-  m_udating_year = ui->m_spin_box_year->minimum();
-  // emit updateLeaderboards();
 }
 
 MainWindow::~MainWindow()
@@ -206,54 +202,23 @@ void MainWindow::replyFinished(QNetworkReply* reply)
 {
   QString received(reply->readAll());
 
-  if (m_last_network_request == INPUT) {
-    m_last_network_request = NONE;
-    ui->m_plain_text_edit_input->clear();
-    while (!received.isEmpty() && received.back() == '\n')
-      received.chop(1);
-    ui->m_plain_text_edit_input->appendPlainText(received);
-    ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
-    ui->m_plain_text_edit_input->ensureCursorVisible();
-    ui->m_check_box_use_last_input->setChecked(true);
-    QFile file(m_dir_path + "last_input.txt");
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-      QTextStream out(&file);
-      out << ui->m_plain_text_edit_input->toPlainText();
-      file.close();
-    }
-    reply->deleteLater();
-    solve();
-    return;
-  }
 
-  if (m_last_network_request == LEADERBOARDS_LIST) {
-    m_last_network_request = NONE;
-    int from = 0, index;
-    QString search_string = QString("/%1/leaderboard/private/view/").arg(m_udating_year);
-    for(;;)
-    {
-      index = received.indexOf(search_string, from);
-      if (index >= 0) {
-        int start = index + search_string.size();
-        int count = 0;
-        for (; start + count < received.size() && received[start + count] != '"'; ++count) {}
-        int id = received.mid(start, count).toInt();
-        from = start + count;
-        index = received.indexOf("[Leave]</a> ", from);
-        if (index >= 0) {
-          start = index + 12;
-          count = 0;
-          for (; start + count < received.size() && received[start + count] != '<'; ++count) {}
-          m_leaderboards[m_udating_year][id] = received.mid(start, count);
-          from = start + count;
-        }
-      } else
-        break;
-    }
-    ++m_udating_year;
-    emit updateLeaderboards();
-    return;
+  ui->m_plain_text_edit_input->clear();
+  while (!received.isEmpty() && received.back() == '\n')
+    received.chop(1);
+  ui->m_plain_text_edit_input->appendPlainText(received);
+  ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
+  ui->m_plain_text_edit_input->ensureCursorVisible();
+  ui->m_check_box_use_last_input->setChecked(true);
+  QFile file(m_dir_path + "last_input.txt");
+  if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QTextStream out(&file);
+    out << ui->m_plain_text_edit_input->toPlainText();
+    file.close();
   }
+  reply->deleteLater();
+  solve();
+
 }
 
 void MainWindow::on_m_push_button_solve_clicked()
@@ -264,7 +229,6 @@ void MainWindow::on_m_push_button_solve_clicked()
                         .arg(ui->m_spin_box_year->value())
                         .arg(ui->m_spin_box_day->value())));
     m_config.setCookies(request);
-    m_last_network_request = INPUT;
     m_manager->get(request);
   } else {
     QFile file(m_dir_path + "last_input.txt");
@@ -321,28 +285,4 @@ void MainWindow::solve()
   ui->m_plain_text_edit_output->moveCursor(QTextCursor::Start);
   ui->m_plain_text_edit_output->ensureCursorVisible();
   on_m_push_button_output_clicked();
-}
-
-void MainWindow::onUpdateLeaderboardsRequested()
-{
-  if (m_udating_year < ui->m_spin_box_year->minimum())
-      return;
-  else if (m_udating_year == ui->m_spin_box_year->minimum())
-    m_leaderboards.clear();
-  else if (m_udating_year < ui->m_spin_box_year->minimum() || ui->m_spin_box_year->maximum() < m_udating_year) {
-    ui->plainTextEdit->clear();
-    for (auto y = m_leaderboards.begin(); y != m_leaderboards.end(); ++y) {
-      for (auto id = y->second.begin(); id != y->second.end(); ++id) {
-        ui->plainTextEdit->appendPlainText(QString("%1 %2 %3").arg(y->first).arg(id->first).arg(id->second));
-      }
-    }
-    return;
-  }
-
-  QNetworkRequest request;
-  request.setUrl(QUrl(QString("https://adventofcode.com/%1/leaderboard/private")
-                      .arg(ui->m_spin_box_year->value())));
-  m_config.setCookies(request);
-  m_last_network_request = LEADERBOARDS_LIST;
-  m_manager->get(request);
 }

@@ -14,157 +14,133 @@
    <string>Advent Of Code</string>
   </property>
   <widget class="QWidget" name="m_central_widget">
-   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QTabWidget" name="m_tab_widget">
-      <property name="currentIndex">
-       <number>0</number>
+     <layout class="QHBoxLayout" name="m_horizontal_layout">
+      <item>
+       <widget class="QLabel" name="m_label_year_solvers">
+        <property name="text">
+         <string>Year</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="m_spin_box_year">
+        <property name="minimum">
+         <number>2017</number>
+        </property>
+        <property name="maximum">
+         <number>2020</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="m_label_day">
+        <property name="text">
+         <string>Day</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="m_spin_box_day">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>25</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="m_label_puzzle">
+        <property name="text">
+         <string>Puzzle</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="m_spin_box_puzzle">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>2</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="m_check_box_use_last_input">
+        <property name="text">
+         <string>Use last input</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="m_push_button_solve">
+        <property name="font">
+         <font>
+          <pointsize>15</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>SOLVE</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="m_horizontal_spacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="m_push_button_update_cookies">
+        <property name="text">
+         <string>Update cookies</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item alignment="Qt::AlignLeft">
+     <widget class="QPushButton" name="m_push_button_output">
+      <property name="text">
+       <string>Output</string>
       </property>
-      <widget class="QWidget" name="m_tab_solvers">
-       <attribute name="title">
-        <string>Solvers</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <layout class="QHBoxLayout" name="m_horizontal_layout">
-          <item>
-           <widget class="QLabel" name="m_label_year_solvers">
-            <property name="text">
-             <string>Year</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="m_spin_box_year">
-            <property name="minimum">
-             <number>2017</number>
-            </property>
-            <property name="maximum">
-             <number>2020</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="m_label_day">
-            <property name="text">
-             <string>Day</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="m_spin_box_day">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>25</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="m_label_puzzle">
-            <property name="text">
-             <string>Puzzle</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="m_spin_box_puzzle">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>2</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="m_check_box_use_last_input">
-            <property name="text">
-             <string>Use last input</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="m_push_button_solve">
-            <property name="font">
-             <font>
-              <pointsize>15</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>SOLVE</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="m_horizontal_spacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="m_push_button_update_cookies">
-            <property name="text">
-             <string>Update cookies</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item alignment="Qt::AlignLeft">
-         <widget class="QPushButton" name="m_push_button_output">
-          <property name="text">
-           <string>Output</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPlainTextEdit" name="m_plain_text_edit_output">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>100</height>
-           </size>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item alignment="Qt::AlignLeft">
-         <widget class="QPushButton" name="m_push_button_input">
-          <property name="text">
-           <string>Input</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPlainTextEdit" name="m_plain_text_edit_input">
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="m_tab_leaderboards">
-       <attribute name="title">
-        <string>Leaderboards</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QPlainTextEdit" name="plainTextEdit"/>
-        </item>
-       </layout>
-      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPlainTextEdit" name="m_plain_text_edit_output">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignLeft">
+     <widget class="QPushButton" name="m_push_button_input">
+      <property name="text">
+       <string>Input</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPlainTextEdit" name="m_plain_text_edit_input">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
    </layout>

@@ -224,17 +224,6 @@ public:
 
   bool isEmpty() const { return m_groups.isEmpty(); }
 
-  QString toString() const
-  {
-    QString result;
-    for (const Group& group : m_groups) {
-      for (const DeclarationForm& form : group.forms())
-        result += form.positiveAnswers() + "\n";
-      result += "-----------------------------\n";
-    }
-    return result;
-  }
-
 private:
   QList<Group> m_groups;
   const QString& m_questions_labels;
