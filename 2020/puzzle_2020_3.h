@@ -1,7 +1,14 @@
 #pragma once
 #include <solvers.h>
 
-struct Puzzle_2020_3 {
-static PuzzleSolver solver_1;
-static PuzzleSolver solver_2;
+class Solver_2020_3_1 : public Solver
+{
+public:
+  void solve(const QString& input) const override;
+};
+
+class Solver_2020_3_2 : public Solver
+{
+public:
+  void solve(const QString& input) const override;
 };

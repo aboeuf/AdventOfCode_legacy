@@ -140,7 +140,7 @@ bool isValid(const Passport& password) {
 
 }
 
-PuzzleSolver Puzzle_2020_4::solver_1 = [](const QString& input)
+void Solver_2020_4_1::solve(const QString& input) const
 {
   using namespace puzzle_2020_4;
   QList<Passport> passwords = puzzle_2020_4::readPassports(input);
@@ -148,10 +148,10 @@ PuzzleSolver Puzzle_2020_4::solver_1 = [](const QString& input)
   for (const Passport& password : passwords)
     if (hasAllFields(password))
       ++nb_valid;
-  return QString::number(nb_valid);
-};
+  emit finished(QString::number(nb_valid));
+}
 
-PuzzleSolver Puzzle_2020_4::solver_2 = [](const QString& input)
+void Solver_2020_4_2::solve(const QString& input) const
 {
   using namespace puzzle_2020_4;
   QList<Passport> passwords = puzzle_2020_4::readPassports(input);
@@ -159,6 +159,6 @@ PuzzleSolver Puzzle_2020_4::solver_2 = [](const QString& input)
   for (const Passport& password : passwords)
     if (isValid(password))
       ++nb_valid;
-  return QString::number(nb_valid);
-};
+  emit finished(QString::number(nb_valid));
+}
 

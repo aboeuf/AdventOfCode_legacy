@@ -1,31 +1,38 @@
 #ifndef SOLVERS_H
 #define SOLVERS_H
 
-#include <unordered_map>
-#include <functional>
+#include <QMap>
 #include <QString>
+#include <QObject>
 
-using PuzzleSolver = std::function<QString(const QString&)>;
-
-class Solver
+class Solver : public QObject
 {
-public:
-  Solver(const PuzzleSolver& solver_1, const PuzzleSolver& solver_2);
-  QString operator() (const QString& input, bool puzzle_1) const;
+  Q_OBJECT
 
-private:
-  PuzzleSolver m_solver_1;
-  PuzzleSolver m_solver_2;
+signals:
+  void finished(const QString& output) const;
+
+public:
+  virtual void solve(const QString& input) const = 0;
 };
 
-class Solvers
+class Solvers : public QObject
 {
+  Q_OBJECT
+
 public:
   Solvers();
-  QString operator () (const QString& input, int year, int day, bool puzzle_1) const;
+  ~Solvers();
+  void operator()(const QString& input, int year, int day, int puzzle) const;
+
+signals:
+  void finished(const QString& output) const;
+
+public slots:
+  void onSolved(const QString& output) const;
 
 private:
-  std::unordered_map<int, std::unordered_map<int, Solver>> m_solvers;
+  QMap<int, QMap<int, QMap<int, Solver*>>> m_solvers;
 };
 
 #endif // SOLVERS_H

@@ -35,6 +35,12 @@ public:
   MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
+signals:
+  void inputAquired(const QString& input);
+
+public slots:
+  void onSolved(const QString& output);
+
 private slots:
   void replyFinished(QNetworkReply* reply);
   void on_m_push_button_solve_clicked();
@@ -43,6 +49,9 @@ private slots:
   void on_m_spin_box_day_valueChanged(int);
   void on_m_push_button_input_clicked();
   void on_m_push_button_output_clicked();
+  void on_m_push_button_program_output_clicked();
+  void onInputRequired(const QString& type);
+  void onOutputRecieved(const QString& output);
 
 private:
   void solve();

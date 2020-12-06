@@ -11,6 +11,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QClipboard>
+#include <QInputDialog>
 #include <solvers.h>
 #include <jsonhelper.h>
 
@@ -182,6 +183,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   m_manager = new QNetworkAccessManager(this);
   connect(m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+  connect(&m_solvers, SIGNAL(finished(QString)), this, SLOT(onSolved(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -196,6 +198,17 @@ MainWindow::~MainWindow()
                 QString("Failed to save configuration to file \"%1\"").arg(m_dir_path + "config.json")).exec();
   delete m_manager;
   delete ui;
+}
+
+void MainWindow::onSolved(const QString& output)
+{
+  ui->m_push_button_solve->setText("SOLVE");
+  ui->m_push_button_solve->setEnabled(true);
+  ui->m_plain_text_edit_solver_output->clear();
+  ui->m_plain_text_edit_solver_output->appendPlainText(output);
+  ui->m_plain_text_edit_solver_output->moveCursor(QTextCursor::Start);
+  ui->m_plain_text_edit_solver_output->ensureCursorVisible();
+  on_m_push_button_output_clicked();
 }
 
 void MainWindow::replyFinished(QNetworkReply* reply)
@@ -223,6 +236,8 @@ void MainWindow::replyFinished(QNetworkReply* reply)
 
 void MainWindow::on_m_push_button_solve_clicked()
 {
+  ui->m_push_button_solve->setText("RUNNING");
+  ui->m_push_button_solve->setEnabled(false);
   if (!ui->m_check_box_use_last_input->isChecked()) {
     QNetworkRequest request;
     request.setUrl(QUrl(QString("https://adventofcode.com/%1/day/%2/input")
@@ -272,17 +287,40 @@ void MainWindow::on_m_push_button_input_clicked()
 
 void MainWindow::on_m_push_button_output_clicked()
 {
-  QGuiApplication::clipboard()->setText(ui->m_plain_text_edit_output->toPlainText());
+  QGuiApplication::clipboard()->setText(ui->m_plain_text_edit_solver_output->toPlainText());
+}
+
+void MainWindow::on_m_push_button_program_output_clicked()
+{
+  QGuiApplication::clipboard()->setText(ui->m_plain_text_edit_program_output->toPlainText());
+}
+
+void MainWindow::onInputRequired(const QString& type)
+{
+  bool ok = false;
+  QString input;
+  while (!ok) {
+    input = QInputDialog::getText(this,
+                                  tr("Advent Of Code"),
+                                  tr(QString("The program is asking for an input of type %1").arg(type).toStdString().c_str()),
+                                  QLineEdit::Normal,
+                                  QDir::home().dirName(),
+                                  &ok);
+  }
+  emit inputAquired(input);
+}
+
+void MainWindow::onOutputRecieved(const QString& output)
+{
+  ui->m_plain_text_edit_program_output->appendPlainText(output);
+  ui->m_plain_text_edit_program_output->moveCursor(QTextCursor::Start);
+  ui->m_plain_text_edit_program_output->ensureCursorVisible();
 }
 
 void MainWindow::solve()
 {
-  ui->m_plain_text_edit_output->clear();
-  ui->m_plain_text_edit_output->appendPlainText(m_solvers(ui->m_plain_text_edit_input->toPlainText(),
-                                                          ui->m_spin_box_year->value(),
-                                                          ui->m_spin_box_day->value(),
-                                                          ui->m_spin_box_puzzle->value() == 1));
-  ui->m_plain_text_edit_output->moveCursor(QTextCursor::Start);
-  ui->m_plain_text_edit_output->ensureCursorVisible();
-  on_m_push_button_output_clicked();
+  m_solvers(ui->m_plain_text_edit_input->toPlainText(),
+            ui->m_spin_box_year->value(),
+            ui->m_spin_box_day->value(),
+            ui->m_spin_box_puzzle->value());
 }

@@ -52,23 +52,23 @@ bool isValidToboganCorporate(const QString& input)
 
 }
 
-PuzzleSolver Puzzle_2020_2::solver_1 = [](const QString& input)
+void Solver_2020_2_1::solve(const QString& input) const
 {
   QStringList lines = common::splitLines(input);
   unsigned int nb_valids = 0u;
   for (const QString& line : lines)
     if (puzzle_2020_2::isValidSlendRental(line))
       ++nb_valids;
-  return QString::number(nb_valids);
-};
+  emit finished(QString::number(nb_valids));
+}
 
-PuzzleSolver Puzzle_2020_2::solver_2 = [](const QString& input)
+void Solver_2020_2_2::solve(const QString& input) const
 {
   QStringList lines = common::splitLines(input);
   unsigned int nb_valids = 0u;
   for (const QString& line : lines)
     if (puzzle_2020_2::isValidToboganCorporate(line))
       ++nb_valids;
-  return QString::number(nb_valids);
-};
+  emit finished(QString::number(nb_valids));
+}
 

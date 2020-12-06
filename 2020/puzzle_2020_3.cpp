@@ -38,21 +38,21 @@ unsigned int checkSlope(const Map& map, std::size_t right, std::size_t down)
 
 }
 
-PuzzleSolver Puzzle_2020_3::solver_1 = [](const QString& input)
+void Solver_2020_3_1::solve(const QString& input) const
 {
   using namespace puzzle_2020_3;
   const Map map = puzzle_2020_3::getMap(input);
-  return QString::number(checkSlope(map, 3, 1));
-};
+  emit finished(QString::number(checkSlope(map, 3, 1)));
+}
 
-PuzzleSolver Puzzle_2020_3::solver_2 = [](const QString& input)
+void Solver_2020_3_2::solve(const QString& input) const
 {
   using namespace puzzle_2020_3;
   const Map map = puzzle_2020_3::getMap(input);
-  return QString::number(checkSlope(map, 1, 1) *
-                         checkSlope(map, 3, 1) *
-                         checkSlope(map, 5, 1) *
-                         checkSlope(map, 7, 1) *
-                         checkSlope(map, 1, 2));
-};
+  emit finished(QString::number(checkSlope(map, 1, 1) *
+                                checkSlope(map, 3, 1) *
+                                checkSlope(map, 5, 1) *
+                                checkSlope(map, 7, 1) *
+                                checkSlope(map, 1, 2)));
+}
 

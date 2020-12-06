@@ -52,7 +52,7 @@ bool decodeBoardingPass(const QString& boarding_pass, int& row, int& column, int
 }
 }
 
-PuzzleSolver Puzzle_2020_5::solver_1 = [](const QString& input)
+void Solver_2020_5_1::solve(const QString& input) const
 {
   using namespace puzzle_2020_5;
   const QStringList boarding_passes = common::splitLines(input);
@@ -61,10 +61,10 @@ PuzzleSolver Puzzle_2020_5::solver_1 = [](const QString& input)
     if (decodeBoardingPass(boarding_pass, row, column, id) && id > max_id)
       max_id = id;
   }
-  return QString::number(max_id);
-};
+  emit finished(QString::number(max_id));
+}
 
-PuzzleSolver Puzzle_2020_5::solver_2 = [](const QString& input)
+void Solver_2020_5_2::solve(const QString& input) const
 {
   using namespace puzzle_2020_5;
   constexpr int nb_rows = 128;
@@ -87,11 +87,13 @@ PuzzleSolver Puzzle_2020_5::solver_2 = [](const QString& input)
     for (int column = 0; column < nb_columns; ++column) {
       if (!seats[row][column]) {
         int id = ID(row, column);
-        if (ids.find(id - 1) != ids.end() && ids.find(id + 1) != ids.end())
-          return QString::number(id);
+        if (ids.find(id - 1) != ids.end() && ids.find(id + 1) != ids.end()) {
+          emit finished(QString::number(id));
+          return;
+        }
       }
     }
   }
-  return QString("FAILURE");
-};
+  emit finished("FAILURE");
+}
 

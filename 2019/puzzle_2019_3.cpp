@@ -132,16 +132,18 @@ int getMinimumDelay(const Wire& wire_A, const Wire& wire_B)
 
 }
 
-PuzzleSolver Puzzle_2019_3::solver_1 = [](const QString& input) {
+void Solver_2019_3_1::solve(const QString& input) const
+{
   using namespace puzzle_2019_3;
   Wire wire_A, wire_B;
   getWires(input, wire_A, wire_B);
-  return QString::number(getNearestIntersection(wire_A, wire_B));
-};
+  emit finished(QString::number(getNearestIntersection(wire_A, wire_B)));
+}
 
-PuzzleSolver Puzzle_2019_3::solver_2 = [](const QString& input) {
+void Solver_2019_3_2::solve(const QString& input) const
+{
   using namespace puzzle_2019_3;
   Wire wire_A, wire_B;
   getWires(input, wire_A, wire_B);
-  return QString::number(getMinimumDelay(wire_A, wire_B));
-};
+  emit finished(QString::number(getMinimumDelay(wire_A, wire_B)));
+}

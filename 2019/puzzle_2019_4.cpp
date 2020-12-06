@@ -86,26 +86,32 @@ int nbValid(const std::vector<Rule>& rules, int min, int max)
 
 }
 
-PuzzleSolver Puzzle_2019_4::solver_1 = [](const QString& input) {
+void Solver_2019_4_1::solve(const QString& input) const
+{
   using namespace puzzle_2019_4;
   int min, max;
-  if (!getRange(input, min, max))
-    return QString{"FAILURE"};
+  if (!getRange(input, min, max)) {
+    emit finished("FAILURE");
+    return;
+  }
   const std::vector<Rule> rules = {
     adjacent_digits_rule(2),
     non_decreasing_rule
   };
-  return QString::number(nbValid(rules, min, max));
-};
+  emit finished(QString::number(nbValid(rules, min, max)));
+}
 
-PuzzleSolver Puzzle_2019_4::solver_2 = [](const QString& input) {
+void Solver_2019_4_2::solve(const QString& input) const
+{
   using namespace puzzle_2019_4;
   int min, max;
-  if (!getRange(input, min, max))
-    return QString{"FAILURE"};
+  if (!getRange(input, min, max)) {
+    emit finished("FAILURE");
+    return;
+  }
   const std::vector<Rule> rules = {
     adjacent_digits_rule_modified(2),
     non_decreasing_rule
   };
-  return QString::number(nbValid(rules, min, max));
-};
+  emit finished(QString::number(nbValid(rules, min, max)));
+}

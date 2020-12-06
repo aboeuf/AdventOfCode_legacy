@@ -231,17 +231,17 @@ private:
 
 }
 
-PuzzleSolver Puzzle_2020_6::solver_1 = [](const QString& input)
+void Solver_2020_6_1::solve(const QString& input) const
 {
   using namespace puzzle_2020_6;
   const AllGroups all_groups(input);
-  return QString::number(all_groups.anyoneYesSum());
-};
+  emit finished(QString::number(all_groups.anyoneYesSum()));
+}
 
-PuzzleSolver Puzzle_2020_6::solver_2 = [](const QString& input)
+void Solver_2020_6_2::solve(const QString& input) const
 {
   using namespace puzzle_2020_6;
   const AllGroups all_groups(input);
-  return QString::number(all_groups.everyoneYesSum());
-};
+  emit finished(QString::number(all_groups.everyoneYesSum()));
+}
 
