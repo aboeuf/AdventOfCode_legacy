@@ -48,7 +48,7 @@ private slots:
   void on_m_spin_box_year_valueChanged(int);
   void on_m_spin_box_day_valueChanged(int);
   void on_m_push_button_input_clicked();
-  void on_m_push_button_output_clicked();
+  void on_m_push_button_solver_output_clicked();
   void on_m_push_button_program_output_clicked();
   void onInputRequired(const QString& type);
   void onOutputRecieved(const QString& output);

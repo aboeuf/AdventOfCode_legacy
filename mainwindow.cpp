@@ -208,7 +208,7 @@ void MainWindow::onSolved(const QString& output)
   ui->m_plain_text_edit_solver_output->appendPlainText(output);
   ui->m_plain_text_edit_solver_output->moveCursor(QTextCursor::Start);
   ui->m_plain_text_edit_solver_output->ensureCursorVisible();
-  on_m_push_button_output_clicked();
+  on_m_push_button_solver_output_clicked();
 }
 
 void MainWindow::replyFinished(QNetworkReply* reply)
@@ -285,7 +285,7 @@ void MainWindow::on_m_push_button_input_clicked()
                 "Cannot edit input file with Sublime Text\nCommand: " + command).exec();
 }
 
-void MainWindow::on_m_push_button_output_clicked()
+void MainWindow::on_m_push_button_solver_output_clicked()
 {
   QGuiApplication::clipboard()->setText(ui->m_plain_text_edit_solver_output->toPlainText());
 }

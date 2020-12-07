@@ -12,6 +12,7 @@
 #include <2020/puzzle_2020_4.h>
 #include <2020/puzzle_2020_5.h>
 #include <2020/puzzle_2020_6.h>
+#include <2020/puzzle_2020_7.h>
 
 Solvers::Solvers()
 {
@@ -47,6 +48,9 @@ Solvers::Solvers()
 
   m_solvers[2020][6][1] = new Solver_2020_6_1();
   m_solvers[2020][6][2] = new Solver_2020_6_2();
+
+  m_solvers[2020][7][1] = new Solver_2020_7_1();
+  m_solvers[2020][7][2] = new Solver_2020_7_2();
 
   for (auto year : m_solvers.values())
     for (auto day : year.values())
