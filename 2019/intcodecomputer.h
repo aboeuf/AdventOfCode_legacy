@@ -6,6 +6,8 @@
 #include <vector>
 #include <array>
 
+class IncodeComputerUsingSolver;
+
 namespace event_2019 {
 
 class IntcodeComputer : public QObject
@@ -19,24 +21,25 @@ public:
     VALID,
     BAD_OPCODE,
     BAD_ADDRESS,
-    NO_INPUT
+    WAITING_FOR_INPUT
   };
 
-  IntcodeComputer(const std::vector<int>& initial_memory, const QList<int>& inputs = {});
+  IntcodeComputer(IncodeComputerUsingSolver* solver,
+                  const std::vector<int>& initial_memory,
+                  const QList<int>& inputs = {});
 
   void run();
   Status status() const;
+  void operator << (int input);
   const QList<int>& outputs() const;
   bool readAt(int address, int& value, bool imediate_mode = true);
   bool writeAt(int address, int value,  bool imediate_mode = false);
 
 signals:
-  void askForInput(const QString& type);
-  void sendOutput(const QString& output);
-  void stop();
+  void finished();
 
-//public slots:
-//  void onInputReceived(const QString& input);
+public slots:
+  void onInputReceived(int input);
 
 private:
   using Modes = std::array<bool, 3>;
@@ -53,8 +56,9 @@ private:
   int m_instruction_pointer{0};
   std::vector<int> m_memory;
   Status m_status = VALID;
-  QList<int> m_inputs;
-  QList<int> m_outputs;
+  QList<int> m_inputs{};
+  QList<int> m_outputs{};
+  IncodeComputerUsingSolver* m_solver;
 };
 
 }

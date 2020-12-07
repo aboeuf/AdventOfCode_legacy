@@ -1,7 +1,7 @@
 #include <2020/puzzle_2020_1.h>
 #include <common.h>
 
-void Solver_2020_1_1::solve(const QString& input) const
+void Solver_2020_1_1::solve(const QString& input)
 {
   QStringList lines = common::splitLines(input);
   for (int i = 0; i < lines.size(); ++i) {
@@ -17,7 +17,7 @@ void Solver_2020_1_1::solve(const QString& input) const
   emit finished("FAILURE");
 }
 
-void Solver_2020_1_2::solve(const QString& input) const
+void Solver_2020_1_2::solve(const QString& input)
 {
   QStringList lines = common::splitLines(input);
   for (int i = 0; i < lines.size(); ++i) {

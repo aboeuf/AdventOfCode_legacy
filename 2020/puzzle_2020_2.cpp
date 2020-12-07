@@ -47,12 +47,12 @@ bool isValidToboganCorporate(const QString& input)
   --i1;
   if (i0 < 0 || i1 < 0 || i0 >= password.size() || i1 >= password.size())
     return false;
-  return password[i0] == c ^ password[i1] == c;
+  return (password[i0] == c) ^ (password[i1] == c);
 }
 
 }
 
-void Solver_2020_2_1::solve(const QString& input) const
+void Solver_2020_2_1::solve(const QString& input)
 {
   QStringList lines = common::splitLines(input);
   unsigned int nb_valids = 0u;
@@ -62,7 +62,7 @@ void Solver_2020_2_1::solve(const QString& input) const
   emit finished(QString::number(nb_valids));
 }
 
-void Solver_2020_2_2::solve(const QString& input) const
+void Solver_2020_2_2::solve(const QString& input)
 {
   QStringList lines = common::splitLines(input);
   unsigned int nb_valids = 0u;

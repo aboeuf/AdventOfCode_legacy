@@ -183,7 +183,6 @@ MainWindow::MainWindow(QWidget *parent)
 
   m_manager = new QNetworkAccessManager(this);
   connect(m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
-  connect(&m_solvers, SIGNAL(finished(QString)), this, SLOT(onSolved(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -202,6 +201,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::onSolved(const QString& output)
 {
+  disconnect(m_running_solver, SIGNAL(askInput(QString)), this, SLOT(onInputRequired(QString)));
+  disconnect(m_running_solver, SIGNAL(output(QString)), this, SLOT(onOutputReceived(QString)));
+  disconnect(m_running_solver, SIGNAL(finished(QString)), this, SLOT(onSolved(QString)));
+  disconnect(this, SIGNAL(inputAcquired(QString)), m_running_solver, SLOT(onInputReceived(QString)));
+  m_running_solver = nullptr;
   ui->m_push_button_solve->setText("SOLVE");
   ui->m_push_button_solve->setEnabled(true);
   ui->m_plain_text_edit_solver_output->clear();
@@ -231,21 +235,27 @@ void MainWindow::replyFinished(QNetworkReply* reply)
   }
   reply->deleteLater();
   solve();
-
 }
 
 void MainWindow::on_m_push_button_solve_clicked()
 {
+  if (m_running_solver)
+    return;
+  ui->m_plain_text_edit_input->clear();
+  ui->m_plain_text_edit_solver_output->clear();
+  ui->m_plain_text_edit_program_output->clear();
+  m_running_solver = m_solvers(ui->m_spin_box_year->value(),
+                               ui->m_spin_box_day->value(),
+                               ui->m_spin_box_puzzle->value());
+  if (!m_running_solver) {
+    ui->m_plain_text_edit_input->appendPlainText("Not implemented");
+    return;
+  }
   ui->m_push_button_solve->setText("RUNNING");
   ui->m_push_button_solve->setEnabled(false);
-  if (!ui->m_check_box_use_last_input->isChecked()) {
-    QNetworkRequest request;
-    request.setUrl(QUrl(QString("https://adventofcode.com/%1/day/%2/input")
-                        .arg(ui->m_spin_box_year->value())
-                        .arg(ui->m_spin_box_day->value())));
-    m_config.setCookies(request);
-    m_manager->get(request);
-  } else {
+  if (!ui->m_check_box_use_last_input->isChecked())
+    downloadPuzzleInput();
+  else {
     QFile file(m_dir_path + "last_input.txt");
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
       ui->m_plain_text_edit_input->clear();
@@ -254,10 +264,8 @@ void MainWindow::on_m_push_button_solve_clicked()
       ui->m_plain_text_edit_input->ensureCursorVisible();
       file.close();
       solve();
-    } else {
-      ui->m_check_box_use_last_input->setChecked(false);
-      on_m_push_button_solve_clicked();
-    }
+    } else
+      downloadPuzzleInput();
   }
 }
 
@@ -295,22 +303,22 @@ void MainWindow::on_m_push_button_program_output_clicked()
   QGuiApplication::clipboard()->setText(ui->m_plain_text_edit_program_output->toPlainText());
 }
 
-void MainWindow::onInputRequired(const QString& type)
+void MainWindow::onInputRequired(const QString& invite)
 {
   bool ok = false;
   QString input;
   while (!ok) {
     input = QInputDialog::getText(this,
                                   tr("Advent Of Code"),
-                                  tr(QString("The program is asking for an input of type %1").arg(type).toStdString().c_str()),
+                                  tr(invite.toStdString().c_str()),
                                   QLineEdit::Normal,
-                                  QDir::home().dirName(),
+                                  QString{},
                                   &ok);
   }
-  emit inputAquired(input);
+  emit inputAcquired(input);
 }
 
-void MainWindow::onOutputRecieved(const QString& output)
+void MainWindow::onOutputReceived(const QString& output)
 {
   ui->m_plain_text_edit_program_output->appendPlainText(output);
   ui->m_plain_text_edit_program_output->moveCursor(QTextCursor::Start);
@@ -319,8 +327,23 @@ void MainWindow::onOutputRecieved(const QString& output)
 
 void MainWindow::solve()
 {
-  m_solvers(ui->m_plain_text_edit_input->toPlainText(),
-            ui->m_spin_box_year->value(),
-            ui->m_spin_box_day->value(),
-            ui->m_spin_box_puzzle->value());
+  if (m_running_solver) {
+    connect(m_running_solver, SIGNAL(askInput(QString)), this, SLOT(onInputRequired(QString)));
+    connect(m_running_solver, SIGNAL(output(QString)), this, SLOT(onOutputReceived(QString)));
+    connect(m_running_solver, SIGNAL(finished(QString)), this, SLOT(onSolved(QString)));
+    connect(this, SIGNAL(inputAcquired(QString)), m_running_solver, SLOT(onInputReceived(QString)));
+    m_running_solver->solve(ui->m_plain_text_edit_input->toPlainText());
+  }
+  else
+    onSolved("Error: m_running_solver is nullptr");
+}
+
+void MainWindow::downloadPuzzleInput()
+{
+  QNetworkRequest request;
+  request.setUrl(QUrl(QString("https://adventofcode.com/%1/day/%2/input")
+                      .arg(ui->m_spin_box_year->value())
+                      .arg(ui->m_spin_box_day->value())));
+  m_config.setCookies(request);
+  m_manager->get(request);
 }

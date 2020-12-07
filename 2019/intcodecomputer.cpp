@@ -1,12 +1,17 @@
 #include "intcodecomputer.h"
+#include <solvers.h>
 
 namespace event_2019 {
 
-IntcodeComputer::IntcodeComputer(const std::vector<int>& initial_memory,
+IntcodeComputer::IntcodeComputer(IncodeComputerUsingSolver* solver, const std::vector<int>& initial_memory,
                                  const QList<int>& inputs) :
   m_memory(initial_memory),
-  m_inputs{inputs} {}
-
+  m_inputs{inputs},
+  m_solver{solver}
+{
+  connect(m_solver, SIGNAL(integerInputReceived(int)), this, SLOT(onInputReceived(int)));
+  connect(this, SIGNAL(finished()), m_solver, SLOT(onComputerStopped()));
+}
 
 void IntcodeComputer::run()
 {
@@ -33,10 +38,10 @@ void IntcodeComputer::run()
         output(modes);
         break;
       case 5:
-        jump_if_false(modes);
+        jump_if_true(modes);
         break;
       case 6:
-        jump_if_true(modes);
+        jump_if_false(modes);
         break;
       case 7:
         less_than(modes);
@@ -46,15 +51,13 @@ void IntcodeComputer::run()
         break;
       case 99:
         m_status = HALT;
-        emit stop();
-        return;
+        break;
       default:
         m_status = BAD_OPCODE;
-        emit stop();
-        return;
       }
     }
   }
+  emit finished();
 }
 
 IntcodeComputer::Status IntcodeComputer::status() const
@@ -62,7 +65,11 @@ IntcodeComputer::Status IntcodeComputer::status() const
   return m_status;
 }
 
-const QList<int> &IntcodeComputer::outputs() const
+void IntcodeComputer::operator << (int input) {
+  m_inputs << input;
+}
+
+const QList<int>& IntcodeComputer::outputs() const
 {
   return m_outputs;
 }
@@ -92,6 +99,13 @@ bool IntcodeComputer::writeAt(int address, int value, bool imediate_mode)
   return true;
 }
 
+void IntcodeComputer::onInputReceived(int input)
+{
+  m_inputs << input;
+  m_status = VALID;
+  run();
+}
+
 void IntcodeComputer::addition(Modes &modes) {
   int a, b, address;
   if (!readAt(m_instruction_pointer + 1, a, modes[0]))
@@ -119,7 +133,8 @@ void IntcodeComputer::multiplication(Modes &modes) {
 bool IntcodeComputer::input()
 {
   if (m_inputs.isEmpty()) {
-    emit(askForInput("int"));
+    m_status = WAITING_FOR_INPUT;
+    emit m_solver->askInput("Intcode computer is asking for an integer as input");
     return false;
   }
   int value = m_inputs.front();
@@ -136,7 +151,7 @@ void IntcodeComputer::output(Modes& modes)
   int value;
   if (readAt(m_instruction_pointer + 1, value, modes[0])) {
     m_outputs << value;
-    emit sendOutput(QString::number(value));
+    emit m_solver->output(QString::number(value));
   }
   m_instruction_pointer += 2;
 }

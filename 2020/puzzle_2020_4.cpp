@@ -140,7 +140,7 @@ bool isValid(const Passport& password) {
 
 }
 
-void Solver_2020_4_1::solve(const QString& input) const
+void Solver_2020_4_1::solve(const QString& input)
 {
   using namespace puzzle_2020_4;
   QList<Passport> passwords = puzzle_2020_4::readPassports(input);
@@ -151,7 +151,7 @@ void Solver_2020_4_1::solve(const QString& input) const
   emit finished(QString::number(nb_valid));
 }
 
-void Solver_2020_4_2::solve(const QString& input) const
+void Solver_2020_4_2::solve(const QString& input)
 {
   using namespace puzzle_2020_4;
   QList<Passport> passwords = puzzle_2020_4::readPassports(input);

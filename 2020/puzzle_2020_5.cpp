@@ -52,7 +52,7 @@ bool decodeBoardingPass(const QString& boarding_pass, int& row, int& column, int
 }
 }
 
-void Solver_2020_5_1::solve(const QString& input) const
+void Solver_2020_5_1::solve(const QString& input)
 {
   using namespace puzzle_2020_5;
   const QStringList boarding_passes = common::splitLines(input);
@@ -64,7 +64,7 @@ void Solver_2020_5_1::solve(const QString& input) const
   emit finished(QString::number(max_id));
 }
 
-void Solver_2020_5_2::solve(const QString& input) const
+void Solver_2020_5_2::solve(const QString& input)
 {
   using namespace puzzle_2020_5;
   constexpr int nb_rows = 128;

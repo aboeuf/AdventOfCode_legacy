@@ -119,14 +119,14 @@ struct AllBags
 
 }
 
-void Solver_2020_7_1::solve(const QString& input) const
+void Solver_2020_7_1::solve(const QString& input)
 {
   using namespace puzzle_2020_7;
   AllBags bags(input);
   emit finished(QString::number(bags.getNbAncestors("shiny_gold")));
 }
 
-void Solver_2020_7_2::solve(const QString& input) const
+void Solver_2020_7_2::solve(const QString& input)
 {
   using namespace puzzle_2020_7;
   using namespace puzzle_2020_7;

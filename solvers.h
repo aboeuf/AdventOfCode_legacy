@@ -4,32 +4,47 @@
 #include <QMap>
 #include <QString>
 #include <QObject>
+#include <2019/intcodecomputer.h>
 
 class Solver : public QObject
 {
   Q_OBJECT
 
 signals:
-  void finished(const QString& output) const;
+  void finished(const QString& output);
+  void askInput(const QString& invite);
+  void output(const QString& invite);
 
 public:
-  virtual void solve(const QString& input) const = 0;
+  virtual ~Solver() {}
+  virtual void solve(const QString& input) = 0;
+
+public slots:
+  virtual void onInputReceived(const QString&);
 };
 
-class Solvers : public QObject
+class IncodeComputerUsingSolver : public Solver
 {
   Q_OBJECT
 
+signals:
+  void integerInputReceived(int input);
+
+public slots:
+  void onInputReceived(const QString& input) override;
+  virtual void onComputerStopped() = 0;
+
+protected:
+  event_2019::IntcodeComputer* m_computer{nullptr};
+};
+
+class Solvers
+{
 public:
   Solvers();
   ~Solvers();
-  void operator()(const QString& input, int year, int day, int puzzle) const;
 
-signals:
-  void finished(const QString& output) const;
-
-public slots:
-  void onSolved(const QString& output) const;
+  Solver* operator()(int year, int day, int puzzle) const;
 
 private:
   QMap<int, QMap<int, QMap<int, Solver*>>> m_solvers;

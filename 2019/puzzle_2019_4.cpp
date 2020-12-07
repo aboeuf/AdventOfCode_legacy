@@ -86,7 +86,7 @@ int nbValid(const std::vector<Rule>& rules, int min, int max)
 
 }
 
-void Solver_2019_4_1::solve(const QString& input) const
+void Solver_2019_4_1::solve(const QString& input)
 {
   using namespace puzzle_2019_4;
   int min, max;
@@ -101,7 +101,7 @@ void Solver_2019_4_1::solve(const QString& input) const
   emit finished(QString::number(nbValid(rules, min, max)));
 }
 
-void Solver_2019_4_2::solve(const QString& input) const
+void Solver_2019_4_2::solve(const QString& input)
 {
   using namespace puzzle_2019_4;
   int min, max;

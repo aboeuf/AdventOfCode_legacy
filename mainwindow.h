@@ -36,7 +36,7 @@ public:
   ~MainWindow();
 
 signals:
-  void inputAquired(const QString& input);
+  void inputAcquired(const QString& input);
 
 public slots:
   void onSolved(const QString& output);
@@ -50,14 +50,17 @@ private slots:
   void on_m_push_button_input_clicked();
   void on_m_push_button_solver_output_clicked();
   void on_m_push_button_program_output_clicked();
-  void onInputRequired(const QString& type);
-  void onOutputRecieved(const QString& output);
+  void onInputRequired(const QString& invite);
+  void onOutputReceived(const QString& output);
 
 private:
   void solve();
+  void downloadPuzzleInput();
+
   Ui::MainWindow *ui;
   QNetworkAccessManager *m_manager;
   Solvers m_solvers;
+  Solver* m_running_solver{nullptr};
   Configuration m_config;
   QString m_dir_path;
 };

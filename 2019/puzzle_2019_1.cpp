@@ -1,7 +1,7 @@
 #include <2019/puzzle_2019_1.h>
 #include <common.h>
 
-void Solver_2019_1_1::solve(const QString& input) const
+void Solver_2019_1_1::solve(const QString& input)
 {
   QStringList lines = common::splitLines(input);
   int sum = 0;
@@ -11,7 +11,7 @@ void Solver_2019_1_1::solve(const QString& input) const
   emit finished(QString::number(sum));
 }
 
-void Solver_2019_1_2::solve(const QString& input) const
+void Solver_2019_1_2::solve(const QString& input)
 {
   QStringList lines = common::splitLines(input);
   int sum = 0;

@@ -1,38 +1,69 @@
 #include <2019/puzzle_2019_2.h>
-#include <2019/intcodecomputer.h>
 #include <common.h>
 
-void Solver_2019_2_1::solve(const QString& input) const
+void Solver_2019_2_1::solve(const QString& input)
 {
-  event_2019::IntcodeComputer computer(common::toIntValues(input));
-  computer.writeAt(1, 12);
-  computer.writeAt(2, 2);
-  computer.run();
+  delete m_computer;
+  m_computer = new event_2019::IntcodeComputer(this, common::toIntValues(input));
+  m_computer->writeAt(1, 12);
+  m_computer->writeAt(2, 2);
+  m_computer->run();
+}
+
+void Solver_2019_2_1::onComputerStopped()
+{
+  if (!m_computer) {
+    emit finished(QString{"Error: m_computer is nullptr"});
+    return;
+  }
   int result;
-  computer.readAt(0, result);
-  if (computer.status() == event_2019::IntcodeComputer::HALT)
+  m_computer->readAt(0, result);
+  if (m_computer->status() == event_2019::IntcodeComputer::HALT)
     emit finished(QString::number(result));
   else
     emit finished(QString{"FAILURE"});
+  delete m_computer;
 }
 
-void Solver_2019_2_2::solve(const QString& input) const
+void Solver_2019_2_2::solve(const QString& input)
 {
-  const auto program = common::toIntValues(input);
-  for (int noun = 0; noun < 100; ++noun) {
-    for (int verb = 0; verb < 100; ++verb) {
-      event_2019::IntcodeComputer computer(program);
-      computer.writeAt(1, noun);
-      computer.writeAt(2, verb);
-      computer.run();
-      int result;
-      computer.readAt(0, result);
-      if (computer.status() == event_2019::IntcodeComputer::HALT && result == 19690720) {
-        emit finished(QString::number(100 * noun + verb));
-        return;
-      }
+  m_noun = 0;
+  m_verb = 0;
+  m_program = common::toIntValues(input);
+  delete m_computer;
+  m_computer = new event_2019::IntcodeComputer(this, m_program);
+  m_computer->writeAt(1, m_noun);
+  m_computer->writeAt(2, m_verb);
+  m_computer->run();
+}
+
+void Solver_2019_2_2::onComputerStopped()
+{
+  if (!m_computer) {
+    emit finished(QString{"Error: m_computer is nullptr"});
+    return;
+  }
+  int result;
+  m_computer->readAt(0, result);
+  if (m_computer->status() == event_2019::IntcodeComputer::HALT && result == 19690720) {
+    delete m_computer;
+    emit finished(QString::number(100 * m_noun + m_verb));
+    return;
+  }
+  ++m_verb;
+  if (m_verb > 100) {
+    m_verb = 0;
+    ++m_noun;
+    if (m_noun > 100) {
+      delete m_computer;
+      emit finished(QString{"FAILURE"});
+      return;
     }
   }
-  emit finished(QString{"FAILURE"});
+  delete m_computer;
+  m_computer = new event_2019::IntcodeComputer(this, m_program);
+  m_computer->writeAt(1, m_noun);
+  m_computer->writeAt(2, m_verb);
+  m_computer->run();
 }
 

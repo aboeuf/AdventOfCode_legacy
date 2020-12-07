@@ -4,11 +4,11 @@
 class Solver_2020_6_1 : public Solver
 {
 public:
-  void solve(const QString& input) const override;
+  void solve(const QString& input);
 };
 
 class Solver_2020_6_2 : public Solver
 {
 public:
-  void solve(const QString& input) const override;
+  void solve(const QString& input);
 };

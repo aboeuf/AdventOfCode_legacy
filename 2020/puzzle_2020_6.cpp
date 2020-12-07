@@ -5,12 +5,12 @@
 namespace puzzle_2020_6
 {
 
-const QString default_questions_labels = "abcdefghijklmnopqrstuvwxyz";
+const QString questions_labels = "abcdefghijklmnopqrstuvwxyz";
 
 class DeclarationForm
 {
 public:
-  DeclarationForm(const QString& questions_labels = default_questions_labels)
+  DeclarationForm()
   {
     for (const QChar& label : questions_labels)
       m_q_and_a[label] = false;
@@ -75,12 +75,11 @@ private:
 class Group
 {
 public:
-  Group(const QString& questions_labels = default_questions_labels) :
-  m_questions_labels{questions_labels} {}
+  Group() = default;
 
   void operator << (const QString& form)
   {
-    m_forms << DeclarationForm(m_questions_labels);
+    m_forms << DeclarationForm();
     m_forms.back().submitPositiveAnswers(form);
   }
 
@@ -115,7 +114,7 @@ public:
   QString anyoneYes() const
   {
     QString result;
-    for (const QChar& label : m_questions_labels)
+    for (const QChar& label : questions_labels)
       if (anyoneYes(label))
         result.push_back(label);
     return result;
@@ -124,7 +123,7 @@ public:
   QString anyoneNo() const
   {
     QString result;
-    for (const QChar& label : m_questions_labels)
+    for (const QChar& label : questions_labels)
       if (anyoneNo(label))
         result.push_back(label);
     return result;
@@ -133,7 +132,7 @@ public:
   QString everyoneYes() const
   {
     QString result;
-    for (const QChar& label : m_questions_labels)
+    for (const QChar& label : questions_labels)
       if (everyoneYes(label))
         result.push_back(label);
     return result;
@@ -142,7 +141,7 @@ public:
   QString everyoneNo() const
   {
     QString result;
-    for (const QChar& label : m_questions_labels)
+    for (const QChar& label : questions_labels)
       if (everyoneNo(label))
         result.push_back(label);
     return result;
@@ -163,25 +162,22 @@ public:
   bool isEmpty() const { return m_forms.isEmpty(); }
 
 private:
-  QList<DeclarationForm> m_forms;
-  const QString& m_questions_labels;
+  QList<DeclarationForm> m_forms{};
 };
 
 class AllGroups
 {
 public:
-  AllGroups(const QString& input,
-            const QString& questions_labels = default_questions_labels) :
-    m_questions_labels{questions_labels}
+  AllGroups(const QString& input)
   {
     const QStringList lines = common::splitLines(input);
     if (lines.empty())
       return;
-    m_groups << Group(m_questions_labels);
+    m_groups << Group();
     for (const QString& line : lines) {
       if (line.isEmpty()) {
         if (!m_groups.back().isEmpty())
-         m_groups << Group(m_questions_labels);
+         m_groups << Group();
         continue;
       }
       m_groups.back() << line;
@@ -226,19 +222,18 @@ public:
 
 private:
   QList<Group> m_groups;
-  const QString& m_questions_labels;
 };
 
 }
 
-void Solver_2020_6_1::solve(const QString& input) const
+void Solver_2020_6_1::solve(const QString& input)
 {
   using namespace puzzle_2020_6;
   const AllGroups all_groups(input);
   emit finished(QString::number(all_groups.anyoneYesSum()));
 }
 
-void Solver_2020_6_2::solve(const QString& input) const
+void Solver_2020_6_2::solve(const QString& input)
 {
   using namespace puzzle_2020_6;
   const AllGroups all_groups(input);
