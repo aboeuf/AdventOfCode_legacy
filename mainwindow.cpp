@@ -201,11 +201,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::onSolved(const QString& output)
 {
-  disconnect(m_running_solver, SIGNAL(askInput(QString)), this, SLOT(onInputRequired(QString)));
-  disconnect(m_running_solver, SIGNAL(output(QString)), this, SLOT(onOutputReceived(QString)));
-  disconnect(m_running_solver, SIGNAL(finished(QString)), this, SLOT(onSolved(QString)));
-  disconnect(this, SIGNAL(inputAcquired(QString)), m_running_solver, SLOT(onInputReceived(QString)));
-  m_running_solver = nullptr;
+  if (m_running_solver) {
+    disconnect(m_running_solver, SIGNAL(askInput(QString)), this, SLOT(onInputRequired(QString)));
+    disconnect(m_running_solver, SIGNAL(output(QString)), this, SLOT(onOutputReceived(QString)));
+    disconnect(m_running_solver, SIGNAL(finished(QString)), this, SLOT(onSolved(QString)));
+    disconnect(this, SIGNAL(inputAcquired(QString)), m_running_solver, SLOT(onInputReceived(QString)));
+    m_running_solver = nullptr;
+  }
   ui->m_push_button_solve->setText("SOLVE");
   ui->m_push_button_solve->setEnabled(true);
   ui->m_plain_text_edit_solver_output->clear();
@@ -247,10 +249,6 @@ void MainWindow::on_m_push_button_solve_clicked()
   m_running_solver = m_solvers(ui->m_spin_box_year->value(),
                                ui->m_spin_box_day->value(),
                                ui->m_spin_box_puzzle->value());
-  if (!m_running_solver) {
-    ui->m_plain_text_edit_input->appendPlainText("Not implemented");
-    return;
-  }
   ui->m_push_button_solve->setText("RUNNING");
   ui->m_push_button_solve->setEnabled(false);
   if (!ui->m_check_box_use_last_input->isChecked())
@@ -327,6 +325,9 @@ void MainWindow::onOutputReceived(const QString& output)
 
 void MainWindow::solve()
 {
+  m_running_solver = m_solvers(ui->m_spin_box_year->value(),
+                               ui->m_spin_box_day->value(),
+                               ui->m_spin_box_puzzle->value());
   if (m_running_solver) {
     connect(m_running_solver, SIGNAL(askInput(QString)), this, SLOT(onInputRequired(QString)));
     connect(m_running_solver, SIGNAL(output(QString)), this, SLOT(onOutputReceived(QString)));
@@ -335,7 +336,7 @@ void MainWindow::solve()
     m_running_solver->solve(ui->m_plain_text_edit_input->toPlainText());
   }
   else
-    onSolved("Error: m_running_solver is nullptr");
+    onSolved("Not Implemented");
 }
 
 void MainWindow::downloadPuzzleInput()
