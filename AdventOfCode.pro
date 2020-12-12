@@ -22,6 +22,7 @@ SOURCES += \
     2019/puzzle_2019_3.cpp \
     2019/puzzle_2019_4.cpp \
     2019/puzzle_2019_5.cpp \
+    2019/puzzle_2019_6.cpp \
     2020/puzzle_2020_1.cpp \
     2020/puzzle_2020_10.cpp \
     2020/puzzle_2020_11.cpp \
@@ -46,6 +47,7 @@ HEADERS += \
     2019/puzzle_2019_3.h \
     2019/puzzle_2019_4.h \
     2019/puzzle_2019_5.h \
+    2019/puzzle_2019_6.h \
     2020/puzzle_2020_1.h \
     2020/puzzle_2020_10.h \
     2020/puzzle_2020_11.h \
