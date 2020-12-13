@@ -17,24 +17,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     2019/intcodecomputer.cpp \
-    2019/puzzle_2019_1.cpp \
-    2019/puzzle_2019_2.cpp \
-    2019/puzzle_2019_3.cpp \
-    2019/puzzle_2019_4.cpp \
-    2019/puzzle_2019_5.cpp \
-    2019/puzzle_2019_6.cpp \
-    2020/puzzle_2020_1.cpp \
+    2019/puzzle_2019_01.cpp \
+    2019/puzzle_2019_02.cpp \
+    2019/puzzle_2019_03.cpp \
+    2019/puzzle_2019_04.cpp \
+    2019/puzzle_2019_05.cpp \
+    2019/puzzle_2019_06.cpp \
+    2020/puzzle_2020_01.cpp \
+    2020/puzzle_2020_02.cpp \
+    2020/puzzle_2020_03.cpp \
+    2020/puzzle_2020_04.cpp \
+    2020/puzzle_2020_05.cpp \
+    2020/puzzle_2020_06.cpp \
+    2020/puzzle_2020_07.cpp \
+    2020/puzzle_2020_08.cpp \
+    2020/puzzle_2020_09.cpp \
     2020/puzzle_2020_10.cpp \
     2020/puzzle_2020_11.cpp \
     2020/puzzle_2020_12.cpp \
-    2020/puzzle_2020_2.cpp \
-    2020/puzzle_2020_3.cpp \
-    2020/puzzle_2020_4.cpp \
-    2020/puzzle_2020_5.cpp \
-    2020/puzzle_2020_6.cpp \
-    2020/puzzle_2020_7.cpp \
-    2020/puzzle_2020_8.cpp \
-    2020/puzzle_2020_9.cpp \
+    2020/puzzle_2020_13.cpp \
     common.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -42,24 +43,25 @@ SOURCES += \
 
 HEADERS += \
     2019/intcodecomputer.h \
-    2019/puzzle_2019_1.h \
-    2019/puzzle_2019_2.h \
-    2019/puzzle_2019_3.h \
-    2019/puzzle_2019_4.h \
-    2019/puzzle_2019_5.h \
-    2019/puzzle_2019_6.h \
-    2020/puzzle_2020_1.h \
+    2019/puzzle_2019_01.h \
+    2019/puzzle_2019_02.h \
+    2019/puzzle_2019_03.h \
+    2019/puzzle_2019_04.h \
+    2019/puzzle_2019_05.h \
+    2019/puzzle_2019_06.h \
+    2020/puzzle_2020_01.h \
+    2020/puzzle_2020_02.h \
+    2020/puzzle_2020_03.h \
+    2020/puzzle_2020_04.h \
+    2020/puzzle_2020_05.h \
+    2020/puzzle_2020_06.h \
+    2020/puzzle_2020_07.h \
+    2020/puzzle_2020_08.h \
+    2020/puzzle_2020_09.h \
     2020/puzzle_2020_10.h \
     2020/puzzle_2020_11.h \
     2020/puzzle_2020_12.h \
-    2020/puzzle_2020_2.h \
-    2020/puzzle_2020_3.h \
-    2020/puzzle_2020_4.h \
-    2020/puzzle_2020_5.h \
-    2020/puzzle_2020_6.h \
-    2020/puzzle_2020_7.h \
-    2020/puzzle_2020_8.h \
-    2020/puzzle_2020_9.h \
+    2020/puzzle_2020_13.h \
     common.h \
     jsonhelper.h \
     mainwindow.h \

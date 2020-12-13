@@ -136,7 +136,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <layout class="QVBoxLayout" name="verticalLayout_04">
         <item alignment="Qt::AlignLeft">
          <widget class="QPushButton" name="m_push_button_input">
           <property name="text">
@@ -154,7 +154,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QVBoxLayout" name="verticalLayout_03">
         <item alignment="Qt::AlignLeft">
          <widget class="QPushButton" name="m_push_button_program_output">
           <property name="text">
