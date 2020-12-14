@@ -21,6 +21,7 @@
 #include <2020/puzzle_2020_11.h>
 #include <2020/puzzle_2020_12.h>
 #include <2020/puzzle_2020_13.h>
+#include <2020/puzzle_2020_14.h>
 
 void Solver::onInputReceived(const QString&) {}
 
@@ -80,6 +81,8 @@ Solvers::Solvers()
   m_solvers[2020][12][2] = new Solver_2020_12_2();
   m_solvers[2020][13][1] = new Solver_2020_13_1();
   m_solvers[2020][13][2] = new Solver_2020_13_2();
+  m_solvers[2020][14][1] = new Solver_2020_14_1();
+  m_solvers[2020][14][2] = new Solver_2020_14_2();
 }
 
 Solvers::~Solvers()
