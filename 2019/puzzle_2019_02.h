@@ -19,7 +19,7 @@ public slots:
   void onComputerStopped() override;
 
 private:
-  std::vector<int> m_program{};
+  QVector<int> m_program{};
   int m_noun{0};
   int m_verb{0};
 };

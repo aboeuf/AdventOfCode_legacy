@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QMap>
-#include <vector>
+#include <QVector>
 #include <array>
 
 class IncodeComputerUsingSolver;
@@ -25,7 +25,7 @@ public:
   };
 
   IntcodeComputer(IncodeComputerUsingSolver* solver,
-                  const std::vector<int>& initial_memory,
+                  const QVector<int>& initial_memory,
                   const QList<int>& inputs = {});
 
   void run();
@@ -54,7 +54,7 @@ private:
   void equals(Modes& modes);
 
   int m_instruction_pointer{0};
-  std::vector<int> m_memory;
+  QVector<int> m_memory;
   Status m_status = VALID;
   QList<int> m_inputs{};
   QList<int> m_outputs{};

@@ -3,7 +3,8 @@
 
 namespace event_2019 {
 
-IntcodeComputer::IntcodeComputer(IncodeComputerUsingSolver* solver, const std::vector<int>& initial_memory,
+IntcodeComputer::IntcodeComputer(IncodeComputerUsingSolver* solver,
+                                 const QVector<int> &initial_memory,
                                  const QList<int>& inputs) :
   m_memory(initial_memory),
   m_inputs{inputs},

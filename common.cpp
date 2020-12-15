@@ -19,17 +19,33 @@ QStringList splitValues(const QString& input, const QChar& split_char)
   return res;
 }
 
-std::vector<int> toIntValues(const QString& input)
+QVector<int> toIntValues(const QString& input)
 {
   const auto string_values = splitValues(input);
-  std::vector<int> int_values;
+  QVector<int> int_values;
   int_values.reserve(string_values.size());
   bool conversion_ok;
   for (const QString& string_value : string_values) {
     if (!string_value.isEmpty()) {
       int int_value = string_value.toInt(&conversion_ok);
       if (conversion_ok)
-        int_values.push_back(int_value);
+        int_values << int_value;
+    }
+  }
+  return int_values;
+}
+
+QVector<uint> toUIntValues(const QString& input)
+{
+  const auto string_values = splitValues(input);
+  QVector<uint> int_values;
+  int_values.reserve(string_values.size());
+  bool conversion_ok;
+  for (const QString& string_value : string_values) {
+    if (!string_value.isEmpty()) {
+      uint int_value = string_value.toUInt(&conversion_ok);
+      if (conversion_ok)
+        int_values << int_value;
     }
   }
   return int_values;
