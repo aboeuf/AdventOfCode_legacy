@@ -31,6 +31,7 @@
 #include <2020/puzzle_2020_21.h>
 #include <2020/puzzle_2020_22.h>
 #include <2020/puzzle_2020_23.h>
+#include <2020/puzzle_2020_24.h>
 
 void Solver::onInputReceived(const QString&) {}
 
@@ -110,6 +111,8 @@ Solvers::Solvers()
   m_solvers[2020][22][2] = new Solver_2020_22_2();
   m_solvers[2020][23][1] = new Solver_2020_23_1();
   m_solvers[2020][23][2] = new Solver_2020_23_2();
+  m_solvers[2020][24][1] = new Solver_2020_24_1();
+  m_solvers[2020][24][2] = new Solver_2020_24_2();
 }
 
 Solvers::~Solvers()
