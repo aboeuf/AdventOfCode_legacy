@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Puzzle_2020_24_Display</class>
+ <widget class="QWidget" name="Puzzle_2020_24_Display">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>797</width>
+    <height>579</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Island Resort Lobby</string>
+  </property>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
