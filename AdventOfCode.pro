@@ -16,6 +16,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    2019/display/puzzle_2019_08/puzzle_2019_08_display.cpp \
+    2019/display/puzzle_2019_08/puzzle_2019_08_view.cpp \
     2019/intcodecomputer.cpp \
     2019/puzzle_2019_01.cpp \
     2019/puzzle_2019_02.cpp \
@@ -24,6 +26,7 @@ SOURCES += \
     2019/puzzle_2019_05.cpp \
     2019/puzzle_2019_06.cpp \
     2019/puzzle_2019_07.cpp \
+    2019/puzzle_2019_08.cpp \
     2020/display/puzzle_2020_24/puzzle_2020_24_display.cpp \
     2020/display/puzzle_2020_24/puzzle_2020_24_view.cpp \
     2020/puzzle_2020_01.cpp \
@@ -57,6 +60,8 @@ SOURCES += \
     solvers.cpp
 
 HEADERS += \
+    2019/display/puzzle_2019_08/puzzle_2019_08_display.h \
+    2019/display/puzzle_2019_08/puzzle_2019_08_view.h \
     2019/intcodecomputer.h \
     2019/puzzle_2019_01.h \
     2019/puzzle_2019_02.h \
@@ -65,6 +70,7 @@ HEADERS += \
     2019/puzzle_2019_05.h \
     2019/puzzle_2019_06.h \
     2019/puzzle_2019_07.h \
+    2019/puzzle_2019_08.h \
     2020/display/puzzle_2020_24/puzzle_2020_24_display.h \
     2020/display/puzzle_2020_24/puzzle_2020_24_view.h \
     2020/puzzle_2020_01.h \
@@ -98,6 +104,7 @@ HEADERS += \
     solvers.h
 
 FORMS += \
+    2019/display/puzzle_2019_08/puzzle_2019_08_display.ui \
     2020/display/puzzle_2020_24/puzzle_2020_24_display.ui \
     mainwindow.ui
 

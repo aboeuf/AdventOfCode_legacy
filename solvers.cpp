@@ -8,6 +8,7 @@
 #include <2019/puzzle_2019_05.h>
 #include <2019/puzzle_2019_06.h>
 #include <2019/puzzle_2019_07.h>
+#include <2019/puzzle_2019_08.h>
 
 #include <2020/puzzle_2020_01.h>
 #include <2020/puzzle_2020_02.h>
@@ -70,6 +71,8 @@ Solvers::Solvers()
   m_solvers[2019][6][2] = new Solver_2019_06_2();
   m_solvers[2019][7][1] = new Solver_2019_07_1();
   m_solvers[2019][7][2] = new Solver_2019_07_2();
+  m_solvers[2019][8][1] = new Solver_2019_08_1();
+  m_solvers[2019][8][2] = new Solver_2019_08_2();
 
   m_solvers[2020][1][1] = new Solver_2020_01_1();
   m_solvers[2020][1][2] = new Solver_2020_01_2();
