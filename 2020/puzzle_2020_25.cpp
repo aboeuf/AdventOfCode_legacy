@@ -58,9 +58,7 @@ void Solver_2020_25_1::solve(const QString& input)
     emit finished("Cannot read public keys");
     return;
   }
-  qDebug() << "Keys:" << public_keys;
   QPair<Int, Int> loop_sizes = findLoopsSizes(public_keys);
-  qDebug() << "Loops sizes:" << loop_sizes;
   Int encryption_key_from_card = transformSubject(public_keys.second, loop_sizes.first);
   Int encryption_key_from_door = transformSubject(public_keys.first, loop_sizes.second);
   if (encryption_key_from_card != encryption_key_from_door) {

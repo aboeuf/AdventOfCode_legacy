@@ -23,7 +23,9 @@ SOURCES += \
     2019/puzzle_2019_04.cpp \
     2019/puzzle_2019_05.cpp \
     2019/puzzle_2019_06.cpp \
+    2019/puzzle_2019_07.cpp \
     2020/display/puzzle_2020_24/puzzle_2020_24_display.cpp \
+    2020/display/puzzle_2020_24/puzzle_2020_24_view.cpp \
     2020/puzzle_2020_01.cpp \
     2020/puzzle_2020_02.cpp \
     2020/puzzle_2020_03.cpp \
@@ -62,7 +64,9 @@ HEADERS += \
     2019/puzzle_2019_04.h \
     2019/puzzle_2019_05.h \
     2019/puzzle_2019_06.h \
+    2019/puzzle_2019_07.h \
     2020/display/puzzle_2020_24/puzzle_2020_24_display.h \
+    2020/display/puzzle_2020_24/puzzle_2020_24_view.h \
     2020/puzzle_2020_01.h \
     2020/puzzle_2020_02.h \
     2020/puzzle_2020_03.h \

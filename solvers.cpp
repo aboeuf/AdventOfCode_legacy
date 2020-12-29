@@ -7,6 +7,7 @@
 #include <2019/puzzle_2019_04.h>
 #include <2019/puzzle_2019_05.h>
 #include <2019/puzzle_2019_06.h>
+#include <2019/puzzle_2019_07.h>
 
 #include <2020/puzzle_2020_01.h>
 #include <2020/puzzle_2020_02.h>
@@ -36,7 +37,9 @@
 
 void Solver::onInputReceived(const QString&) {}
 
-void IncodeComputerUsingSolver::onInputReceived(const QString& input)
+IntcodeComputerUsingSolver::~IntcodeComputerUsingSolver() { delete m_computer; }
+
+void IntcodeComputerUsingSolver::onInputReceived(const QString& input)
 {
   if (input.isEmpty()) {
     emit askInput("Intcode computer is asking for an integer input");
@@ -65,6 +68,8 @@ Solvers::Solvers()
   m_solvers[2019][5][2] = new Solver_2019_05_2();
   m_solvers[2019][6][1] = new Solver_2019_06_1();
   m_solvers[2019][6][2] = new Solver_2019_06_2();
+  m_solvers[2019][7][1] = new Solver_2019_07_1();
+  m_solvers[2019][7][2] = new Solver_2019_07_2();
 
   m_solvers[2020][1][1] = new Solver_2020_01_1();
   m_solvers[2020][1][2] = new Solver_2020_01_2();

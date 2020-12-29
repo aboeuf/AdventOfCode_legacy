@@ -13,7 +13,7 @@ class Solver : public QObject
 signals:
   void finished(const QString& output);
   void askInput(const QString& invite);
-  void output(const QString& invite);
+  void output(const QString& data);
 
 public:
   virtual ~Solver() {}
@@ -23,9 +23,12 @@ public slots:
   virtual void onInputReceived(const QString&);
 };
 
-class IncodeComputerUsingSolver : public Solver
+class IntcodeComputerUsingSolver : public Solver
 {
   Q_OBJECT
+
+public:
+  virtual ~IntcodeComputerUsingSolver();
 
 signals:
   void integerInputReceived(int input);

@@ -36,7 +36,6 @@ const auto directions = QMap<QString, Tile>{
 
 const auto default_direction = Tile{0, 0};
 
-
 Lobby::Lobby(const QString& input)
 {
   const QStringList lines = common::splitLines(input);
@@ -69,7 +68,6 @@ QString Lobby::toString() const
     s += QString("(%1, %2)\n").arg(t.m_x).arg(t.m_y);
   return s;
 }
-
 
 void Lobby::flipTile(const QString& coordinates)
 {
@@ -116,10 +114,10 @@ void Lobby::advanceDays(uint nb_days)
 void Solver_2020_24_1::solve(const QString& input)
 {
   using namespace puzzle_2020_24;
-  Lobby loby(input);
-  Puzzle_2020_24_Display* display = new Puzzle_2020_24_Display();
+  Lobby* lobby = new Lobby(input);
+  Puzzle_2020_24_Display* display = new Puzzle_2020_24_Display(lobby);
   display->show();
-  emit finished(QString::number(loby.m_tiles.size()));
+  emit finished(QString::number(lobby->m_tiles.size()));
 }
 
 void Solver_2020_24_2::solve(const QString& input)
