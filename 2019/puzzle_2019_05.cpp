@@ -22,6 +22,7 @@ void Solver_2019_05_1::onComputerStopped()
   else
     emit finished(QString::number(m_computer->outputs().back()));
   delete m_computer;
+  m_computer = nullptr;
 }
 
 void Solver_2019_05_2::solve(const QString& input)
@@ -42,4 +43,5 @@ void Solver_2019_05_2::onComputerStopped()
   else
     emit finished(QString::number(m_computer->outputs().back()));
   delete m_computer;
+  m_computer = nullptr;
 }

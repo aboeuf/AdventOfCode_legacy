@@ -23,6 +23,7 @@ void Solver_2019_02_1::onComputerStopped()
   else
     emit finished(QString{"FAILURE"});
   delete m_computer;
+  m_computer = nullptr;
 }
 
 void Solver_2019_02_2::solve(const QString& input)
@@ -47,6 +48,7 @@ void Solver_2019_02_2::onComputerStopped()
   m_computer->readAt(0, result);
   if (m_computer->status() == event_2019::IntcodeComputer::HALT && result == 19690720) {
     delete m_computer;
+    m_computer = nullptr;
     emit finished(QString::number(100 * m_noun + m_verb));
     return;
   }
@@ -56,6 +58,7 @@ void Solver_2019_02_2::onComputerStopped()
     ++m_noun;
     if (m_noun > 100) {
       delete m_computer;
+      m_computer = nullptr;
       emit finished(QString{"FAILURE"});
       return;
     }

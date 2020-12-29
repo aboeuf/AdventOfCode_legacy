@@ -3,22 +3,35 @@
 
 namespace event_2019 {
 
-IntcodeComputer::IntcodeComputer(IncodeComputerUsingSolver* solver,
+IntcodeComputer::IntcodeComputer(IntcodeComputerUsingSolver* solver,
                                  const QVector<int> &initial_memory,
                                  const QList<int>& inputs) :
   m_memory(initial_memory),
   m_inputs{inputs},
   m_solver{solver}
 {
-  connect(m_solver, SIGNAL(integerInputReceived(int)), this, SLOT(onInputReceived(int)));
-  connect(this, SIGNAL(finished()), m_solver, SLOT(onComputerStopped()));
+  if (m_solver) {
+    connect(m_solver, SIGNAL(integerInputReceived(int)), this, SLOT(onInputReceived(int)));
+    connect(this, SIGNAL(finished()), m_solver, SLOT(onComputerStopped()));
+  }
 }
 
-void IntcodeComputer::run()
+void IntcodeComputer::reset(const QVector<int>& initial_memory,
+                            const QList<int>& inputs)
+{
+  m_memory = initial_memory;
+  m_inputs = inputs;
+  m_status = VALID;
+  m_instruction_pointer = 0;
+  m_outputs.clear();
+}
+
+QList<int> IntcodeComputer::run()
 {
   int raw_code;
   while (m_status == VALID) {
     if (readAt(m_instruction_pointer, raw_code)) {
+
       QString raw_code_str = QString("%1").arg(raw_code, 5, 10, QChar('0'));
       int opcode = raw_code_str.mid(3, 2).toInt();
       Modes modes = {raw_code_str[2] != '0',
@@ -33,7 +46,7 @@ void IntcodeComputer::run()
         break;
       case 3:
         if (!input())
-          return;
+          return m_outputs;
         break;
       case 4:
         output(modes);
@@ -58,7 +71,9 @@ void IntcodeComputer::run()
       }
     }
   }
-  emit finished();
+  if (m_solver)
+    emit finished();
+  return m_outputs;
 }
 
 IntcodeComputer::Status IntcodeComputer::status() const
@@ -68,6 +83,12 @@ IntcodeComputer::Status IntcodeComputer::status() const
 
 void IntcodeComputer::operator << (int input) {
   m_inputs << input;
+}
+
+void IntcodeComputer::resetIO(int input) {
+  m_status = VALID;
+  m_inputs << input;
+  m_outputs.clear();
 }
 
 const QList<int>& IntcodeComputer::outputs() const
@@ -134,8 +155,9 @@ void IntcodeComputer::multiplication(Modes &modes) {
 bool IntcodeComputer::input()
 {
   if (m_inputs.isEmpty()) {
+    if (m_solver)
+      emit m_solver->askInput("Intcode computer is asking for an integer as input");
     m_status = WAITING_FOR_INPUT;
-    emit m_solver->askInput("Intcode computer is asking for an integer as input");
     return false;
   }
   int value = m_inputs.front();
@@ -152,7 +174,8 @@ void IntcodeComputer::output(Modes& modes)
   int value;
   if (readAt(m_instruction_pointer + 1, value, modes[0])) {
     m_outputs << value;
-    emit m_solver->output(QString::number(value));
+    if (m_solver)
+      emit m_solver->output(QString::number(value));
   }
   m_instruction_pointer += 2;
 }

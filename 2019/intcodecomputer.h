@@ -6,7 +6,7 @@
 #include <QVector>
 #include <array>
 
-class IncodeComputerUsingSolver;
+class IntcodeComputerUsingSolver;
 
 namespace event_2019 {
 
@@ -24,13 +24,16 @@ public:
     WAITING_FOR_INPUT
   };
 
-  IntcodeComputer(IncodeComputerUsingSolver* solver,
-                  const QVector<int>& initial_memory,
+  IntcodeComputer() = default;
+  IntcodeComputer(IntcodeComputerUsingSolver* solver,
+                  const QVector<int>& initial_memory = {},
                   const QList<int>& inputs = {});
 
-  void run();
+  void reset(const QVector<int>& initial_memory, const QList<int>& inputs = {});
+  QList<int> run();
   Status status() const;
   void operator << (int input);
+  void resetIO(int input);
   const QList<int>& outputs() const;
   bool readAt(int address, int& value, bool imediate_mode = true);
   bool writeAt(int address, int value,  bool imediate_mode = false);
@@ -54,11 +57,11 @@ private:
   void equals(Modes& modes);
 
   int m_instruction_pointer{0};
-  QVector<int> m_memory;
+  QVector<int> m_memory{};
   Status m_status = VALID;
   QList<int> m_inputs{};
   QList<int> m_outputs{};
-  IncodeComputerUsingSolver* m_solver;
+  IntcodeComputerUsingSolver* m_solver{nullptr};
 };
 
 }

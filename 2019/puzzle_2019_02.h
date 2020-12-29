@@ -1,7 +1,7 @@
 #pragma once
 #include <solvers.h>
 
-class Solver_2019_02_1 : public IncodeComputerUsingSolver
+class Solver_2019_02_1 : public IntcodeComputerUsingSolver
 {
 public:
   void solve(const QString& input) override;
@@ -10,7 +10,7 @@ public slots:
   void onComputerStopped() override;
 };
 
-class Solver_2019_02_2 : public IncodeComputerUsingSolver
+class Solver_2019_02_2 : public IntcodeComputerUsingSolver
 {
 public:
   void solve(const QString& input) override;
