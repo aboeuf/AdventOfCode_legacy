@@ -35,6 +35,23 @@ QVector<int> toIntValues(const QString& input)
   return int_values;
 }
 
+QVector<long long int> toLongLongIntValues(const QString& input)
+{
+  using Int = long long int;
+  const auto string_values = splitValues(input);
+  QVector<Int> int_values;
+  int_values.reserve(string_values.size());
+  bool conversion_ok;
+  for (const QString& string_value : string_values) {
+    if (!string_value.isEmpty()) {
+      Int int_value = string_value.toLongLong(&conversion_ok);
+      if (conversion_ok)
+        int_values << int_value;
+    }
+  }
+  return int_values;
+}
+
 QVector<uint> toUIntValues(const QString& input)
 {
   const auto string_values = splitValues(input);

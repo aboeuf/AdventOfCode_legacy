@@ -35,9 +35,6 @@ public:
   MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
-signals:
-  void inputAcquired(const QString& input);
-
 public slots:
   void onSolved(const QString& output);
 
@@ -50,7 +47,6 @@ private slots:
   void on_m_push_button_input_clicked();
   void on_m_push_button_solver_output_clicked();
   void on_m_push_button_program_output_clicked();
-  void onInputRequired(const QString& invite);
   void onOutputReceived(const QString& output);
 
 private:

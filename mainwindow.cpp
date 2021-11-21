@@ -202,10 +202,8 @@ MainWindow::~MainWindow()
 void MainWindow::onSolved(const QString& output)
 {
   if (m_running_solver) {
-    disconnect(m_running_solver, SIGNAL(askInput(QString)), this, SLOT(onInputRequired(QString)));
     disconnect(m_running_solver, SIGNAL(output(QString)), this, SLOT(onOutputReceived(QString)));
     disconnect(m_running_solver, SIGNAL(finished(QString)), this, SLOT(onSolved(QString)));
-    disconnect(this, SIGNAL(inputAcquired(QString)), m_running_solver, SLOT(onInputReceived(QString)));
     m_running_solver = nullptr;
   }
   ui->m_push_button_solve->setText("SOLVE");
@@ -301,21 +299,6 @@ void MainWindow::on_m_push_button_program_output_clicked()
   QGuiApplication::clipboard()->setText(ui->m_plain_text_edit_program_output->toPlainText());
 }
 
-void MainWindow::onInputRequired(const QString& invite)
-{
-  bool ok = false;
-  QString input;
-  while (!ok) {
-    input = QInputDialog::getText(this,
-                                  tr("Advent Of Code"),
-                                  tr(invite.toStdString().c_str()),
-                                  QLineEdit::Normal,
-                                  QString{},
-                                  &ok);
-  }
-  emit inputAcquired(input);
-}
-
 void MainWindow::onOutputReceived(const QString& output)
 {
   ui->m_plain_text_edit_program_output->appendPlainText(output);
@@ -329,10 +312,8 @@ void MainWindow::solve()
                                ui->m_spin_box_day->value(),
                                ui->m_spin_box_puzzle->value());
   if (m_running_solver) {
-    connect(m_running_solver, SIGNAL(askInput(QString)), this, SLOT(onInputRequired(QString)));
     connect(m_running_solver, SIGNAL(output(QString)), this, SLOT(onOutputReceived(QString)));
     connect(m_running_solver, SIGNAL(finished(QString)), this, SLOT(onSolved(QString)));
-    connect(this, SIGNAL(inputAcquired(QString)), m_running_solver, SLOT(onInputReceived(QString)));
     m_running_solver->solve(ui->m_plain_text_edit_input->toPlainText());
   }
   else

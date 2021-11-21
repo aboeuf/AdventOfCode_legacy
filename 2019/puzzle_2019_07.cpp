@@ -11,16 +11,16 @@ Amplifier::Amplifier(const Amplifier& other) : Amplifier{}
   m_program = other.m_program;
 }
 
-int Amplifier::run(int input, bool feedback_loop_mode)
+Int Amplifier::run(Int input, bool feedback_loop_mode)
 {
   if (feedback_loop_mode)
     m_computer.resetIO(input);
   else
     m_computer.reset(m_program, {m_phase_setting, input});
-  QList<int> outputs = m_computer.run();
-  if (outputs.size() < 1)
+  m_computer.run();
+  if (m_computer.outputs().size() < 1)
     return 0;
-  return outputs.front();
+  return m_computer.outputs().front();
 }
 
 const event_2019::IntcodeComputer& Amplifier::computer() const { return m_computer; }
@@ -28,23 +28,23 @@ const event_2019::IntcodeComputer& Amplifier::computer() const { return m_comput
 Amplifiers::Amplifiers(const QString& input)
 {
   const QStringList lines = common::splitLines(input);
-  QVector<int> program = lines.empty() ? QVector<int>{} : common::toIntValues(lines.front());
+  QVector<Int> program = lines.empty() ? QVector<Int>{} : common::toLongLongIntValues(lines.front());
   m_amps.resize(5);
-  for (int i = 0; i < 5; ++i)
+  for (Int i = 0; i < 5; ++i)
     m_amps[i].m_program = program;
 }
 
 uint Amplifiers::getMaxOutput(QString& max_settings)
 {
   uint max_output = 0;
-  QVector<int> phases_settings = {0, 1, 2, 3, 4};
+  QVector<Int> phases_settings = {0, 1, 2, 3, 4};
   do
   {
-    for (int i = 0; i < 5; ++i)
+    for (Int i = 0; i < 5; ++i)
       m_amps[i].m_phase_setting = phases_settings[i];
-    int output = 0;
-    QList<int> debug;
-    for (int i = 0; i < 5; ++i) {
+    Int output = 0;
+    QList<Int> debug;
+    for (Int i = 0; i < 5; ++i) {
       output = m_amps[i].run(output);
       debug << output;
     }
@@ -52,7 +52,7 @@ uint Amplifiers::getMaxOutput(QString& max_settings)
     if (out > max_output) {
       max_output = out;
       max_settings.clear();
-      for (int i = 0; i < 5; ++i)
+      for (Int i = 0; i < 5; ++i)
         max_settings += QString::number(phases_settings[i]);
     }
   } while (std::next_permutation(phases_settings.begin(), phases_settings.end()));
@@ -62,22 +62,22 @@ uint Amplifiers::getMaxOutput(QString& max_settings)
 uint Amplifiers::getMaxOutputWithFeedbackLoop(QString& max_settings)
 {
   uint max_output = 0;
-  QVector<int> phases_settings = {5, 6, 7, 8, 9};
+  QVector<Int> phases_settings = {5, 6, 7, 8, 9};
   do
   {
-    for (int i = 0; i < 5; ++i)
+    for (Int i = 0; i < 5; ++i)
       m_amps[i].m_phase_setting = phases_settings[i];
-    int output = 0;
-    for (int i = 0; i < 5; ++i)
+    Int output = 0;
+    for (Int i = 0; i < 5; ++i)
       output = m_amps[i].run(output);
     while (m_amps.back().computer().status() != event_2019::IntcodeComputer::HALT)
-      for (int i = 0; i < 5; ++i)
+      for (Int i = 0; i < 5; ++i)
         output = m_amps[i].run(output, true);
     uint out = output < 0 ? 0 : static_cast<uint>(output);
     if (out > max_output) {
       max_output = out;
       max_settings.clear();
-      for (int i = 0; i < 5; ++i)
+      for (Int i = 0; i < 5; ++i)
         max_settings += QString::number(phases_settings[i]);
     }
   } while (std::next_permutation(phases_settings.begin(), phases_settings.end()));

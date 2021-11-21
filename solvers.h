@@ -12,33 +12,11 @@ class Solver : public QObject
 
 signals:
   void finished(const QString& output);
-  void askInput(const QString& invite);
   void output(const QString& data);
 
 public:
   virtual ~Solver() {}
   virtual void solve(const QString& input) = 0;
-
-public slots:
-  virtual void onInputReceived(const QString&);
-};
-
-class IntcodeComputerUsingSolver : public Solver
-{
-  Q_OBJECT
-
-public:
-  virtual ~IntcodeComputerUsingSolver();
-
-signals:
-  void integerInputReceived(int input);
-
-public slots:
-  void onInputReceived(const QString& input) override;
-  virtual void onComputerStopped() = 0;
-
-protected:
-  event_2019::IntcodeComputer* m_computer{nullptr};
 };
 
 class Solvers

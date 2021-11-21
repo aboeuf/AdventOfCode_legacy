@@ -6,15 +6,15 @@
 #include <QVector>
 #include <array>
 
-class IntcodeComputerUsingSolver;
-
 namespace event_2019 {
+
+using Int = long long int;
 
 class IntcodeComputer : public QObject
 {
   Q_OBJECT
 
-public:
+public:  
   enum Status
   {
     HALT,
@@ -24,28 +24,27 @@ public:
     WAITING_FOR_INPUT
   };
 
-  IntcodeComputer() = default;
-  IntcodeComputer(IntcodeComputerUsingSolver* solver,
-                  const QVector<int>& initial_memory = {},
-                  const QList<int>& inputs = {});
+  enum ParameterMode
+  {
+    POSITION,
+    IMEDIATE,
+    RELATIVE
+  };
 
-  void reset(const QVector<int>& initial_memory, const QList<int>& inputs = {});
-  QList<int> run();
+  IntcodeComputer(const QVector<Int>& initial_memory = {},
+                  const QList<Int>& inputs = {});
+
+  void reset(const QVector<Int>& initial_memory, const QList<Int>& inputs = {});
+  void run();
   Status status() const;
-  void operator << (int input);
-  void resetIO(int input);
-  const QList<int>& outputs() const;
-  bool readAt(int address, int& value, bool imediate_mode = true);
-  bool writeAt(int address, int value,  bool imediate_mode = false);
-
-signals:
-  void finished();
-
-public slots:
-  void onInputReceived(int input);
+  void operator << (Int input);
+  void resetIO(Int input);
+  const QList<Int>& outputs() const;
+  bool readAt(Int address, Int& value, ParameterMode mode = IMEDIATE);
+  bool writeAt(Int address, Int value,  ParameterMode mode = POSITION);
 
 private:
-  using Modes = std::array<bool, 3>;
+  using Modes = std::array<ParameterMode, 3>;
 
   void addition(Modes& modes);
   void multiplication(Modes& modes);
@@ -55,13 +54,14 @@ private:
   void jump_if_false(Modes& modes);
   void less_than(Modes& modes);
   void equals(Modes& modes);
+  void relative_base_offset(Modes& modes);
 
-  int m_instruction_pointer{0};
-  QVector<int> m_memory{};
+  Int m_instruction_pointer{0};
+  QMap<Int, Int> m_memory{};
   Status m_status = VALID;
-  QList<int> m_inputs{};
-  QList<int> m_outputs{};
-  IntcodeComputerUsingSolver* m_solver{nullptr};
+  QList<Int> m_inputs{};
+  QList<Int> m_outputs{};
+  Int m_relative_base{0};
 };
 
 }

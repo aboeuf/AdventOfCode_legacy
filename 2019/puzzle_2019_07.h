@@ -5,16 +5,18 @@
 namespace puzzle_2019_07
 {
 
+using Int = long long int;
+
 class Amplifier
 {
 public:
   Amplifier() = default;
   Amplifier(const Amplifier& other);
 
-  int m_phase_setting{0};
-  QVector<int> m_program{};
+  Int m_phase_setting{0};
+  QVector<Int> m_program{};
 
-  int run(int input, bool feedback_loop_mode = false);
+  Int run(Int input, bool feedback_loop_mode = false);
   const event_2019::IntcodeComputer& computer() const;
 
 private:
