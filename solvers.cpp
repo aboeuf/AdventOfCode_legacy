@@ -1,6 +1,8 @@
 #include <solvers.h>
 #include <mainwindow.h>
 
+#include <2018/puzzle_2018_01.h>
+
 #include <2019/puzzle_2019_01.h>
 #include <2019/puzzle_2019_02.h>
 #include <2019/puzzle_2019_03.h>
@@ -39,6 +41,9 @@
 
 Solvers::Solvers()
 {
+  m_solvers[2018][1][1] = new Solver_2018_01_1();
+  m_solvers[2018][1][2] = new Solver_2018_01_2();
+
   m_solvers[2019][1][1] = new Solver_2019_01_1();
   m_solvers[2019][1][2] = new Solver_2019_01_2();
   m_solvers[2019][2][1] = new Solver_2019_02_1();

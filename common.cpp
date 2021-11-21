@@ -19,9 +19,9 @@ QStringList splitValues(const QString& input, const QChar& split_char)
   return res;
 }
 
-QVector<int> toIntValues(const QString& input)
+QVector<int> toIntValues(const QString& input, const QChar& split_char)
 {
-  const auto string_values = splitValues(input);
+  const auto string_values = splitValues(input, split_char);
   QVector<int> int_values;
   int_values.reserve(string_values.size());
   bool conversion_ok;
@@ -35,10 +35,10 @@ QVector<int> toIntValues(const QString& input)
   return int_values;
 }
 
-QVector<long long int> toLongLongIntValues(const QString& input)
+QVector<long long int> toLongLongIntValues(const QString& input, const QChar& split_char)
 {
   using Int = long long int;
-  const auto string_values = splitValues(input);
+  const auto string_values = splitValues(input, split_char);
   QVector<Int> int_values;
   int_values.reserve(string_values.size());
   bool conversion_ok;
@@ -52,9 +52,9 @@ QVector<long long int> toLongLongIntValues(const QString& input)
   return int_values;
 }
 
-QVector<uint> toUIntValues(const QString& input)
+QVector<uint> toUIntValues(const QString& input, const QChar& split_char)
 {
-  const auto string_values = splitValues(input);
+  const auto string_values = splitValues(input, split_char);
   QVector<uint> int_values;
   int_values.reserve(string_values.size());
   bool conversion_ok;

@@ -219,7 +219,6 @@ void MainWindow::replyFinished(QNetworkReply* reply)
 {
   QString received(reply->readAll());
 
-
   ui->m_plain_text_edit_input->clear();
   while (!received.isEmpty() && received.back() == '\n')
     received.chop(1);
