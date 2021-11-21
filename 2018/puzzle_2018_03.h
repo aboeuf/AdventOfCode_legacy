@@ -1,6 +1,5 @@
 #pragma once
 #include <solvers.h>
-#include <common.h>
 
 class Solver_2018_03_1 : public Solver
 {

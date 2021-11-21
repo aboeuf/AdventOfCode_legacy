@@ -1,7 +1,7 @@
 #include <2018/puzzle_2018_03.h>
 #include <common.h>
 #include <QRegExp>
-#include <map>
+#include <unordered_map>
 #include <set>
 
 namespace {
@@ -17,17 +17,6 @@ public:
     if (m_valid)
       for (auto i = 0; i < 5; ++i)
         m_values[i] = rx.cap(i + 1).toUInt();
-  }
-
-  QString toString() const
-  {
-    return QString{"[%1, %2, %3, %4, %5, %6]"}
-    .arg(m_valid ? 'T' : 'F')
-    .arg(id())
-    .arg(x())
-    .arg(y())
-    .arg(width())
-    .arg(height());
   }
 
   bool valid() const { return m_valid; }
@@ -104,7 +93,7 @@ private:
     std::set<uint> m_claims{};
   };
 
-  std::map<uint, Claim> m_claims;
+  std::unordered_map<uint, Claim> m_claims;
   QString m_invalidInput{""};
   uint m_xmax{0u};
   uint m_ymax{0u};

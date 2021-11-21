@@ -2,6 +2,7 @@
 
 #include <QStringList>
 #include <QVector>
+#include <iso646.h>
 
 namespace common {
 
