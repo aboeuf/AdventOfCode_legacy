@@ -45,8 +45,6 @@ struct Distance
   uint m_count{0u};
 };
 
-
-
 }
 
 void Solver_2018_02_1::solve(const QString& input)
