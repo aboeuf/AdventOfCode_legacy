@@ -6,6 +6,7 @@
 #include <2018/puzzle_2018_03.h>
 #include <2018/puzzle_2018_04.h>
 #include <2018/puzzle_2018_05.h>
+#include <2018/puzzle_2018_06.h>
 
 #include <2019/puzzle_2019_01.h>
 #include <2019/puzzle_2019_02.h>
@@ -55,6 +56,8 @@ Solvers::Solvers()
   m_solvers[2018][4][2] = new Solver_2018_04_2();
   m_solvers[2018][5][1] = new Solver_2018_05_1();
   m_solvers[2018][5][2] = new Solver_2018_05_2();
+  m_solvers[2018][6][1] = new Solver_2018_06_1();
+  m_solvers[2018][6][2] = new Solver_2018_06_2();
 
   m_solvers[2019][1][1] = new Solver_2019_01_1();
   m_solvers[2019][1][2] = new Solver_2019_01_2();
