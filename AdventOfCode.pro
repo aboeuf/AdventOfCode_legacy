@@ -20,6 +20,7 @@ SOURCES += \
     2018/puzzle_2018_02.cpp \
     2018/puzzle_2018_03.cpp \
     2018/puzzle_2018_04.cpp \
+    2018/puzzle_2018_05.cpp \
     2019/display/puzzle_2019_08/puzzle_2019_08_display.cpp \
     2019/display/puzzle_2019_08/puzzle_2019_08_view.cpp \
     2019/intcodecomputer.cpp \
@@ -69,6 +70,7 @@ HEADERS += \
     2018/puzzle_2018_02.h \
     2018/puzzle_2018_03.h \
     2018/puzzle_2018_04.h \
+    2018/puzzle_2018_05.h \
     2019/display/puzzle_2019_08/puzzle_2019_08_display.h \
     2019/display/puzzle_2019_08/puzzle_2019_08_view.h \
     2019/intcodecomputer.h \
