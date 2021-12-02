@@ -27,10 +27,10 @@
       <item>
        <widget class="QSpinBox" name="m_spin_box_year">
         <property name="minimum">
-         <number>2017</number>
+         <number>2015</number>
         </property>
         <property name="maximum">
-         <number>2020</number>
+         <number>2021</number>
         </property>
        </widget>
       </item>
