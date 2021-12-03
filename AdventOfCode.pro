@@ -66,6 +66,7 @@ SOURCES += \
     2020/puzzle_2020_25.cpp \
     2021/puzzle_2021_01.cpp \
     2021/puzzle_2021_02.cpp \
+    2021/puzzle_2021_03.cpp \
     common.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -122,6 +123,7 @@ HEADERS += \
     2020/puzzle_2020_25.h \
     2021/puzzle_2021_01.h \
     2021/puzzle_2021_02.h \
+    2021/puzzle_2021_03.h \
     common.h \
     jsonhelper.h \
     mainwindow.h \
