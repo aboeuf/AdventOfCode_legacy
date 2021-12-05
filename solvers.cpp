@@ -49,6 +49,7 @@
 #include <2021/puzzle_2021_02.h>
 #include <2021/puzzle_2021_03.h>
 #include <2021/puzzle_2021_04.h>
+#include <2021/puzzle_2021_05.h>
 
 Solvers::Solvers()
 {
@@ -145,6 +146,8 @@ Solvers::Solvers()
   m_solvers[2021][3][2] = new Solver_2021_03_2();
   m_solvers[2021][4][1] = new Solver_2021_04_1();
   m_solvers[2021][4][2] = new Solver_2021_04_2();
+  m_solvers[2021][5][1] = new Solver_2021_05_1();
+  m_solvers[2021][5][2] = new Solver_2021_05_2();
 }
 
 Solvers::~Solvers()
