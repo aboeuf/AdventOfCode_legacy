@@ -1,55 +1,10 @@
 #include <solvers.h>
 #include <mainwindow.h>
 
-#include <2018/puzzle_2018_01.h>
-#include <2018/puzzle_2018_02.h>
-#include <2018/puzzle_2018_03.h>
-#include <2018/puzzle_2018_04.h>
-#include <2018/puzzle_2018_05.h>
-#include <2018/puzzle_2018_06.h>
-#include <2018/puzzle_2018_07.h>
-
-#include <2019/puzzle_2019_01.h>
-#include <2019/puzzle_2019_02.h>
-#include <2019/puzzle_2019_03.h>
-#include <2019/puzzle_2019_04.h>
-#include <2019/puzzle_2019_05.h>
-#include <2019/puzzle_2019_06.h>
-#include <2019/puzzle_2019_07.h>
-#include <2019/puzzle_2019_08.h>
-#include <2019/puzzle_2019_09.h>
-
-#include <2020/puzzle_2020_01.h>
-#include <2020/puzzle_2020_02.h>
-#include <2020/puzzle_2020_03.h>
-#include <2020/puzzle_2020_04.h>
-#include <2020/puzzle_2020_05.h>
-#include <2020/puzzle_2020_06.h>
-#include <2020/puzzle_2020_07.h>
-#include <2020/puzzle_2020_08.h>
-#include <2020/puzzle_2020_09.h>
-#include <2020/puzzle_2020_10.h>
-#include <2020/puzzle_2020_11.h>
-#include <2020/puzzle_2020_12.h>
-#include <2020/puzzle_2020_13.h>
-#include <2020/puzzle_2020_14.h>
-#include <2020/puzzle_2020_15.h>
-#include <2020/puzzle_2020_16.h>
-#include <2020/puzzle_2020_17.h>
-#include <2020/puzzle_2020_18.h>
-#include <2020/puzzle_2020_19.h>
-#include <2020/puzzle_2020_20.h>
-#include <2020/puzzle_2020_21.h>
-#include <2020/puzzle_2020_22.h>
-#include <2020/puzzle_2020_23.h>
-#include <2020/puzzle_2020_24.h>
-#include <2020/puzzle_2020_25.h>
-
-#include <2021/puzzle_2021_01.h>
-#include <2021/puzzle_2021_02.h>
-#include <2021/puzzle_2021_03.h>
-#include <2021/puzzle_2021_04.h>
-#include <2021/puzzle_2021_05.h>
+#include <2018/event_2018.h>
+#include <2019/event_2019.h>
+#include <2020/event_2020.h>
+#include <2021/event_2021.h>
 
 Solvers::Solvers()
 {
@@ -148,6 +103,8 @@ Solvers::Solvers()
   m_solvers[2021][4][2] = new Solver_2021_04_2();
   m_solvers[2021][5][1] = new Solver_2021_05_1();
   m_solvers[2021][5][2] = new Solver_2021_05_2();
+  m_solvers[2021][6][1] = new Solver_2021_06_1();
+  m_solvers[2021][6][2] = new Solver_2021_06_2();
 }
 
 Solvers::~Solvers()

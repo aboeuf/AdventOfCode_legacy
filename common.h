@@ -10,6 +10,7 @@ QStringList splitLines(const QString& input);
 QStringList splitValues(const QString& input, const QChar& split_char = ',');
 QVector<int> toIntValues(const QString& input, const QChar& split_char = ',');
 QVector<long long int> toLongLongIntValues(const QString& input, const QChar& split_char = ',');
+QVector<unsigned long long int> toULongLongIntValues(const QString& input, const QChar& split_char = ',');
 QVector<uint> toUIntValues(const QString& input, const QChar &split_char = ',');
 
 }
