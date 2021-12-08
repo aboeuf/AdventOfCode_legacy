@@ -5,3 +5,4 @@
 #include <2021/puzzle_2021_05.h>
 #include <2021/puzzle_2021_06.h>
 #include <2021/puzzle_2021_07.h>
+#include <2021/puzzle_2021_08.h>
