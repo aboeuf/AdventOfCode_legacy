@@ -7,3 +7,4 @@
 #include <2021/puzzle_2021_07.h>
 #include <2021/puzzle_2021_08.h>
 #include <2021/puzzle_2021_09.h>
+#include <2021/puzzle_2021_10.h>
