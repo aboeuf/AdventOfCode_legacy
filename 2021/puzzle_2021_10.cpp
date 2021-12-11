@@ -6,7 +6,7 @@
 
 using Int = unsigned long long int;
 
-const QMap<QChar, QChar> match_caraters = {
+const QMap<QChar, QChar> match_characters = {
   {'(', ')'},
   {'[', ']'},
   {'{', '}'},
@@ -35,13 +35,12 @@ struct Chunk
     m_opening = input.front();
     input.remove(0, 1);
     while (not m_corrupted and not input.isEmpty()) {
-      if (not match_caraters.contains(input.front())) {
+      if (not match_characters.contains(input.front())) {
         m_closing = input.front();
         input.remove(0, 1);
-        m_corrupted = (match_caraters[m_opening] != m_closing);
+        m_corrupted = (match_characters[m_opening] != m_closing);
         if (m_corrupted)
           m_syntax_error_score = syntax_error_scores[m_closing];
-        m_complete = true;
         return;
       }
       m_children.push_back(new Chunk{input});
@@ -62,7 +61,7 @@ struct Chunk
     for (auto* c : m_children)
       c->autoComplete(completion_string);
     if (m_closing == '*') {
-      m_closing = match_caraters[m_opening];
+      m_closing = match_characters[m_opening];
       completion_string.push_back(m_closing);
     }
   }
@@ -70,7 +69,6 @@ struct Chunk
   QChar m_opening{'*'};
   QChar m_closing{'*'};
   bool m_corrupted{false};
-  bool m_complete{false};
   Int m_syntax_error_score{0};
   std::deque<Chunk*> m_children;
 };
