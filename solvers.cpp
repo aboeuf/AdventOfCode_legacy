@@ -1,6 +1,7 @@
 #include <solvers.h>
 #include <mainwindow.h>
 
+#include <2015/event_2015.h>
 #include <2018/event_2018.h>
 #include <2019/event_2019.h>
 #include <2020/event_2020.h>
@@ -8,6 +9,13 @@
 
 Solvers::Solvers()
 {
+  m_solvers[2015][1][1] = new Solver_2015_01_1();
+  m_solvers[2015][1][2] = new Solver_2015_01_2();
+  m_solvers[2015][2][1] = new Solver_2015_02_1();
+  m_solvers[2015][2][2] = new Solver_2015_02_2();
+  m_solvers[2015][3][1] = new Solver_2015_03_1();
+  m_solvers[2015][3][2] = new Solver_2015_03_2();
+
   m_solvers[2018][1][1] = new Solver_2018_01_1();
   m_solvers[2018][1][2] = new Solver_2018_01_2();
   m_solvers[2018][2][1] = new Solver_2018_02_1();

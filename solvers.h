@@ -1,5 +1,4 @@
-#ifndef SOLVERS_H
-#define SOLVERS_H
+#pragma once
 
 #include <QMap>
 #include <QString>
@@ -30,5 +29,3 @@ public:
 private:
   QMap<int, QMap<int, QMap<int, Solver*>>> m_solvers;
 };
-
-#endif // SOLVERS_H
