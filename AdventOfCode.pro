@@ -3,6 +3,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++17
 DEFINES += QT_DEPRECATED_WARNINGS
 
+RC_ICONS = icon.ico
+
 SOURCES += \
     2015/puzzle_2015_01.cpp \
     2015/puzzle_2015_02.cpp \
