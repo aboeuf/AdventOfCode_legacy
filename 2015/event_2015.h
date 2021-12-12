@@ -3,3 +3,4 @@
 #include <2015/puzzle_2015_03.h>
 #include <2015/puzzle_2015_04.h>
 #include <2015/puzzle_2015_05.h>
+#include <2015/puzzle_2015_06.h>
