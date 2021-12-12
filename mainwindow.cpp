@@ -14,6 +14,11 @@
 #include <QInputDialog>
 #include <solvers.h>
 #include <jsonhelper.h>
+#include <iso646.h>
+#include <set>
+
+#include <iostream>
+
 
 void Configuration::reset()
 {
@@ -22,6 +27,7 @@ void Configuration::reset()
   m_puzzle_1 = true;
   m_use_last_input = false;
   m_cookies = {{"_ga", ""}, {"_gid", ""}, {"session", ""}};
+  m_src_directory.clear();
 }
 
 QString Configuration::load(const QString& filepath)
@@ -30,6 +36,7 @@ QString Configuration::load(const QString& filepath)
   QJsonObject parsed;
   if (!helper.read(filepath, parsed))
     return helper.error();
+  helper.read(parsed, "src_directory", m_src_directory);
   if (!helper.read(parsed, "year", m_year))
     return "Cannot parse field \"year\"\n" + helper.error();
   if (!helper.read(parsed, "day", m_day))
@@ -60,6 +67,8 @@ bool Configuration::save(const QString& filepath) const
   if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     return false;
   QJsonObject conf;
+  if (not m_src_directory.isEmpty())
+    conf.insert("src_directory", QJsonValue{m_src_directory});
   conf.insert("year", QJsonValue{m_year});
   conf.insert("day", QJsonValue{m_day});
   conf.insert("puzzle_1", QJsonValue{m_puzzle_1});
@@ -240,6 +249,22 @@ void MainWindow::on_m_push_button_solve_clicked()
 {
   if (m_running_solver)
     return;
+
+  if (not m_solvers(ui->m_spin_box_year->value(),
+                    ui->m_spin_box_day->value(),
+                    ui->m_spin_box_puzzle->value())) {
+    QMessageBox msgBox;
+    msgBox.setText("Puzzle not implemented");
+    msgBox.setInformativeText("Create default files?");
+    msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    if (msgBox.exec() == QMessageBox::Yes)
+      onSolved(createDefault());
+    else
+      onSolved("Not Implemented");
+    return;
+  }
+
   ui->m_plain_text_edit_input->clear();
   ui->m_plain_text_edit_solver_output->clear();
   ui->m_plain_text_edit_program_output->clear();
@@ -298,6 +323,11 @@ void MainWindow::on_m_push_button_program_output_clicked()
   QGuiApplication::clipboard()->setText(ui->m_plain_text_edit_program_output->toPlainText());
 }
 
+void MainWindow::on_m_push_button_sources_clicked()
+{
+  setSources();
+}
+
 void MainWindow::onOutputReceived(const QString& output)
 {
   ui->m_plain_text_edit_program_output->appendPlainText(output);
@@ -328,3 +358,200 @@ void MainWindow::downloadPuzzleInput()
   m_config.setCookies(request);
   m_manager->get(request);
 }
+
+QString MainWindow::createDefault()
+{
+  const auto year = ui->m_spin_box_year->value();
+  const auto day = ui->m_spin_box_day->value();
+  if (m_solvers(year, day, 0) or m_solvers(year, day, 1))
+    return "Error: existing implementation has been found";
+  while (m_config.m_src_directory.isEmpty() or
+         not QDir(m_config.m_src_directory).exists()) {
+    if (not setSources())
+      return "Error: failed to set sources directory";
+  }
+  const auto rootpath =  QDir(m_config.m_src_directory).absolutePath();
+  const auto dirpath = rootpath + QString("/%1").arg(year);
+  if (not QDir().mkpath(dirpath))
+    return "Error: cannot create directory " + dirpath;
+
+  QDir dir(dirpath);
+  QString header = QString("puzzle_%1_%2.h").arg(year).arg(day, 2, 10, QChar('0'));
+  if (dir.exists(header))
+    return "Error: " + header + " already exists";
+  QString implem = QString("puzzle_%1_%2.cpp").arg(year).arg(day, 2, 10, QChar('0'));
+  if (dir.exists(implem))
+    return "Error: " + implem + " already exists";
+
+  QFile header_file(dir.absolutePath() + "/" + header);
+  if (header_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QTextStream out(&header_file);
+    out << QString("#pragma once\n"
+                   "#include <solvers.h>\n"
+                   "\n"
+                   "class Solver_%1_%2_1 : public Solver\n"
+                   "{\n"
+                   "public:\n"
+                   "  void solve(const QString& input) override;\n"
+                   "};\n"
+                   "\n"
+                   "class Solver_%1_%2_2 : public Solver\n"
+                   "{\n"
+                   "public:\n"
+                   "  void solve(const QString& input) override;\n"
+                   "};\n").arg(year).arg(day, 2, 10, QChar('0'));
+  } else
+    return "Error: cannot create file " + header;
+
+  QFile implem_file(dir.absolutePath() + "/" + implem);
+  if (implem_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QTextStream out(&implem_file);
+    out << QString("#include <%1/puzzle_%1_%2.h>\n"
+                   "#include <common.h>\n"
+                   "\n"
+                   "void Solver_%1_%2_1::solve(const QString& input)\n"
+                   "{\n"
+                   "  emit output(input);\n"
+                   "  emit finished(\"Default\");\n"
+                   "}\n"
+                   "\n"
+                   "void Solver_%1_%2_2::solve(const QString& input)\n"
+                   "{\n"
+                   "  emit output(input);\n"
+                   "  emit finished(\"Default\");\n"
+                   "}\n").arg(year).arg(day, 2, 10, QChar('0'));
+  } else
+    return "Error: cannot create file " + implem;
+
+  QFile event_file(dir.absolutePath() + QString("/event_%1.h").arg(year));
+  if (event_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QTextStream out(&event_file);
+    for (const auto& file : dir.entryList())
+      if (file.startsWith("puzzle_") and file.endsWith(".h"))
+        out << QString("#include <%1/%2>\n").arg(year).arg(file);
+  } else
+    return "Error: cannot create write in file " + QString("event_%1.h").arg(year);
+
+  QFile pro_file_in(rootpath + "/AdventOfCode.pro");
+  QStringList begin;
+  std::set<std::string> sources, headers, forms;
+  if (pro_file_in.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    QTextStream in(&pro_file_in);
+    auto push_in_begin = true;
+    while (!in.atEnd()) {
+      QString line = in.readLine();
+      if (line.contains("SOURCES") or
+          line.contains("HEADERS") or
+          line.contains("FORMS")) {
+        push_in_begin = false;
+        while (not begin.empty() and begin.back().isEmpty())
+          begin.pop_back();
+      } else {
+        if (push_in_begin) {
+          line.remove('\n');
+          begin << line;
+        } else {
+          line.remove(' ');
+          line.remove('\\');
+          if (line.contains(".cpp"))
+            sources.insert(line.toStdString());
+          else if (line.contains(".h"))
+            headers.insert(line.toStdString());
+          else if (line.contains(".ui"))
+            forms.insert(line.toStdString());
+        }
+      }
+    }
+  } else
+    return "Error: cannot read file AdventOfCode.pro";
+
+  sources.insert(QString("%1/puzzle_%1_%2.cpp").arg(year).arg(day, 2, 10, QChar('0')).toStdString());
+  headers.insert(QString("%1/puzzle_%1_%2.h").arg(year).arg(day, 2, 10, QChar('0')).toStdString());
+
+  QFile pro_file_out(rootpath + "/AdventOfCode.pro");
+  if (pro_file_out.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QTextStream out(&pro_file_out);
+    for (const auto& line : begin)
+      out << line << "\n";
+    const auto write = [&out](const auto& prompt, const auto& data) {
+      out << "\n" << prompt << " += \\\n";
+      for (auto it = std::begin(data); it != std::end(data); ++it) {
+        out << "    " << it->c_str();
+        if (std::next(it) != std::end(data))
+          out << " \\";
+        out << "\n";
+      }
+    };
+    write("SOURCES", sources);
+    write("HEADERS", headers);
+    write("FORMS", forms);
+  } else
+    return "Error: cannot write in file AdventOfCode.pro";
+
+  std::set<std::string> includes;
+  for (auto y = ui->m_spin_box_year->minimum(); y <= ui->m_spin_box_year->maximum(); ++y) {
+    auto filename = QString("%1/event_%1.h").arg(y);
+    if (QFile(rootpath + "/" + filename).exists())
+      includes.insert(QString("#include <%1>").arg(filename).toStdString());
+  }
+
+  std::set<std::string> solvers;
+  for (auto y : m_solvers.m_solvers.keys())
+    for (auto d : m_solvers.m_solvers[y].keys())
+      for (auto p : m_solvers.m_solvers[y][d].keys())
+        solvers.insert(QString("  m_solvers[%1][%2][%3] = new Solver_%1_%4_%3();")
+                       .arg(y).arg(d).arg(p).arg(d, 2, 10, QChar('0')).toStdString());
+  for (auto p = 1; p < 3; ++p)
+    solvers.insert(QString("  m_solvers[%1][%2][%3] = new Solver_%1_%4_%3();")
+                   .arg(year).arg(day).arg(p).arg(day, 2, 10, QChar('0')).toStdString());
+
+  QFile solvers_file(rootpath + "/solvers.cpp");
+  if (solvers_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QTextStream out(&solvers_file);
+    out << "#include <solvers.h>\n"
+           "#include <mainwindow.h>\n\n";
+    for (const auto& include : includes)
+      out << include.c_str() << "\n";
+    out << "\nSolvers::Solvers()\n{\n";
+    for (const auto& solver : solvers)
+      out << solver.c_str() << "\n";
+    out << "}\n"
+           "\n"
+           "Solvers::~Solvers()\n"
+           "{\n"
+           "  for (auto year : m_solvers.values())\n"
+           "    for (auto day : year.values())\n"
+           "      for (auto solver : day.values())\n"
+           "        delete solver;\n"
+           "}\n"
+           "\n"
+           "Solver* Solvers::operator()(int year, int day, int puzzle) const\n"
+           "{\n"
+           "  if (m_solvers.contains(year))\n"
+           "    if (m_solvers[year].contains(day))\n"
+           "      if (m_solvers[year][day].contains(puzzle))\n"
+           "        return m_solvers[year][day][puzzle];\n"
+           "  return nullptr;\n"
+           "}\n";
+  } else
+    return "Error: cannot write in file solvers.cpp";
+
+  return QString("Default file created for puzzle_%1_%2").arg(year).arg(day, 2, 10, QChar('0'));
+}
+
+bool MainWindow::setSources()
+{
+  QString current = QDir::homePath();
+  if (not m_config.m_src_directory.isEmpty() and QDir(m_config.m_src_directory).exists())
+    current = m_config.m_src_directory;
+  QString dir = QFileDialog::getExistingDirectory(this, tr("Sources Directory"),
+                                                  current,
+                                                  QFileDialog::ShowDirsOnly
+                                                  | QFileDialog::DontResolveSymlinks);
+  if (dir.isEmpty())
+    return false;
+  m_config.m_src_directory = dir;
+  return true;
+}
+
+

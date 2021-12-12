@@ -25,6 +25,7 @@ struct Configuration
   bool m_puzzle_1{};
   bool m_use_last_input{};
   std::unordered_map<std::string, QString> m_cookies{};
+  QString m_src_directory{};
 };
 
 class MainWindow : public QMainWindow
@@ -47,11 +48,14 @@ private slots:
   void on_m_push_button_input_clicked();
   void on_m_push_button_solver_output_clicked();
   void on_m_push_button_program_output_clicked();
+  void on_m_push_button_sources_clicked();
   void onOutputReceived(const QString& output);
 
 private:
   void solve();
   void downloadPuzzleInput();
+  QString createDefault();
+  bool setSources();
 
   Ui::MainWindow *ui;
   QNetworkAccessManager *m_manager;

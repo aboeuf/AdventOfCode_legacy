@@ -18,14 +18,11 @@ public:
   virtual void solve(const QString& input) = 0;
 };
 
-class Solvers
+struct Solvers
 {
-public:
   Solvers();
   ~Solvers();
 
   Solver* operator()(int year, int day, int puzzle) const;
-
-private:
   QMap<int, QMap<int, QMap<int, Solver*>>> m_solvers;
 };
