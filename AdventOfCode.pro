@@ -9,6 +9,8 @@ SOURCES += \
     2015/puzzle_2015_01.cpp \
     2015/puzzle_2015_02.cpp \
     2015/puzzle_2015_03.cpp \
+    2015/puzzle_2015_04.cpp \
+    2015/puzzle_2015_05.cpp \
     2018/display/puzzle_2018_06/puzzle_2018_06_display.cpp \
     2018/display/puzzle_2018_06/puzzle_2018_06_view.cpp \
     2018/puzzle_2018_01.cpp \
@@ -79,6 +81,8 @@ HEADERS += \
     2015/puzzle_2015_01.h \
     2015/puzzle_2015_02.h \
     2015/puzzle_2015_03.h \
+    2015/puzzle_2015_04.h \
+    2015/puzzle_2015_05.h \
     2018/display/puzzle_2018_06/puzzle_2018_06_display.h \
     2018/display/puzzle_2018_06/puzzle_2018_06_view.h \
     2018/event_2018.h \
