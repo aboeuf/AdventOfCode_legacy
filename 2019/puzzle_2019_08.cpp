@@ -1,53 +1,50 @@
 #include <2019/puzzle_2019_08.h>
-#include <2019/display/puzzle_2019_08/puzzle_2019_08_display.h>
 #include <common.h>
 #include <QDebug>
-
-namespace puzzle_2019_08
-{
 
 constexpr int width = 25;
 constexpr int height = 6;
 
-Layer::Layer()
+struct Layer : public QVector<QVector<uint>>
 {
-  QVector<uint> row;
-  row.fill(0, width);
-  this->fill(row, height);
-}
-
-uint Layer::nbOccurences(int value) const
-{
-  uint sum = 0;
-  for (int i = 0; i < this->size(); ++i)
-    for (int j = 0; j < this->at(i).size(); ++j)
-      if (this->at(i).at(j) == value)
-        ++sum;
-  return sum;
-}
-
-void Layer::debug() const
-{
-  qDebug() << "Layer" << m_index;
-  for (int i = 0; i < this->size(); ++i) {
-    QString s;
-    for (int j = 0; j < this->at(i).size(); ++j)
-      s += QString::number(this->at(i).at(j));
-    qDebug() << s.toStdString().c_str();
+  Layer()
+  {
+    QVector<uint> row;
+    row.fill(0, width);
+    this->fill(row, height);
   }
-  qDebug() << "";
-}
 
-QString Layer::toString() const
-{
-  QString s;
-  for (int i = 0; i < this->size(); ++i) {
-    for (int j = 0; j < this->at(i).size(); ++j)
-      s += this->at(i).at(j) == 1 ? "0" : "_";
-    s += "\n";
+  uint nbOccurences(int value) const
+  {
+    uint sum = 0;
+    for (int i = 0; i < this->size(); ++i)
+      for (int j = 0; j < this->at(i).size(); ++j)
+        if (this->at(i).at(j) == value)
+          ++sum;
+    return sum;
   }
-  return s;
-}
+
+  void display(Display* display) const
+  {
+    if (not display)
+      return;
+    display->scene()->clear();
+    QPen pen;
+    pen.setWidthF(0.01);
+    QBrush brush(QColor("Black"));
+    for (int i = 0; i < size(); ++i) {
+      for (int j = 0; j < (*this)[i].size(); ++j) {
+        if ((*this)[i][j] == 1) {
+          display->scene()->addRect(j, -i, 1.0, 1.0, pen, brush);
+        }
+      }
+    }
+    display->show();
+    display->fit();
+  }
+
+  uint m_index{0};
+};
 
 struct Image
 {
@@ -69,12 +66,6 @@ struct Image
       m_layers[i][j][k] = QString(c).toInt();
       ++k;
     }
-  }
-
-  void debug() const
-  {
-    for (const Layer& layer : m_layers)
-      layer.debug();
   }
 
   int getMinLayer(int value) const
@@ -114,23 +105,21 @@ struct Image
   QVector<Layer> m_layers;
 };
 
-
-} // namepspace puzzle_2019_08
-
 void Solver_2019_08_1::solve(const QString& input)
 {
-  using namespace puzzle_2019_08;
   Image image(input);
   emit finished(QString::number(image.puzzle_1()));
 }
 
 void Solver_2019_08_2::solve(const QString& input)
 {
-  using namespace puzzle_2019_08;
+  if (not m_display) {
+    emit finished("No display");
+    return;
+  }
   Image image(input);
   Layer decoded = image.decode();
-  Puzzle_2019_08_Display* display = new Puzzle_2019_08_Display(decoded);
-  display->show();
-  emit finished(decoded.toString());
+  decoded.display(m_display);
+  emit finished("");
 }
 
