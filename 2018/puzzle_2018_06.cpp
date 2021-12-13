@@ -1,5 +1,4 @@
 #include <2018/puzzle_2018_06.h>
-#include <2018/display/puzzle_2018_06/puzzle_2018_06_display.h>
 #include <common.h>
 
 #include <QDebug>
@@ -101,13 +100,48 @@ std::vector<std::size_t> VoronoiDiagram::closestPoints(int x, int y) const {
   return res;
 }
 
+void VoronoiDiagram::display(Display* display) const
+{
+  if (not display)
+    return;
+  display->scene()->clear();
+  for (auto x = m_xmin - 25; x <= m_xmax + 25; ++x) {
+    for (auto y = m_ymin - 25; y <= m_ymax + 25; ++y) {
+      const auto closests = closestPoints(x, y);
+      if (closests.size() == 1) {
+        const auto col = static_cast<double>(closests[0]) / static_cast<double>(m_points.size() - 1);
+        const auto color = QColor::fromHslF(col, 0.95, 0.5);
+        display->scene()->addRect(static_cast<double>(x) - 0.5,
+                                  static_cast<double>(y) - 0.5,
+                                  1.0, 1.0, QPen{Qt::NoPen}, QBrush{color});
+      }
+    }
+  }
+
+  QPen pen;
+  pen.setWidth(0);
+  pen.setColor(QColor("Black"));
+  for (const auto& pt : m_points) {
+    const auto x = static_cast<double>(pt.x());
+    const auto y = static_cast<double>(pt.y());
+    display->scene()->addRect(x - 0.5, y - 0.5, 1.0, 1.0, pen, QBrush{Qt::NoBrush});
+  }
+  display->scene()->addRect(m_xmin, m_ymin,
+                            m_xmax - m_xmin,
+                            m_ymax - m_ymin, pen, QBrush{Qt::NoBrush});
+  display->show();
+  display->fit();
+}
+
 }
 
 void Solver_2018_06_1::solve(const QString& input)
 {
   const auto diagram = puzzle_2018_06::VoronoiDiagram{input};
-  auto* display = new Puzzle_2018_06_Display{diagram};
-  display->show();
+  if (m_display)
+    diagram.display(m_display);
+  else
+    emit output("No display");
   emit finished(QString{"%1"}.arg(diagram.largestArea()));
 }
 

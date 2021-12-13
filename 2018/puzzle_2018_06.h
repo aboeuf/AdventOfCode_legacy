@@ -22,7 +22,7 @@ public:
   uint largestArea() const;
   uint safeRegionArea() const;
   std::vector<std::size_t> closestPoints(int x, int y) const;
-  QString toString() const;
+  void display(Display* display) const;
 
 private:
   std::vector<Point> m_points;

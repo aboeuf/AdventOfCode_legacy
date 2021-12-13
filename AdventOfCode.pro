@@ -14,8 +14,6 @@ SOURCES += \
     2015/puzzle_2015_06.cpp \
     2016/puzzle_2016_01.cpp \
     2017/puzzle_2017_01.cpp \
-    2018/display/puzzle_2018_06/puzzle_2018_06_display.cpp \
-    2018/display/puzzle_2018_06/puzzle_2018_06_view.cpp \
     2018/puzzle_2018_01.cpp \
     2018/puzzle_2018_02.cpp \
     2018/puzzle_2018_03.cpp \
@@ -92,8 +90,6 @@ HEADERS += \
     2015/puzzle_2015_06.h \
     2016/puzzle_2016_01.h \
     2017/puzzle_2017_01.h \
-    2018/display/puzzle_2018_06/puzzle_2018_06_display.h \
-    2018/display/puzzle_2018_06/puzzle_2018_06_view.h \
     2018/event_2018.h \
     2018/puzzle_2018_01.h \
     2018/puzzle_2018_02.h \
@@ -165,7 +161,6 @@ HEADERS += \
     solvers.h
 
 FORMS += \
-    2018/display/puzzle_2018_06/puzzle_2018_06_display.ui \
     2019/display/puzzle_2019_08/puzzle_2019_08_display.ui \
     2020/display/puzzle_2020_24/puzzle_2020_24_display.ui \
     display/display.ui \
