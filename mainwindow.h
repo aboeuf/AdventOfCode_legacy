@@ -7,6 +7,7 @@
 #include <solvers.h>
 #include <jsonhelper.h>
 #include <unordered_map>
+#include <display/display.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -50,6 +51,7 @@ private slots:
   void on_m_push_button_program_output_clicked();
   void on_m_push_button_sources_clicked();
   void onOutputReceived(const QString& output);
+  void closeEvent(QCloseEvent *event);
 
 private:
   void solve();
@@ -58,6 +60,7 @@ private:
   bool setSources();
 
   Ui::MainWindow *ui;
+  Display m_display;
   QNetworkAccessManager *m_manager;
   Solvers m_solvers;
   Solver* m_running_solver{nullptr};

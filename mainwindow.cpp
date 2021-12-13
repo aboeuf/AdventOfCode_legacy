@@ -17,9 +17,6 @@
 #include <iso646.h>
 #include <set>
 
-#include <iostream>
-
-
 void Configuration::reset()
 {
   m_year = 2017;
@@ -156,6 +153,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
   ui->setupUi(this);
 
+  for (auto y : m_solvers.m_solvers.keys())
+    for (auto d : m_solvers.m_solvers[y].keys())
+      for (auto p : m_solvers.m_solvers[y][d].keys())
+        m_solvers.m_solvers[y][d][p]->m_display = &m_display;
+
 #ifdef WIN32
   m_dir_path = QProcessEnvironment::systemEnvironment().value("APPDATA");
   m_dir_path.replace("\\", "/");
@@ -250,6 +252,9 @@ void MainWindow::on_m_push_button_solve_clicked()
   if (m_running_solver)
     return;
 
+  m_display.hide();
+  m_display.scene()->clear();
+
   if (not m_solvers(ui->m_spin_box_year->value(),
                     ui->m_spin_box_day->value(),
                     ui->m_spin_box_puzzle->value())) {
@@ -333,6 +338,12 @@ void MainWindow::onOutputReceived(const QString& output)
   ui->m_plain_text_edit_program_output->appendPlainText(output);
   ui->m_plain_text_edit_program_output->moveCursor(QTextCursor::Start);
   ui->m_plain_text_edit_program_output->ensureCursorVisible();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+  m_display.close();
+  event->accept();
 }
 
 void MainWindow::solve()

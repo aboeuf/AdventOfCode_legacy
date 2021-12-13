@@ -4,6 +4,7 @@
 #include <QString>
 #include <QObject>
 #include <2019/intcodecomputer.h>
+#include <display/display.h>
 
 class Solver : public QObject
 {
@@ -16,6 +17,7 @@ signals:
 public:
   virtual ~Solver() {}
   virtual void solve(const QString& input) = 0;
+  Display* m_display{nullptr};
 };
 
 struct Solvers

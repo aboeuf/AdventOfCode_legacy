@@ -74,7 +74,10 @@ SOURCES += \
     2021/puzzle_2021_10.cpp \
     2021/puzzle_2021_11.cpp \
     2021/puzzle_2021_12.cpp \
+    2021/puzzle_2021_13.cpp \
     common.cpp \
+    display/display.cpp \
+    display/view.cpp \
     main.cpp \
     mainwindow.cpp \
     solvers.cpp
@@ -153,7 +156,10 @@ HEADERS += \
     2021/puzzle_2021_10.h \
     2021/puzzle_2021_11.h \
     2021/puzzle_2021_12.h \
+    2021/puzzle_2021_13.h \
     common.h \
+    display/display.h \
+    display/view.h \
     jsonhelper.h \
     mainwindow.h \
     solvers.h
@@ -162,4 +168,5 @@ FORMS += \
     2018/display/puzzle_2018_06/puzzle_2018_06_display.ui \
     2019/display/puzzle_2019_08/puzzle_2019_08_display.ui \
     2020/display/puzzle_2020_24/puzzle_2020_24_display.ui \
+    display/display.ui \
     mainwindow.ui
