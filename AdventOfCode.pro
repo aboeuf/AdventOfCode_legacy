@@ -21,8 +21,6 @@ SOURCES += \
     2018/puzzle_2018_05.cpp \
     2018/puzzle_2018_06.cpp \
     2018/puzzle_2018_07.cpp \
-    2019/display/puzzle_2019_08/puzzle_2019_08_display.cpp \
-    2019/display/puzzle_2019_08/puzzle_2019_08_view.cpp \
     2019/intcodecomputer.cpp \
     2019/puzzle_2019_01.cpp \
     2019/puzzle_2019_02.cpp \
@@ -73,6 +71,7 @@ SOURCES += \
     2021/puzzle_2021_11.cpp \
     2021/puzzle_2021_12.cpp \
     2021/puzzle_2021_13.cpp \
+    2021/puzzle_2021_14.cpp \
     common.cpp \
     display/display.cpp \
     display/view.cpp \
@@ -98,8 +97,6 @@ HEADERS += \
     2018/puzzle_2018_05.h \
     2018/puzzle_2018_06.h \
     2018/puzzle_2018_07.h \
-    2019/display/puzzle_2019_08/puzzle_2019_08_display.h \
-    2019/display/puzzle_2019_08/puzzle_2019_08_view.h \
     2019/event_2019.h \
     2019/intcodecomputer.h \
     2019/puzzle_2019_01.h \
@@ -153,6 +150,7 @@ HEADERS += \
     2021/puzzle_2021_11.h \
     2021/puzzle_2021_12.h \
     2021/puzzle_2021_13.h \
+    2021/puzzle_2021_14.h \
     common.h \
     display/display.h \
     display/view.h \
@@ -161,7 +159,6 @@ HEADERS += \
     solvers.h
 
 FORMS += \
-    2019/display/puzzle_2019_08/puzzle_2019_08_display.ui \
     2020/display/puzzle_2020_24/puzzle_2020_24_display.ui \
     display/display.ui \
     mainwindow.ui
