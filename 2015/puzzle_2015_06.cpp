@@ -1,6 +1,7 @@
 #include <2015/puzzle_2015_06.h>
 #include <common.h>
 #include <optional>
+#include <QSet>
 
 using Int = unsigned long long int;
 
