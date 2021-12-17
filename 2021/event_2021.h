@@ -14,3 +14,4 @@
 #include <2021/puzzle_2021_14.h>
 #include <2021/puzzle_2021_15.h>
 #include <2021/puzzle_2021_16.h>
+#include <2021/puzzle_2021_17.h>
