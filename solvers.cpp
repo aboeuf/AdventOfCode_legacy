@@ -139,6 +139,8 @@ Solvers::Solvers()
   m_solvers[2021][1][2] = new Solver_2021_01_2();
   m_solvers[2021][20][1] = new Solver_2021_20_1();
   m_solvers[2021][20][2] = new Solver_2021_20_2();
+  m_solvers[2021][21][1] = new Solver_2021_21_1();
+  m_solvers[2021][21][2] = new Solver_2021_21_2();
   m_solvers[2021][2][1] = new Solver_2021_02_1();
   m_solvers[2021][2][2] = new Solver_2021_02_2();
   m_solvers[2021][3][1] = new Solver_2021_03_1();
