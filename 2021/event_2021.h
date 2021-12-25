@@ -19,3 +19,4 @@
 #include <2021/puzzle_2021_19.h>
 #include <2021/puzzle_2021_20.h>
 #include <2021/puzzle_2021_21.h>
+#include <2021/puzzle_2021_22.h>
