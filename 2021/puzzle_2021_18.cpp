@@ -252,8 +252,8 @@ public:
   QString solvePuzzleTwo() const
   {
     auto max = 0u;
-    for (auto i = 0; i < m_pairs.size(); ++i)
-      for (auto j = 0; j < m_pairs.size(); ++j)
+    for (auto i = 0u; i < m_pairs.size(); ++i)
+      for (auto j = 0u; j < m_pairs.size(); ++j)
         if (i != j)
           max = std::max(max, Pair(m_pairs[i], m_pairs[j]).magnitude());
     return QString("%1").arg(max);

@@ -1,6 +1,7 @@
 #include <2020/puzzle_2020_20.h>
 #include <common.h>
 #include <QDebug>
+#include <cmath>
 
 namespace puzzle_2020_20
 {
@@ -96,7 +97,7 @@ public:
 
   void removeBorders()
   {
-    for (auto i = 1; i < m_data.size(); ++i)
+    for (auto i = 1u; i < m_data.size(); ++i)
       m_data[i - 1] = m_data[i];
     m_data.pop_back();
     m_data.pop_back();
@@ -128,8 +129,8 @@ public:
   }
 
   bool empty() const { return m_data.empty() || m_width == 0; }
-  const std::size_t length() const { return m_data.size(); }
-  const std::size_t width() const { return m_width; }
+  std::size_t length() const { return m_data.size(); }
+  std::size_t width() const { return m_width; }
 
   void operator << (const QString& row)
   {
@@ -156,9 +157,9 @@ public:
   {
     std::vector<Row> data{};
     data.resize(length());
-    for (auto i = 0; i < length(); ++i) {
+    for (auto i = 0u; i < length(); ++i) {
       data[i].resize(width());
-      for (auto j = 0; j < width(); ++j)
+      for (auto j = 0u; j < width(); ++j)
         data[i][j] = m_data[length() - i - 1][j];
     }
     std::swap(m_data, data);
@@ -171,21 +172,21 @@ public:
     std::vector<Row> data{};
     data.resize(length());
     if (r == R_90) {
-      for (auto i = 0; i < length(); ++i) {
+      for (auto i = 0u; i < length(); ++i) {
         data[i].resize(width());
-        for (auto j = 0; j < width(); ++j)
+        for (auto j = 0u; j < width(); ++j)
           data[i][j] = m_data[j][length() - i - 1];
       }
     } else if (r == R_180) {
-      for (auto i = 0; i < length(); ++i) {
+      for (auto i = 0u; i < length(); ++i) {
         data[i].resize(width());
-        for (auto j = 0; j < width(); ++j)
+        for (auto j = 0u; j < width(); ++j)
           data[i][j] = m_data[length() - i - 1][width() - j - 1];
       }
     } else if (r == R_270) {
-      for (auto i = 0; i < length(); ++i) {
+      for (auto i = 0u; i < length(); ++i) {
         data[i].resize(width());
-        for (auto j = 0; j < width(); ++j)
+        for (auto j = 0u; j < width(); ++j)
           data[i][j] = m_data[width() - j - 1][i];
       }
     } else
@@ -232,9 +233,9 @@ public:
 
   void debug() const
   {
-    for (auto i = 0; i < length(); ++i) {
+    for (auto i = 0u; i < length(); ++i) {
       QString row;
-      for (auto j = 0; j < width(); ++j)
+      for (auto j = 0u; j < width(); ++j)
         row.push_back(m_data[i][j]);
       qDebug() << row.toStdString().c_str();
     }
@@ -242,7 +243,7 @@ public:
 
   void removeBorders()
   {
-    for (auto i = 1; i < m_data.size(); ++i) {
+    for (auto i = 1u; i < m_data.size(); ++i) {
       m_data[i].removeBorders();
       m_data[i - 1] = m_data[i];
     }
@@ -254,10 +255,10 @@ public:
 
   void print(std::size_t i, std::size_t j) const
   {
-    for (auto k = 0; k < monster.size(); ++k) {
+    for (auto k = 0u; k < monster.size(); ++k) {
       if (i + k < m_data.size()) {
         QString s;
-        for (auto l = 0; l < static_cast<std::size_t>(monster[k].size()); ++l) {
+        for (auto l = 0u; l < static_cast<std::size_t>(monster[k].size()); ++l) {
           if (j + l < m_data[i + k].size()) {
             s.push_back(m_data[i + k][j + l]);
           }
@@ -271,10 +272,10 @@ public:
   void markMonster(std::size_t i, std::size_t j, TileData& copy) const
   {
     QList<QPair<std::size_t, std::size_t>> indexes;
-    for (auto k = 0; k < monster.size(); ++k) {
+    for (auto k = 0u; k < monster.size(); ++k) {
       if (i + k >= m_data.size())
         return;
-      for (auto l = 0; l < static_cast<std::size_t>(monster[k].size()); ++l) {
+      for (auto l = 0u; l < static_cast<std::size_t>(monster[k].size()); ++l) {
         if (j + l >= m_data[i + k].size())
           return;
         if (monster[k][static_cast<int>(l)] == '#') {
@@ -401,22 +402,22 @@ public:
     const TileData this_data = transformed(t_this.toString());
     const TileData other_data = other.transformed(t_other.toString());
     bool match = true;
-    for (auto i = 0; match && i < this_data.length(); ++i)
+    for (auto i = 0u; match && i < this_data.length(); ++i)
       match = this_data[i].back() == other_data[i].front();
     if (match)
       result << East;
     match = true;
-    for (auto i = 0; match && i < this_data.width(); ++i)
+    for (auto i = 0u; match && i < this_data.width(); ++i)
       match = this_data.front()[i] == other_data.back()[i];
     if (match)
       result << North;
     match = true;
-    for (auto i = 0; match && i < this_data.length(); ++i)
+    for (auto i = 0u; match && i < this_data.length(); ++i)
       match = this_data[i].front() == other_data[i].back();
     if (match)
       result << West;
     match = true;
-    for (auto i = 0; match && i < this_data.width(); ++i)
+    for (auto i = 0u; match && i < this_data.width(); ++i)
       match = this_data.back()[i] == other_data.front()[i];
     if (match)
       result << South;
@@ -463,7 +464,7 @@ public:
   void removeBorders()
   {
     m_data.removeBorders();
-  }
+  }const
 
   Tile* m_east{nullptr};
   Tile* m_north{nullptr};
@@ -553,7 +554,7 @@ public:
         QString s;
         for (auto j = 0; j < m_image[i].size(); ++j) {
           s.push_back(' ');
-          for (auto k = 0; k < m_image[i][j].first->data()[tile_row].size(); ++k)
+          for (auto k = 0u; k < m_image[i][j].first->data()[tile_row].size(); ++k)
             s.push_back(m_image[i][j].first->data()[tile_row][k]);
         }
         qDebug() << s.toStdString().c_str();
@@ -696,14 +697,14 @@ public:
       for (auto tile_row = 0; tile_row < n; ++tile_row)
       {
         for (auto j = 0; j < image.image()[i].size(); ++j)
-          for (auto k = 0; k < image.image()[i][j].first->data()[tile_row].size(); ++k) {
+          for (auto k = 0u; k < image.image()[i][j].first->data()[tile_row].size(); ++k) {
             m_data[n * i + tile_row][n * j + k] = image.image()[i][j].first->data()[tile_row][k];
           }
       }
     }
   }
 
-  CleanImage(const CleanImage& other)
+  CleanImage(const CleanImage& other) : TileData()
   {
     m_data = other.data();
     m_width = other.width();
@@ -715,8 +716,8 @@ public:
     for (const Transformation& t : transformations) {
       const TileData trans = transformed(t.toString());
       copy.transform(t.toString());
-      for (auto i = 0; i < trans.length(); ++i)
-        for (auto j = 0; j < trans.width(); ++j)
+      for (auto i = 0u; i < trans.length(); ++i)
+        for (auto j = 0u; j < trans.width(); ++j)
           trans.markMonster(i, j, copy);
       copy.transformBack(t.toString());
     }
@@ -726,8 +727,8 @@ public:
   Int nbSharps() const
   {
     Int count = 0;
-    for (auto i = 0; i < length(); ++i)
-      for (auto j = 0; j < width(); ++j)
+    for (auto i = 0u; i < length(); ++i)
+      for (auto j = 0u; j < width(); ++j)
         if (m_data[i][j] == '#')
           ++count;
     return count;

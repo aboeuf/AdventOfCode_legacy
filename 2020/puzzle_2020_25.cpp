@@ -1,6 +1,6 @@
 #include <2020/puzzle_2020_25.h>
 #include <common.h>
-#include <qDebug>
+#include <QDebug>
 
 namespace puzzle_2020_25
 {

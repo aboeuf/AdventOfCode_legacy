@@ -3,6 +3,7 @@
 #include <2020/puzzle_2020_24.h>
 #include <QApplication>
 #include <QGraphicsPolygonItem>
+#include <cmath>
 #define M_PI 3.14159265358979323846
 
 Puzzle_2020_24_Display::Puzzle_2020_24_Display(puzzle_2020_24::Lobby* lobby, QWidget *parent) :

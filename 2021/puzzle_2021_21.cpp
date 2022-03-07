@@ -77,8 +77,10 @@ bool parseInput(const QString& input, std::array<Player, 2>& players)
         return false;
       if (position > 0) {
         const auto player_id = rx.cap(1).toUInt(&ok);
-        if (ok and player_id != 0 and player_id - 1 == i)
-          players[i] = Player{(position - 1) % 10};
+        if (ok and player_id != 0 and player_id - 1 == i) {
+          players[i].m_position = (position - 1) % 10;
+          players[i].m_score = 0;
+        }
         else
           return false;
       } else
@@ -143,8 +145,10 @@ public:
           const auto nb_spawn = nb_per_position_increments[i] * it->second;
           if (next_score < 21) {
             auto next_state = State();
-            next_state[active_player_id] = Player(next_pos, next_score);
-            next_state[passive_player_id] = passive_player;
+            next_state[active_player_id].m_position = next_pos;
+            next_state[active_player_id].m_score = next_score;
+            next_state[passive_player_id].m_position = passive_player.m_position;
+            next_state[passive_player_id].m_score = passive_player.m_score;
             auto& nb_states = new_states.insert(std::make_pair(next_state, Int(0))).first->second;
             nb_states += nb_spawn;
           }
