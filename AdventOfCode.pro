@@ -87,6 +87,7 @@ SOURCES += \
     2021/puzzle_2021_21.cpp \
     2021/puzzle_2021_22.cpp \
     2021/puzzle_2021_23.cpp \
+    2022/puzzle_2022_01.cpp \
     common.cpp \
     display/display.cpp \
     display/view.cpp \
@@ -178,6 +179,8 @@ HEADERS += \
     2021/puzzle_2021_21.h \
     2021/puzzle_2021_22.h \
     2021/puzzle_2021_23.h \
+    2022/event_2022.h \
+    2022/puzzle_2022_01.h \
     common.h \
     display/display.h \
     display/view.h \
