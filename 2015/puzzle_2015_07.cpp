@@ -147,7 +147,7 @@ public:
     }
     for (const auto& id : m_wires.keys())
       m_listeners[id] = std::set<std::size_t>{};
-    for (auto i = 0; i < m_gates.size(); ++i) {
+    for (auto i = 0u; i < m_gates.size(); ++i) {
       for (const auto& io : m_gates[i].m_inputs)
         if (not io.m_identifier.isEmpty())
           m_listeners[io.m_identifier].insert(i);
@@ -192,7 +192,7 @@ private:
   void run()
   {
     auto ready = std::deque<std::size_t>{};
-    for (auto i = 0; i < m_gates.size(); ++i)
+    for (auto i = 0u; i < m_gates.size(); ++i)
       if (m_gates[i].ready())
         ready.push_back(i);
 

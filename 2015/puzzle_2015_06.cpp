@@ -5,18 +5,25 @@
 
 using Int = unsigned long long int;
 
+
 struct Instruction
 {
+  enum class Type {
+      TURN_ON,
+      TURN_OFF,
+      TOGGLE
+  };
+
   Instruction(const QString& input) {
     auto rx = QRegExp{"^(turn on|turn off|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)$"};
     valid = rx.exactMatch(input);
     if (valid) {
       if (rx.cap(1) == "toggle")
-        on_off = std::nullopt;
+        type = Type::TOGGLE;
       else if (rx.cap(1) == "turn on")
-        on_off = true;
+        type = Type::TURN_ON;
       else
-        on_off = false;
+        type = Type::TURN_OFF;
       xmin = rx.cap(2).toUInt();
       ymin = rx.cap(3).toUInt();
       xmax = rx.cap(4).toUInt();
@@ -24,12 +31,12 @@ struct Instruction
     }
   }
 
-  bool valid;
-  std::optional<bool> on_off;
-  uint xmin;
-  uint ymin;
-  uint xmax;
-  uint ymax;
+  bool valid{false};
+  Type type{Type::TOGGLE};
+  uint xmin{0};
+  uint ymin{0};
+  uint xmax{0};
+  uint ymax{0};
 };
 
 inline QString makeLight(uint x, uint y)
@@ -48,16 +55,16 @@ public:
         for (auto x = instruction.xmin; x <= instruction.xmax; ++x) {
           for (auto y = instruction.ymin; y <= instruction.ymax; ++y) {
             const auto light = makeLight(x, y);
-            if (instruction.on_off.has_value()) {
-              if (instruction.on_off.value())
-                m_grid.insert(light);
-              else
-                m_grid.remove(light);
-            } else {
+            if (instruction.type == Instruction::Type::TOGGLE) {
               if (m_grid.contains(light))
                 m_grid.remove(light);
               else
                 m_grid.insert(light);
+            } else {
+              if (instruction.type == Instruction::Type::TURN_ON)
+                m_grid.insert(light);
+              else
+                m_grid.remove(light);
             }
           }
         }
@@ -82,8 +89,8 @@ public:
     for (const auto& line : lines) {
       const auto instruction = Instruction{line};
       if (instruction.valid) {
-        const auto decrease = instruction.on_off.has_value() and not instruction.on_off.value();
-        const auto increase = instruction.on_off.has_value() ? Int{1} : Int{2};
+        const auto decrease = instruction.type == Instruction::Type::TURN_OFF;
+        const auto increase = instruction.type != Instruction::Type::TOGGLE ? Int{1} : Int{2};
         for (auto x = instruction.xmin; x <= instruction.xmax; ++x) {
           for (auto y = instruction.ymin; y <= instruction.ymax; ++y) {
             const auto light = makeLight(x, y);
