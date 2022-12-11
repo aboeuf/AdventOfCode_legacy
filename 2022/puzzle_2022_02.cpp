@@ -13,12 +13,46 @@ enum class HandShape
     SCISSORS = 3u
 };
 
+inline Int getHandShapeValue(const HandShape& shape)
+{
+    return static_cast<Int>(shape);
+}
+
 enum class Outcome
 {
-    ERROR = 1u,
-    LOOSE = 0u,
-    DRAW = 3u,
-    WIN = 6u
+    ERROR = 0u,
+    LOOSE = 1u,
+    DRAW = 2u,
+    WIN = 3u
+};
+
+inline Int getOutcomeValue(const Outcome& outcome)
+{
+    return static_cast<Int>(outcome);
+}
+
+inline Int getOutcomeReward(const Outcome& outcome)
+{
+    const auto value = getOutcomeValue(outcome);
+    if (value == 0u)
+        return 0u;
+    return 3u * (value - 1u);
+}
+
+const auto outcome_matrix = std::array<std::array<Outcome, 4>, 4>
+{
+    std::array<Outcome, 4>{Outcome::ERROR, Outcome::ERROR, Outcome::ERROR, Outcome::ERROR},
+    std::array<Outcome, 4>{Outcome::ERROR, Outcome::DRAW, Outcome::WIN, Outcome::LOOSE},
+    std::array<Outcome, 4>{Outcome::ERROR, Outcome::LOOSE, Outcome::DRAW, Outcome::WIN},
+    std::array<Outcome, 4>{Outcome::ERROR, Outcome::WIN, Outcome::LOOSE, Outcome::DRAW}
+};
+
+const auto hand_shape_matrix = std::array<std::array<HandShape, 4>, 4>
+{
+    std::array<HandShape, 4>{HandShape::ERROR, HandShape::ERROR, HandShape::ERROR, HandShape::ERROR},
+    std::array<HandShape, 4>{HandShape::ERROR, HandShape::SCISSORS, HandShape::ROCK, HandShape::PAPER},
+    std::array<HandShape, 4>{HandShape::ERROR, HandShape::ROCK, HandShape::PAPER, HandShape::SCISSORS},
+    std::array<HandShape, 4>{HandShape::ERROR, HandShape::PAPER, HandShape::SCISSORS, HandShape::ROCK}
 };
 
 inline HandShape getHandShapeFromString(const QString& input)
@@ -32,15 +66,8 @@ inline HandShape getHandShapeFromString(const QString& input)
     return HandShape::ERROR;
 }
 
-inline Int getHandShapeValue(const HandShape& shape)
-{
-    return static_cast<Int>(shape);
-}
-
-
 inline Outcome getOutcomeFromString(const QString& input)
 {
-
     if (input == QString("X"))
         return Outcome::LOOSE;
     if (input == QString("Y"))
@@ -50,49 +77,6 @@ inline Outcome getOutcomeFromString(const QString& input)
     return Outcome::ERROR;
 }
 
-inline HandShape getHandShapeForOutcome(const HandShape& opponent_hand_shape, const Outcome& outcome)
-{
-    switch (opponent_hand_shape) {
-    case HandShape::ERROR:
-        return HandShape::ERROR;
-    case HandShape::ROCK:
-        switch (outcome) {
-        case Outcome::ERROR:
-            return HandShape::ERROR;
-        case Outcome::LOOSE:
-            return HandShape::SCISSORS;
-        case Outcome::DRAW:
-            return HandShape::ROCK;
-        case Outcome::WIN:
-            return HandShape::PAPER;
-        };
-    case HandShape::PAPER:
-        switch (outcome) {
-        case Outcome::ERROR:
-            return HandShape::ERROR;
-        case Outcome::LOOSE:
-            return HandShape::ROCK;
-        case Outcome::DRAW:
-            return HandShape::PAPER;
-        case Outcome::WIN:
-            return HandShape::SCISSORS;
-        };
-    case HandShape::SCISSORS:
-        switch (outcome) {
-        case Outcome::ERROR:
-            return HandShape::ERROR;
-        case Outcome::LOOSE:
-            return HandShape::PAPER;
-        case Outcome::DRAW:
-            return HandShape::SCISSORS;
-        case Outcome::WIN:
-            return HandShape::ROCK;
-        };
-    }
-    return HandShape::ERROR;
-}
-
-
 class Round {
 
 public:
@@ -101,11 +85,14 @@ public:
         if (values.size() != 2)
             return;
         m_opponent_hand_shape = getHandShapeFromString(values[0]);
-        if (first_strategy)
+        if (first_strategy) {
             m_self_hand_shape = getHandShapeFromString(values[1]);
-        else
-            m_self_hand_shape = getHandShapeForOutcome(m_opponent_hand_shape,
-                                                       getOutcomeFromString(values[1]));
+        }
+        else {
+            const auto i = getHandShapeValue(m_opponent_hand_shape);
+            const auto j = getOutcomeValue(getOutcomeFromString(values[1]));
+            m_self_hand_shape = hand_shape_matrix[i][j];
+        }
     }
 
     HandShape opponentHandShape() const { return m_opponent_hand_shape; }
@@ -118,57 +105,14 @@ public:
 
     Outcome getOutcome() const
     {
-        switch (m_opponent_hand_shape) {
-        case HandShape::ERROR:
-            return Outcome::ERROR;
-        case HandShape::ROCK:
-            switch (m_self_hand_shape) {
-            case HandShape::ERROR:
-                return Outcome::ERROR;
-            case HandShape::ROCK:
-                return Outcome::DRAW;
-            case HandShape::PAPER:
-                return Outcome::WIN;
-            case HandShape::SCISSORS:
-                return Outcome::LOOSE;
-            };
-        case HandShape::PAPER:
-            switch (m_self_hand_shape) {
-            case HandShape::ERROR:
-                return Outcome::ERROR;
-            case HandShape::ROCK:
-                return Outcome::LOOSE;
-            case HandShape::PAPER:
-                return Outcome::DRAW;
-            case HandShape::SCISSORS:
-                return Outcome::WIN;
-            };
-        case HandShape::SCISSORS:
-            switch (m_self_hand_shape) {
-            case HandShape::ERROR:
-                return Outcome::ERROR;
-            case HandShape::ROCK:
-                return Outcome::WIN;
-            case HandShape::PAPER:
-                return Outcome::LOOSE;
-            case HandShape::SCISSORS:
-                return Outcome::DRAW;
-            };
-        }
-        return Outcome::ERROR;
-    }
-
-    Int getOutcomeValue() const
-    {
-        const auto outcome = getOutcome();
-        if (outcome == Outcome::ERROR)
-            return 0u;
-        return static_cast<Int>(outcome);
+        const auto i = getHandShapeValue(m_opponent_hand_shape);
+        const auto j = getHandShapeValue(m_self_hand_shape);
+        return outcome_matrix[i][j];
     }
 
     Int getValue() const
     {
-        return getHandShapeValue(m_self_hand_shape) + getOutcomeValue();
+        return getHandShapeValue(m_self_hand_shape) + getOutcomeReward(getOutcome());
     }
 
 private:
