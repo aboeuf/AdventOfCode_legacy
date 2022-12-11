@@ -2,3 +2,4 @@
 #include <2022/puzzle_2022_02.h>
 #include <2022/puzzle_2022_03.h>
 #include <2022/puzzle_2022_04.h>
+#include <2022/puzzle_2022_05.h>
