@@ -92,6 +92,7 @@ SOURCES += \
     2022/puzzle_2022_03.cpp \
     2022/puzzle_2022_04.cpp \
     2022/puzzle_2022_05.cpp \
+    2022/puzzle_2022_06.cpp \
     common.cpp \
     display/display.cpp \
     display/view.cpp \
@@ -189,6 +190,7 @@ HEADERS += \
     2022/puzzle_2022_03.h \
     2022/puzzle_2022_04.h \
     2022/puzzle_2022_05.h \
+    2022/puzzle_2022_06.h \
     common.h \
     display/display.h \
     display/view.h \
