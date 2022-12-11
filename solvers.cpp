@@ -174,6 +174,8 @@ Solvers::Solvers()
   m_solvers[2022][5][2] = new Solver_2022_05_2();
   m_solvers[2022][6][1] = new Solver_2022_06_1();
   m_solvers[2022][6][2] = new Solver_2022_06_2();
+  m_solvers[2022][7][1] = new Solver_2022_07_1();
+  m_solvers[2022][7][2] = new Solver_2022_07_2();
 }
 
 Solvers::~Solvers()
