@@ -1,5 +1,4 @@
-#ifndef DISPLAY_H
-#define DISPLAY_H
+#pragma once
 
 #include <QMainWindow>
 #include <QGraphicsScene>
@@ -22,5 +21,3 @@ public:
 private:
   Ui::Display *ui;
 };
-
-#endif // DISPLAY_H

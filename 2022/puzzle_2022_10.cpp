@@ -70,20 +70,36 @@ public:
     QString puzzleOne() const { return QString("%1").arg(m_puzzle_one); }
     const QString& CRT() const { return m_CRT; }
 
-    QString m_log;
+    void displayCRT(Display* display) const {
+        if (not display)
+            return;
+        display->scene()->clear();
+        QPen pen;
+        pen.setWidth(0);
+        QBrush brush(QColor("Black"));
+        auto x = 0;
+        auto y = 0;
+        for (const auto& c : m_CRT) {
+            if (c == '\n') {
+                x = 0;
+                ++y;
+                continue;
+            }
+            if (c == '#')
+                display->scene()->addRect(x, -y, 1.0, 1.0, pen, brush);
+            ++x;
+        }
+        display->show();
+        display->fit();
+    }
 
 private:
     void tick() {
         if (m_current_cycle >= 20 and
                 m_current_cycle <= 220 and
-                    (m_current_cycle - 20) % 40 == 0)
+                (m_current_cycle - 20) % 40 == 0)
             m_puzzle_one += m_current_cycle * m_register;
         m_current_instruction.tick();
-        m_log += QString("C[%1] R[%2] S[%3]\n")
-                .arg(m_current_cycle)
-                .arg(m_register)
-                .arg(m_current_cycle * m_register);
-
         const auto pixel_position = (m_current_cycle - 1) % 40;
         m_CRT.push_back(std::abs(m_register - pixel_position) < 2 ? '#' : '.');
         if (pixel_position == 39)
@@ -110,5 +126,6 @@ void Solver_2022_10_2::solve(const QString& input)
 {
     const auto circuit = puzzle_2022_10::ClockCircuit(input);
     emit output(circuit.CRT());
+    circuit.displayCRT(this->m_display);
     emit finished("Done");
 }
