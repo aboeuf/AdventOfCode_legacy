@@ -9,3 +9,4 @@
 #include <2022/puzzle_2022_09.h>
 #include <2022/puzzle_2022_10.h>
 #include <2022/puzzle_2022_11.h>
+#include <2022/puzzle_2022_12.h>
