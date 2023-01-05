@@ -13,3 +13,4 @@
 #include <2022/puzzle_2022_13.h>
 #include <2022/puzzle_2022_14.h>
 #include <2022/puzzle_2022_15.h>
+#include <2022/puzzle_2022_16.h>
