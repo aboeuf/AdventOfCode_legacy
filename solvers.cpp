@@ -9,6 +9,7 @@
 #include <2020/event_2020.h>
 #include <2021/event_2021.h>
 #include <2022/event_2022.h>
+#include <2023/event_2023.h>
 
 Solvers::Solvers()
 {
@@ -194,6 +195,8 @@ Solvers::Solvers()
   m_solvers[2022][8][2] = new Solver_2022_08_2();
   m_solvers[2022][9][1] = new Solver_2022_09_1();
   m_solvers[2022][9][2] = new Solver_2022_09_2();
+  m_solvers[2023][1][1] = new Solver_2023_01_1();
+  m_solvers[2023][1][2] = new Solver_2023_01_2();
 }
 
 Solvers::~Solvers()
