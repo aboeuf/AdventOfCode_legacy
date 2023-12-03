@@ -8,10 +8,18 @@
 #include <jsonhelper.h>
 #include <unordered_map>
 #include <display/display.h>
+#include <leaderboard.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+struct BoardConf
+{
+    BoardConf() = default;
+    QString name{"default_name"};
+    QMap<unsigned int, qint64> last_updated{};
+};
 
 struct Configuration
 {
@@ -25,7 +33,8 @@ struct Configuration
   int m_day{};
   bool m_puzzle_1{};
   bool m_use_last_input{};
-  std::unordered_map<std::string, QString> m_cookies{};
+  QMap<QString, QString> m_cookies{};
+  QMap<QString, BoardConf> m_leaderboards{};
   QString m_src_directory{};
 };
 
@@ -50,14 +59,26 @@ private slots:
   void on_m_push_button_solver_output_clicked();
   void on_m_push_button_program_output_clicked();
   void on_m_push_button_sources_clicked();
+  void on_m_add_leaderboard_push_button_clicked();
+  void on_m_delete_leaderboard_push_button_clicked();
+  void on_m_update_leaderboard_push_button_clicked();
+  void on_m_leaderboard_combo_box_currentIndexChanged(int);
+  void on_m_leaderboard_name_le_editingFinished();
+  void on_m_leaderboard_table_widget_currentCellChanged(int row, int column, int, int);
   void onOutputReceived(const QString& output);
   void closeEvent(QCloseEvent *event);
 
 private:
+  void updateLeaderboard(bool force = false);
+  void updateLeaderboardDisplay();
+  void fillComboBox();
+  void saveConfig();
   void solve();
   void downloadPuzzleInput();
   QString createDefault();
   bool setSources();
+  BoardConf& getCurrentBoardConf(QString *ret_id = nullptr);
+  QString getCurrentBoardFilepath() const;
 
   Ui::MainWindow *ui;
   Display m_display;
@@ -66,5 +87,10 @@ private:
   Solver* m_running_solver{nullptr};
   Configuration m_config;
   QString m_dir_path;
+  QString m_last_selected{""};
+  bool m_puzzle_requested = false;
+  bool m_leaderboard_requested = false;
+  qint64 m_requested_event = 0;
+  Leaderboard m_current_board{};
 };
 #endif // MAINWINDOW_H

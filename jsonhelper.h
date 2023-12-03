@@ -34,6 +34,13 @@ struct Type<int>
 };
 
 template <>
+struct Type<qint64>
+{
+  static QJsonValue::Type get() { return QJsonValue::Double; }
+  static int cast(const QJsonValue& value) { return static_cast<qint64>(value.toInt()); }
+};
+
+template <>
 struct Type<double>
 {
   static QJsonValue::Type get() { return QJsonValue::Double; }

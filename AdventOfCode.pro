@@ -108,6 +108,7 @@ SOURCES += \
     common.cpp \
     display/display.cpp \
     display/view.cpp \
+    leaderboard.cpp \
     main.cpp \
     mainwindow.cpp \
     solvers.cpp
@@ -219,6 +220,7 @@ HEADERS += \
     display/display.h \
     display/view.h \
     jsonhelper.h \
+    leaderboard.h \
     mainwindow.h \
     solvers.h
 
