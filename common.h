@@ -6,6 +6,7 @@
 #include <functional>
 #include <iso646.h>
 #include <QHash>
+#include <QDebug>
 
 namespace common {
 
