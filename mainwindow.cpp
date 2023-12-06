@@ -711,21 +711,50 @@ QString MainWindow::createDefault()
                    "\n"
                    "namespace puzzle_%1_%2 {\n"
                    "\n"
+                   "class Line\n"
+                   "{\n"
+                   "public:\n"
+                   "    Line(const QString& input) : m_line{input} {}\n"
+                   "\n"
+                   "private:\n"
+                   "    QString m_line;\n"
+                   "};\n"
+                   "\n"
+                   "class Lines\n"
+                   "{\n"
+                   "public:\n"
+                   "    Lines(const QString& input) {\n"
+                   "        auto lines = common::splitLines(input);\n"
+                   "        lines.reserve(lines.size());\n"
+                   "        for (const auto& line : lines)\n"
+                   "            m_lines.emplace_back(line);\n"
+                   "    }\n"
+                   "\n"
+                   "    QString solveOne() const { return \"Default\"; }\n"
+                   "    QString solveTwo() const { return \"Default\"; }\n"
+                   "\n"
+                   "private:\n"
+                   "    std::vector<Line> m_lines;\n"
+                   "};\n"
+                   "\n"
                    "}\n"
                    "\n"
                    "void Solver_%1_%2_1::solve(const QString& input)\n"
                    "{\n"
-                   "  emit output(input);\n"
-                   "  emit finished(\"Default\");\n"
+                   "    emit output(input);\n"
+                   "    const auto lines = puzzle_%1_%2::Lines{input};\n"
+                   "    emit finished(lines.solveOne());\n"
                    "}\n"
                    "\n"
                    "void Solver_%1_%2_2::solve(const QString& input)\n"
                    "{\n"
-                   "  emit output(input);\n"
-                   "  emit finished(\"Default\");\n"
+                   "    emit output(input);\n"
+                   "    const auto lines = puzzle_%1_%2::Lines{input};\n"
+                   "    emit finished(lines.solveTwo());\n"
                    "}\n").arg(year).arg(day, 2, 10, QChar('0'));
-  } else
+  } else {
     return "Error: cannot create file " + implem;
+  }
 
   QFile event_file(dir.absolutePath() + QString("/event_%1.h").arg(year));
   if (event_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -733,8 +762,9 @@ QString MainWindow::createDefault()
     for (const auto& file : dir.entryList())
       if (file.startsWith("puzzle_") and file.endsWith(".h"))
         out << QString("#include <%1/%2>\n").arg(year).arg(file);
-  } else
+  } else {
     return "Error: cannot create write in file " + QString("event_%1.h").arg(year);
+  }
 
   QFile pro_file_in(rootpath + "/AdventOfCode.pro");
   QStringList begin;
