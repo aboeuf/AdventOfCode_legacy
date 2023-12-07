@@ -4,3 +4,4 @@
 #include <2023/puzzle_2023_04.h>
 #include <2023/puzzle_2023_05.h>
 #include <2023/puzzle_2023_06.h>
+#include <2023/puzzle_2023_07.h>
