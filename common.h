@@ -10,6 +10,9 @@
 
 namespace common {
 
+void throwRunTimeError(const QString& message);
+void throwInvalidArgumentError(const QString& message);
+
 QStringList splitLines(const QString& input);
 QStringList splitValues(const QString& input, const QChar& split_char = ',');
 QVector<int> toIntValues(const QString& input, const QChar& split_char = ',');

@@ -3,6 +3,16 @@
 
 namespace common {
 
+void throwRunTimeError(const QString& message)
+{
+    throw std::runtime_error(message.toStdString());
+}
+
+void throwInvalidArgumentError(const QString& message)
+{
+    throw std::invalid_argument(message.toStdString());
+}
+
 QStringList splitLines(const QString& input)
 {
   QStringList res = input.split('\n');
