@@ -10,3 +10,4 @@
 #include <2023/puzzle_2023_10.h>
 #include <2023/puzzle_2023_11.h>
 #include <2023/puzzle_2023_12.h>
+#include <2023/puzzle_2023_13.h>
