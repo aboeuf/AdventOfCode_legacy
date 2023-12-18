@@ -30,6 +30,8 @@ public:
 
   bool empty() const { return m_data.isEmpty(); }
 
+  int size() const { return m_data.size(); }
+
   std::optional<std::pair<Data, Scalar>> pop()
   {
     if (m_data.isEmpty())

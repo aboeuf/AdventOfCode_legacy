@@ -13,3 +13,6 @@
 #include <2023/puzzle_2023_13.h>
 #include <2023/puzzle_2023_14.h>
 #include <2023/puzzle_2023_15.h>
+#include <2023/puzzle_2023_16.h>
+#include <2023/puzzle_2023_17.h>
+#include <2023/puzzle_2023_18.h>
