@@ -8,7 +8,7 @@
 
 namespace puzzle_2023_17 {
 
-enum class Direction
+enum class Direction : unsigned int
 {
     none,
     north,
@@ -17,7 +17,7 @@ enum class Direction
     east
 };
 
-const auto directions = std::array<Direction, 4>{Direction::north, Direction::west, Direction::south, Direction::east};
+constexpr auto nb_directions = 5u;
 
 QChar dirToChar(const Direction& dir) {
     if (dir == Direction::north)
@@ -44,6 +44,14 @@ inline Direction oppositeDirection(const Direction dir) {
     return dir;
 }
 
+inline QVector<Direction> orthogonalDirections(const Direction dir) {
+    if (dir == Direction::north or dir == Direction::south)
+        return QVector<Direction>{Direction::west, Direction::east};
+    if (dir == Direction::west or dir == Direction::east)
+        return QVector<Direction>{Direction::north, Direction::south};
+    return QVector<Direction>{};
+}
+
 struct Coordinates
 {
     Coordinates() = default;
@@ -62,135 +70,106 @@ struct Coordinates
             common::throwInvalidArgumentError("Coordinates::constructor: unknown direction");
     }
 
-    int x{-1};
-    int y{-1};
+    int x{0};
+    int y{0};
 };
 
 bool operator == (const Coordinates& lhs, const Coordinates& rhs) {
     return lhs.x == rhs.x and lhs.y == rhs.y;
 }
 
-uint qHash(const Coordinates& c) {
-    return qHash(QString("%1,%2").arg(c.x).arg(c.y));
-}
-
-struct CostAndPrevious
-{
-    uint cost{std::numeric_limits<uint>::max()};
-    Direction previous{Direction::none};
-};
-
-class CostAndPreviousMap
-{
-public:
-    CostAndPreviousMap(int length, int width) : m_length{length}, m_width{width} {
-        m_map.reserve(length);
-        for (auto i = 0; i < length; ++i) {
-            m_map.emplace_back();
-            m_map.back().reserve(width);
-            for (auto j = 0; j < width; ++j)
-                m_map.back().emplace_back();
-        }
+struct Node {
+    Node() = default;
+    Node(const Coordinates& coordinates) : coordinates{coordinates} {}
+    Node(const Node& parent, Direction direction) :
+        coordinates{parent.coordinates, direction},
+        direction_to_parent{oppositeDirection(direction)} {
+        if (direction_to_parent == parent.direction_to_parent)
+            nb_steps = parent.nb_steps + 1u;
+        else
+            nb_steps = 0u;
     }
 
     QString toString() const {
-        const auto separator = "\n" + QString{5 * m_width + 4, QChar{'-'}} + "\n";
-        auto str = separator + "|  |";
-        for (auto i = 0; i < m_width; ++i) {
-            str += QString("%1|").arg(i, 4, 10, QChar('0'));
+        return QString("%1,%2,%3,%4")
+                .arg(coordinates.x)
+                .arg(coordinates.y)
+                .arg(dirToChar(direction_to_parent))
+                .arg(nb_steps);
+    }
+
+    QVector<Direction> complementDirections(const uint min_nb_steps) const {
+        auto directions = QVector<Direction>{Direction::north, Direction::west, Direction::south, Direction::east};
+        directions.removeOne(direction_to_parent);
+        if (nb_steps + 1 < min_nb_steps) {
+            for (auto dir : orthogonalDirections(direction_to_parent))
+                directions.removeOne(dir);
         }
-        str += separator;
-        for (auto i = 0; i < m_length; ++i) {
-            str += QString("|%1|").arg(i, 2, 10, QChar('0'));
-            for (auto j = 0; j < m_width; ++j) {
-                const auto& data = m_map[i][j];
-                str += QString("%1").arg(std::min(data.cost, 999u), 3, 10, QChar('0'));
-                str.push_back(dirToChar(data.previous));
-                str.push_back('|');
-            }
-            str += separator;
-        }
-        return str;
+        return directions;
+    }
+
+    Coordinates coordinates{};
+    Direction direction_to_parent{Direction::none};
+    uint nb_steps{0};
+};
+
+bool operator == (const Node& lhs, const Node& rhs) {
+    return lhs.coordinates == rhs.coordinates and lhs.direction_to_parent == rhs.direction_to_parent and lhs.nb_steps == rhs.nb_steps;
+}
+
+uint qHash(const Node& node) {
+    return qHash(node.toString());
+}
+
+class CostMap
+{
+public:
+    CostMap(int length, int width) : m_length{length}, m_width{width} {
+        m_costs.resize(m_length);
+        for (auto x = 0; x < m_length; ++x)
+            m_costs[x].resize(m_width);
+    }
+
+    const QHash<Node, uint>& operator[](const Coordinates& c) const {
+        return m_costs[c.x][c.y];
+    }
+
+    QHash<Node, uint>& operator[](const Coordinates& c) {
+        return m_costs[c.x][c.y];
     }
 
     bool areValidCoordinates(const Coordinates& c) const {
         return c.x > -1 and c.x < m_length and c.y > -1 and c.y < m_width;
     }
 
-    bool isConstraintViolated(const Coordinates& c, const std::optional<uint>& constraint) const {
-        if (not areValidCoordinates(c))
-            return true;
-        if (not constraint.has_value())
-            return false;
-        const auto direction = m_map[c.x][c.y].previous;
-        if (direction == Direction::none)
-            return false;
-        auto current = Coordinates{c, direction};
-        for (auto i = 0u; i + 1u < *constraint; ++i) {
-            if (not areValidCoordinates(current))
-                return false;
-            if (direction != m_map[current.x][current.y].previous)
-                return false;
-            current = Coordinates{current, direction};
+    uint minCost(const Coordinates& c, const uint nb_steps_min) const {
+        auto min_cost = std::numeric_limits<uint>::max();
+        const auto& cell = (*this)[c];
+        for (auto it = std::begin(cell); it != std::end(cell); ++it) {
+            if (it.key().nb_steps + 1u >= nb_steps_min)
+                min_cost = std::min(min_cost, it.value());
         }
-        return true;
+        return min_cost;
     }
 
-    const CostAndPrevious& operator[] (const Coordinates& c) const {
-        if (not areValidCoordinates(c))
-            common::throwInvalidArgumentError(QString("CostAndPreviousMap::operator[]: out of range (%1, %2)").arg(c.x).arg(c.y));
-        return m_map[c.x][c.y];
+    uint getCost(const Node& node) const {
+        const auto& cell = (*this)[node.coordinates];
+        if (cell.contains(node))
+            return cell[node];
+        return std::numeric_limits<uint>::max();
     }
 
-    CostAndPrevious& operator[] (const Coordinates& c) {
-        if (not areValidCoordinates(c))
-            common::throwInvalidArgumentError(QString("CostAndPreviousMap::operator[]: out of range (%1, %2)").arg(c.x).arg(c.y));
-        return m_map[c.x][c.y];
+    void setCost(const Node& node, uint cost) {
+        auto& cell = (*this)[node.coordinates];
+        cell[node] = cost;
     }
-
 
 private:
-    std::vector<std::vector<CostAndPrevious>> m_map;
     int m_length;
     int m_width;
+    std::vector<std::vector<QHash<Node, uint>>> m_costs{};
 };
 
-struct Node
-{
-    Node() : index{std::numeric_limits<uint>::max()} {}
-    Node(const Coordinates& coordinates) : index{next_index++}, coordinates{coordinates} {}
-
-    uint index{0};
-    Coordinates coordinates{};
-    std::optional<uint> previous{std::nullopt};
-    uint cost{0};
-
-    static uint next_index;
-};
-
-uint Node::next_index = uint{0};
-
-bool operator == (const Node& lhs, const Node& rhs) {
-    return lhs.index == rhs.index;
-}
-
-uint qHash(const Node& node) {
-    return node.index;
-}
-
-struct Tree
-{
-    std::optional<Node> getPreviousNode(const Node& node) {
-        if (not node.previous.has_value())
-            return std::nullopt;
-        if (nodes.contains(*node.previous))
-            return nodes[*node.previous];
-        return std::nullopt;
-    }
-
-    QHash<uint, Node> nodes{};
-    std::optional<Node> optimal_leaf{std::nullopt};
-};
 
 class Map
 {
@@ -216,129 +195,44 @@ public:
         }
     }
 
-    CostAndPreviousMap getUnconstrainedMap(const Coordinates& start) const
+    CostMap computeCostMap(const Coordinates& start, const Coordinates& end, const uint nb_steps_min, const uint nb_steps_max) const
     {
-        auto map = CostAndPreviousMap{m_length, m_width};
-        map[start].cost = 0;
-
-        auto open_set = common::OpenSet<Coordinates, uint>{};
-        open_set.push(start, 0);
-
-        const auto add_child = [&map, &open_set, this] (const Coordinates& current_coordinates, const Direction next_direction) {
-            auto& current = map[current_coordinates];
-            if (current.previous == next_direction)
-                return;
-            const auto next_coordinates = Coordinates{current_coordinates, next_direction};
-            if (map.areValidCoordinates(next_coordinates)) {
-                auto& next = map[next_coordinates];
-                const auto new_cost = current.cost + m_blocks[next_coordinates.x][next_coordinates.y];
-                if (new_cost < next.cost) {
-                    next.cost = new_cost;
-                    next.previous = oppositeDirection(next_direction);
-                    open_set.push(next_coordinates, new_cost);
-                }
-            }
-        };
-
-        while (not open_set.empty()) {
-            const auto current = open_set.pop();
-            if (not current.has_value())
-                break;
-            for (const auto direction : directions)
-                add_child(current->first, direction);
-        }
-        return map;
-    }
-
-    CostAndPreviousMap getConstrainedMap(const Coordinates& start, const Coordinates& end, const std::optional<uint>& constraint = std::nullopt) const
-    {
-        const auto unconstrained_map = getUnconstrainedMap(end);
-
-        auto map = CostAndPreviousMap{m_length, m_width};
-        map[start].cost = 0;
-
-        auto open_set = common::OpenSet<Coordinates, uint>{};
-        open_set.push(start, 0);
-
-        const auto add_child = [constraint, &unconstrained_map, &map, &open_set, this] (const Coordinates& current_coordinates, const Direction next_direction) {
-            auto& current = map[current_coordinates];
-            if (current.previous == next_direction)
-                return;
-            const auto next_coordinates = Coordinates{current_coordinates, next_direction};
-            if (unconstrained_map.isConstraintViolated(next_coordinates, constraint))
-                return;
-            auto& next = map[next_coordinates];
-            const auto new_cost = current.cost + m_blocks[next_coordinates.x][next_coordinates.y];
-            if (new_cost < next.cost) {
-                next.cost = new_cost;
-                next.previous = oppositeDirection(next_direction);
-                open_set.push(next_coordinates, new_cost);
-            }
-        };
-
-        while (not open_set.empty()) {
-            const auto current = open_set.pop();
-            if (not current.has_value())
-                break;
-            for (const auto direction : directions)
-                add_child(current->first, direction);
-        }
-        return map;
-    }
-
-    Tree getOptimalPath(const Coordinates& start, const Coordinates& end, const std::optional<uint>& constraint = std::nullopt) const
-    {
-        const auto map = getUnconstrainedMap(start);
-
-        auto tree = Tree{};
-        const auto root_node = Node{start};
-        tree.nodes[0] = root_node;
-
+        const auto start_node = Node{start};
         auto open_set = common::OpenSet<Node, uint>{};
-        open_set.push(root_node, 0);
+        open_set.push(start_node, 0u);
 
-        const auto add_child = [&constraint, &map, &tree, &open_set, this](const Node& current, Direction direction) {
-            const auto next_coordinates = Coordinates{current.coordinates, direction};
-            if (map.isConstraintViolated(next_coordinates, constraint))
+        auto cost_map = CostMap{m_length, m_width};
+        cost_map.setCost(start_node, 0u);
+
+        const auto add_child = [&open_set, &cost_map, nb_steps_max, this] (const Node& father, const Direction direction) {
+            const auto child = Node{father, direction};
+            if (not cost_map.areValidCoordinates(child.coordinates) or child.nb_steps >= nb_steps_max)
                 return;
-            if (map[next_coordinates].previous != oppositeDirection(direction))
-                return;
-            auto node = Node{next_coordinates};
-            node.previous = current.index;
-            node.cost = current.cost + m_blocks[next_coordinates.x][next_coordinates.y];
-            tree.nodes[node.index] = node;
-            open_set.push(node, node.cost);
+            const auto new_cost = cost_map.getCost(father) + m_blocks[child.coordinates.x][child.coordinates.y];
+            if (new_cost < cost_map.getCost(child)) {
+                cost_map.setCost(child, new_cost);
+                open_set.push(child, new_cost);
+            }
         };
 
         while (not open_set.empty()) {
             const auto current = open_set.pop();
             if (not current.has_value())
-                return tree;
+                break;
             const auto& current_node = current->first;
-            if (current_node.coordinates == end) {
-                tree.optimal_leaf = current_node;
-                return tree;
-            }
-            for (const auto direction : directions)
+            if (current_node.coordinates == end and current_node.nb_steps + 1u >= nb_steps_min)
+                return cost_map;
+            for (const auto direction : current_node.complementDirections(nb_steps_min))
                 add_child(current_node, direction);
         }
-        return tree;
+        return cost_map;
     }
 
-    QString solveOne() const {
-        const auto start = Coordinates{0, 0};
+    QString solve(const uint nb_steps_min, const uint nb_steps_max) const {
+        const auto start = Coordinates{0u, 0u};
         const auto end = Coordinates{m_length - 1, m_width - 1};
-        const auto tree = getOptimalPath(start, end, 3u);
-        if (tree.optimal_leaf.has_value())
-            return QString("%1").arg(tree.optimal_leaf->cost);
-        return "Failure";
-    }
-
-    QString solveTwo() const {
-        const auto start = Coordinates{0, 0};
-        const auto end = Coordinates{m_length - 1, m_width - 1};
-        const auto map = getConstrainedMap(start, end, 3);
-        return map.toString();
+        const auto cost_map = computeCostMap(start, end, nb_steps_min, nb_steps_max);
+        return QString("%1").arg(cost_map.minCost(end, nb_steps_min));
     }
 
 private:
@@ -352,12 +246,11 @@ private:
 void Solver_2023_17_1::solve(const QString& input)
 {
     const auto map = puzzle_2023_17::Map{input};
-    emit finished(map.solveOne());
+    emit finished(map.solve(1u, 3u));
 }
 
 void Solver_2023_17_2::solve(const QString& input)
 {
     const auto map = puzzle_2023_17::Map{input};
-    emit output(map.solveTwo());
-    emit finished("Done");
+    emit finished(map.solve(4u, 10u));
 }
