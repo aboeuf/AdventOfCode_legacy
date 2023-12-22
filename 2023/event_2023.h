@@ -17,3 +17,6 @@
 #include <2023/puzzle_2023_17.h>
 #include <2023/puzzle_2023_18.h>
 #include <2023/puzzle_2023_19.h>
+#include <2023/puzzle_2023_20.h>
+#include <2023/puzzle_2023_21.h>
+#include <2023/puzzle_2023_22.h>
