@@ -48,6 +48,41 @@ struct Coordinates
     int y{0};
 };
 
+inline void exportCosMap(const QHash<Coordinates, Int>& cost_map) {
+    QFile file("/home/aboeuf/cost_map.csv");
+    if (not file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+    auto x_min = std::numeric_limits<int>::max();
+    auto y_min = std::numeric_limits<int>::max();
+    auto x_max = std::numeric_limits<int>::min();
+    auto y_max = std::numeric_limits<int>::min();
+    for (auto it = std::begin(cost_map); it != std::end(cost_map); ++it) {
+        x_min = std::min(x_min, it.key().x);
+        y_min = std::min(y_min, it.key().y);
+        x_max = std::max(x_max, it.key().x);
+        y_max = std::max(y_max, it.key().y);
+    }
+    QTextStream out(&file);
+    out << "y";
+    for (auto x = x_min; x <= x_max; ++x)
+        out << QString(",%1").arg(x);
+    out << "\n";
+    for (auto y = y_max; y >= y_min; --y) {
+        out << QString("%1").arg(y);
+        for (auto x = x_min; x <= x_max; ++x) {
+            out << ",";
+            const auto c = Coordinates(x, y);
+            if (cost_map.contains(c)) {
+                out << QString("%1").arg(cost_map[c]);
+            } else {
+                out << "#";
+            }
+        }
+        out << "\n";
+    }
+    file.close();
+}
+
 bool operator == (const Coordinates& lhs, const Coordinates& rhs) {
     return lhs.x == rhs.x and lhs.y == rhs.y;
 }
@@ -95,6 +130,10 @@ public:
             common::throwInvalidArgumentError("Grid::constructor: no starting point has been defined");
     }
 
+    Int dimension() const {
+        return static_cast<Int>(m_dimension);
+    }
+
     Coordinates toLocal(const Coordinates& c) const {
         const auto mod = [](const int value, const int modulo) {
             if (value < 0) {
@@ -117,9 +156,16 @@ public:
         return getInfinite(c) == CellType::plot;
     }
 
-    QHash<Coordinates, Int> computeCostMap(const Int N) const {
-        const auto dim = static_cast<std::size_t>(m_dimension);
-        const auto nb_step_max = N  * dim;
+    std::vector<Int> getNbCellsPerSteps(const Int nb_steps_max) const {
+        const auto cost_map = computeCostMap(nb_steps_max);
+        auto nb_cells = std::vector<Int>{};
+        nb_cells.resize(nb_steps_max + 1, Int{0});
+        for (auto it = std::begin(cost_map); it != std::end(cost_map); ++it)
+            ++nb_cells[it.value()];
+        return nb_cells;
+    }
+
+    QHash<Coordinates, Int> computeCostMap(const Int nb_steps_max) const {
         auto cost_map = QHash<Coordinates, Int>{};
         cost_map[m_start] = Int{0};
         auto open_set = common::OpenSet<Coordinates, Int>{};
@@ -128,9 +174,9 @@ public:
         while (current.has_value()) {
             const auto& father = current->first;
             if (not cost_map.contains(father))
-                common::throwRunTimeError("cannot find father cost");
+                common::throwRunTimeError("computeCostMap: cannot find father cost");
             const auto father_cost = cost_map[father];
-            if (father_cost < nb_step_max) {
+            if (father_cost < nb_steps_max) {
                 const auto child_cost = father_cost + Int{1};
                 for (const auto direction : directions) {
                     const auto child = Coordinates(father, direction);
@@ -191,7 +237,7 @@ public:
         return third_order;
     }
 
-    Int getNbCellsTemp(const Int nb_step_max) const {
+    Int getNbCellsTemp(const Int nb_steps_max) const {
         auto cost_map = QHash<Coordinates, Int>{};
         cost_map[m_start] = Int{0};
         auto open_set = common::OpenSet<Coordinates, Int>{};
@@ -202,7 +248,7 @@ public:
             if (not cost_map.contains(father))
                 common::throwRunTimeError("cannot find father cost");
             const auto father_cost = cost_map[father];
-            if (father_cost < nb_step_max) {
+            if (father_cost < nb_steps_max) {
                 const auto child_cost = father_cost + Int{1};
                 for (const auto direction : directions) {
                     const auto child = Coordinates(father, direction);
@@ -216,7 +262,7 @@ public:
             }
             current = open_set.pop();
         }
-        const auto target_parity = (nb_step_max % 2u == 0u);
+        const auto target_parity = (nb_steps_max % 2u == 0u);
         auto nb_cells = Int{0};
         for (auto it = std::begin(cost_map); it != std::end(cost_map); ++it) {
             const auto parity = (it.value() % 2u == 0u);
@@ -294,7 +340,8 @@ private:
 void Solver_2023_21_1::solve(const QString& input)
 {
     const auto grid = puzzle_2023_21::Grid{input};
-    grid.test1(5, 5);
+    const auto cost_map = grid.computeCostMap(50);
+    puzzle_2023_21::exportCosMap(cost_map);
     emit finished("done test1");
 }
 
@@ -312,10 +359,25 @@ inline void exportVector(const QString& filepath, const std::vector<puzzle_2023_
 void Solver_2023_21_2::solve(const QString& input)
 {
     const auto grid = puzzle_2023_21::Grid{input};
-    const auto N = 20u;
-    exportVector("/home/aboeuf/shared/test_aoc/test_aoc_first_order.csv", grid.getFirstOrder(N));
-    exportVector("/home/aboeuf/shared/test_aoc/test_aoc_second_order.csv", grid.getSecondOrder(N));
-    exportVector("/home/aboeuf/shared/test_aoc/test_aoc_third_order.csv", grid.getThirdOrder(N));
-    exportVector("/home/aboeuf/shared/test_aoc/test_aoc_third_order_test.csv", grid.getThirdOrderTest(N));
-    emit finished("done test2");
+    const auto N = puzzle_2023_21::Int{26501365};
+    const auto D = grid.dimension();
+    const auto r = N % D;
+    const auto q = N / D;
+    const auto v_serie = grid.getNbCellsPerSteps(2 * D + r);
+    auto u_serie = std::vector<puzzle_2023_21::Int>{};
+    u_serie.reserve(v_serie.size());
+    for (auto i = 0u; i < v_serie.size(); ++i) {
+        const auto v_i = v_serie[i];
+        const auto u_i = i > 1u ? v_i + u_serie[i - 2u] : v_i;
+        u_serie.emplace_back(u_i);
+    }
+    auto u_prev = u_serie[D + r];
+    auto u_prev_prev = u_serie[r];
+    const auto R = u_serie[2 * D + r] - 2 * u_prev + u_prev_prev;
+    for (auto i = 0u; i + 1 < q; ++i) {
+        const auto u = 2 * u_prev + R - u_prev_prev;
+        u_prev_prev = u_prev;
+        u_prev = u;
+    }
+    emit finished(QString("%1").arg(u_prev));
 }
