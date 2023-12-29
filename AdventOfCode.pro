@@ -125,6 +125,9 @@ SOURCES += \
     2023/puzzle_2023_20.cpp \
     2023/puzzle_2023_21.cpp \
     2023/puzzle_2023_22.cpp \
+    2023/puzzle_2023_23.cpp \
+    2023/puzzle_2023_24.cpp \
+    2023/puzzle_2023_25.cpp \
     common.cpp \
     display/display.cpp \
     display/view.cpp \
@@ -256,6 +259,9 @@ HEADERS += \
     2023/puzzle_2023_20.h \
     2023/puzzle_2023_21.h \
     2023/puzzle_2023_22.h \
+    2023/puzzle_2023_23.h \
+    2023/puzzle_2023_24.h \
+    2023/puzzle_2023_25.h \
     common.h \
     display/display.h \
     display/view.h \

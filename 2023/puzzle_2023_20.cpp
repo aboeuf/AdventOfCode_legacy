@@ -1,5 +1,6 @@
 #include <2023/puzzle_2023_20.h>
 #include <common.h>
+#include <numeric>
 
 namespace puzzle_2023_20 {
 
@@ -54,9 +55,27 @@ public:
 
     virtual void process(const Message& in, QList<Message>& out) = 0;
 
+    bool isSet() const { return m_is_set; }
+
+    Int getCycleSize() const {
+        if (not m_is_set)
+            return Int{0};
+        return std::max(Int{1}, static_cast<Int>(m_history.size() / 2));
+    }
+
 private:
     QString m_label{""};
     QStringList m_outputs{};
+
+protected:
+//    void settle() {
+//        if (m_is_set or m_history.empty() or not m_history.size() % 2 == 0)
+//            return;
+//       auto mid =
+//    }
+
+    bool m_is_set{false};
+    QList<bool> m_history{};
 };
 
 class Broadcaster : public Module
@@ -81,8 +100,6 @@ public:
         broadcast(m_is_on ? Pulse::hight : Pulse::low, out);
     }
 
-    bool isOn() const { return m_is_on; }
-
 private:
     bool m_is_on;
 };
@@ -92,15 +109,21 @@ class Conjunction : public Module
 public:
     Conjunction(const QString& label, const QStringList& outputs) : Module{label, outputs} {}
 
+    const QHash<QString, uint>& firstOnAtCycle() const {
+        return m_first_on_at_cycle;
+    }
+
     void process(const Message& in, QList<Message>& out) final {
         m_last_received[in.from] = in.pulse;
-        for (auto it = std::begin(m_last_received); it != std::end(m_last_received); ++it) {
-            if (it.value() == Pulse::low) {
-                broadcast(Pulse::hight, out);
-                return;
-            }
-        }
-        broadcast(Pulse::low, out);
+//        if (in.pulse == Pulse::hight and not m_first_on_at_cycle.contains(in.from))
+//            m_first_on_at_cycle[in.from] = Compter::nb_cycles;
+        auto all_on = [this]() {
+            for (auto it = std::begin(m_last_received); it != std::end(m_last_received); ++it)
+                if (it.value() == Pulse::low)
+                    return false;
+            return true;
+        }();
+        broadcast(all_on ? Pulse::low : Pulse::hight, out);
     }
 
     void addInput(const QString& label) {
@@ -108,14 +131,15 @@ public:
     }
 
 private:
+    bool m_is_on;
     QHash<QString, Pulse> m_last_received;
+    QHash<QString, uint> m_first_on_at_cycle;
 };
 
 class Network
 {
 public:
     Network(const QString& input) {
-
         // Parse input
         auto lines = common::splitLines(input);
         for (auto& line : lines) {
@@ -162,17 +186,61 @@ public:
             }
             std::swap(current, out);
         }
+//        ++Compter::nb_cycles;
     }
 
     QString solveOne() {
         Compter::reset();
-        for (auto i = 0; i < 1000; ++i)
+        for (auto i = 0u; i < 1000u; ++i)
             pressButton();
         return QString("%1").arg(Compter::low * Compter::hight);
     }
 
     QString solveTwo() {
-        return "Default";
+        Compter::reset();
+//        ++Compter::nb_cycles;
+
+        // Find the conjontion module "nearest" to to "rx"
+        auto current = QString("rx");
+        auto inputs = QSet<QString>{};
+        for (;;) {
+            qDebug() << current;
+            inputs.clear();
+            for (auto it = std::begin(m_modules); it != std::end(m_modules); ++it)
+                if (it.value()->outputs().contains(current))
+                    inputs << it.key();
+            if (inputs.empty())
+                common::throwRunTimeError("Network::solveTwo: empty inputs");
+            if (inputs.size() > 1)
+                break;
+            current = *inputs.begin();
+        }
+        auto debug_string = QString("|");
+        for (const auto& input : inputs)
+            debug_string += input + "|";
+        qDebug() << debug_string;
+
+        const auto conjuction_module = std::dynamic_pointer_cast<Conjunction>(m_modules[current]);
+        if (not conjuction_module)
+            common::throwRunTimeError("Network::solveTwo: failed to find conjuction module");
+
+        // Run the cycles until all of those module have turned on at least once
+        const auto& first_on = conjuction_module->firstOnAtCycle();
+        const auto all_inputs_are_set = [inputs, &first_on]() {
+            for (const auto& input : inputs)
+                if (not first_on.contains(input))
+                    return false;
+            return true;
+        };
+        while (not all_inputs_are_set()) { pressButton(); }
+
+        // Compute the lcm of all indexes
+        auto lcm = std::begin(first_on).value() + 1u;
+        for (auto it = std::next(std::begin(first_on)); it != std::end(first_on); ++it) {
+            const auto cycle_index = it.value() + 1u;
+            lcm = (lcm * cycle_index) / std::gcd(lcm, cycle_index);
+        }
+        return QString("%1").arg(lcm);
     }
 
 private:
