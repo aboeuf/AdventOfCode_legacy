@@ -128,6 +128,7 @@ SOURCES += \
     2023/puzzle_2023_23.cpp \
     2023/puzzle_2023_24.cpp \
     2023/puzzle_2023_25.cpp \
+    2024/puzzle_2024_01.cpp \
     common.cpp \
     display/display.cpp \
     display/view.cpp \
@@ -262,6 +263,8 @@ HEADERS += \
     2023/puzzle_2023_23.h \
     2023/puzzle_2023_24.h \
     2023/puzzle_2023_25.h \
+    2024/event_2024.h \
+    2024/puzzle_2024_01.h \
     common.h \
     display/display.h \
     display/view.h \
