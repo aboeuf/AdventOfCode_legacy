@@ -1,21 +1,21 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QFile>
-#include <QTextStream>
 #include <QByteArray>
-#include <QProcessEnvironment>
-#include <QDir>
-#include <QFileDialog>
-#include <QSqlDatabase>
-#include <QMessageBox>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QClipboard>
+#include <QDir>
+#include <QFile>
+#include <QFileDialog>
 #include <QInputDialog>
-#include <solvers.h>
-#include <jsonhelper.h>
+#include <QMessageBox>
+#include <QProcessEnvironment>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QTextStream>
 #include <iso646.h>
+#include <jsonhelper.h>
 #include <set>
+#include <solvers.h>
 
 const auto min_delta_update = qint64{900};
 const auto nb_seconds_in_one_minute = qint64{60};
@@ -23,8 +23,7 @@ const auto nb_seconds_in_one_hour = qint64{60} * nb_seconds_in_one_minute;
 const auto nb_seconds_in_one_day = qint64{24} * nb_seconds_in_one_hour;
 const auto nb_seconds_in_one_year = qint64{365} * nb_seconds_in_one_day;
 
-void Configuration::reset()
-{
+void Configuration::reset() {
   m_year = 2023;
   m_day = 1;
   m_puzzle_1 = true;
@@ -34,8 +33,7 @@ void Configuration::reset()
   m_leaderboards.clear();
 }
 
-QString Configuration::load(const QString& filepath)
-{
+QString Configuration::load(const QString &filepath) {
   JsonHelper helper;
   QJsonObject parsed;
   if (not helper.read(filepath, parsed))
@@ -65,33 +63,36 @@ QString Configuration::load(const QString& filepath)
   QJsonObject leaderboards;
   if (not helper.read(parsed, "leaderboards", leaderboards))
     return "Cannot parse field \"leaderboards\"\n" + helper.error();
-  for (auto board = leaderboards.begin(); board != leaderboards.end(); ++board) {
-      QJsonObject board_object;
-      if (not helper.read(board.value(), board_object))
-          return "Cannot cast board object" + helper.error();
-      auto board_conf = BoardConf{};
-      if (not helper.read(board_object, "name", board_conf.name))
-        return "Cannot parse leaderboard field \"name\"\n" + helper.error();
-      QJsonObject last_updated;
-      if (not helper.read(board_object, "last_updated", last_updated))
-        return "Cannot parse leaderboard field \"last_updated\"\n" + helper.error();
-      for (auto date = last_updated.begin(); date != last_updated.end(); ++date) {
-        bool ok;
-        const auto year = date.key().toUInt(&ok);
-        if (not ok)
-            return QString("Cannot parse year key %1 to unsigned int\n").arg(date.key()) + helper.error();
-        qint64 timestamp;
-        if (not helper.read(date.value(), timestamp))
-            return "Cannot read timestamp" + helper.error();
-        board_conf.last_updated[year] = timestamp;
-      }
-      m_leaderboards[board.key().toStdString().c_str()] = board_conf;
+  for (auto board = leaderboards.begin(); board != leaderboards.end();
+       ++board) {
+    QJsonObject board_object;
+    if (not helper.read(board.value(), board_object))
+      return "Cannot cast board object" + helper.error();
+    auto board_conf = BoardConf{};
+    if (not helper.read(board_object, "name", board_conf.name))
+      return "Cannot parse leaderboard field \"name\"\n" + helper.error();
+    QJsonObject last_updated;
+    if (not helper.read(board_object, "last_updated", last_updated))
+      return "Cannot parse leaderboard field \"last_updated\"\n" +
+             helper.error();
+    for (auto date = last_updated.begin(); date != last_updated.end(); ++date) {
+      bool ok;
+      const auto year = date.key().toUInt(&ok);
+      if (not ok)
+        return QString("Cannot parse year key %1 to unsigned int\n")
+                   .arg(date.key()) +
+               helper.error();
+      qint64 timestamp;
+      if (not helper.read(date.value(), timestamp))
+        return "Cannot read timestamp" + helper.error();
+      board_conf.last_updated[year] = timestamp;
+    }
+    m_leaderboards[board.key().toStdString().c_str()] = board_conf;
   }
   return QString{};
 }
 
-bool Configuration::save(const QString& filepath) const
-{
+bool Configuration::save(const QString &filepath) const {
   QFile file(filepath);
   if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     return false;
@@ -108,14 +109,16 @@ bool Configuration::save(const QString& filepath) const
   conf.insert("cookies", cookies);
   QJsonObject leaderboards;
   for (auto it = m_leaderboards.begin(); it != m_leaderboards.end(); ++it) {
-      QJsonObject board;
-      board.insert("name", QJsonValue{it.value().name});
-      QJsonObject last_updated;
-      for (auto updated = it.value().last_updated.begin(); updated != it.value().last_updated.end(); ++updated) {
-          last_updated.insert(QString("%1").arg(updated.key()), QJsonValue{updated.value()});
-      }
-      board.insert("last_updated", last_updated);
-      leaderboards.insert(it.key(), board);
+    QJsonObject board;
+    board.insert("name", QJsonValue{it.value().name});
+    QJsonObject last_updated;
+    for (auto updated = it.value().last_updated.begin();
+         updated != it.value().last_updated.end(); ++updated) {
+      last_updated.insert(QString("%1").arg(updated.key()),
+                          QJsonValue{updated.value()});
+    }
+    board.insert("last_updated", last_updated);
+    leaderboards.insert(it.key(), board);
   }
   conf.insert("leaderboards", leaderboards);
   QTextStream out(&file);
@@ -124,8 +127,7 @@ bool Configuration::save(const QString& filepath) const
   return true;
 }
 
-void Configuration::updateCookies(QWidget* parent)
-{
+void Configuration::updateCookies(QWidget *parent) {
 #ifdef WIN32
   QString appdata = QProcessEnvironment::systemEnvironment().value("APPDATA");
   appdata.replace("\\", "/");
@@ -136,20 +138,24 @@ void Configuration::updateCookies(QWidget* parent)
   QDir firefox(QDir::homePath() + "/.mozilla/firefox");
 #endif
   QString db_path;
-  for (QFileInfo& di : firefox.entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot)) {
-    for (QFileInfo& fi : QDir(di.absoluteFilePath()).entryInfoList(QDir::AllEntries)) {
+  for (QFileInfo &di :
+       firefox.entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot)) {
+    for (QFileInfo &fi :
+         QDir(di.absoluteFilePath()).entryInfoList(QDir::AllEntries)) {
       if (fi.fileName() == "cookies.sqlite") {
         db_path = fi.absoluteFilePath();
       }
     }
   }
-  if (db_path.isEmpty())
-    db_path = QFileDialog::getOpenFileName(parent,
-                                           "Open Cookies Sqlite Database",
-                                           QDir::homePath(),
-                                           "Sqlite file (*.sqlite)");
-  if (db_path.isEmpty())
+  if (db_path.isEmpty()) {
+    db_path = QFileDialog::getOpenFileName(
+        parent, "Open Cookies Sqlite Database", QDir::homePath(),
+        "Sqlite file (*.sqlite)");
+  }
+  if (db_path.isEmpty()) {
     return;
+  }
+  QMessageBox(QMessageBox::Information, "Advent Of Code", db_path).exec();
   QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
   db.setDatabaseName(db_path);
   if (db.open()) {
@@ -157,31 +163,32 @@ void Configuration::updateCookies(QWidget* parent)
     for (auto it = m_cookies.begin(); it != m_cookies.end(); ++it) {
       const QString query_str = QString("SELECT value FROM moz_cookies "
                                         "WHERE host=\".adventofcode.com\" "
-                                        "AND name=\"%1\"").arg(it.key());
-      if(query.exec(query_str)) {
+                                        "AND name=\"%1\"")
+                                    .arg(it.key());
+      if (query.exec(query_str)) {
         if (query.next())
           m_cookies[it.key()] = query.value(0).toString();
         else
-          QMessageBox(QMessageBox::Warning,
-                      "Advent Of Code",
-                      "Query \"" + query_str + "\"\n"
-                                               "failed to provide a value.").exec();
+          QMessageBox(QMessageBox::Warning, "Advent Of Code",
+                      "Query \"" + query_str +
+                          "\"\n"
+                          "failed to provide a value.")
+              .exec();
       } else
-        QMessageBox(QMessageBox::Warning,
-                    "Advent Of Code",
-                    "Query \"" + query_str + "\"\n" +
-                    "failed with error\n" + query.lastError().text()).exec();
+        QMessageBox(QMessageBox::Warning, "Advent Of Code",
+                    "Query \"" + query_str + "\"\n" + "failed with error\n" +
+                        query.lastError().text())
+            .exec();
     }
     db.close();
   } else
-    QMessageBox(QMessageBox::Warning,
-                "Advent Of Code",
+    QMessageBox(QMessageBox::Warning, "Advent Of Code",
                 "Can!open sqlite database \"" + db_path + "\".\n" +
-                "Close Firefox  and retry.").exec();
+                    "Close Firefox  and retry.")
+        .exec();
 }
 
-void Configuration::setCookies(QNetworkRequest& request) const
-{
+void Configuration::setCookies(QNetworkRequest &request) const {
   QString cookies;
   for (auto it = m_cookies.begin(); it != m_cookies.end(); ++it) {
     cookies += it.key() + "=" + it.value();
@@ -192,9 +199,7 @@ void Configuration::setCookies(QNetworkRequest& request) const
 }
 
 MainWindow::MainWindow(QWidget *parent)
-  : QMainWindow(parent)
-  , ui(new Ui::MainWindow)
-{
+    : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
   for (auto y : m_solvers.m_solvers.keys())
@@ -220,9 +225,11 @@ MainWindow::MainWindow(QWidget *parent)
   if (QFile(m_dir_path + "config.json").exists()) {
     const QString error = m_config.load(m_dir_path + "config.json");
     if (!error.isEmpty()) {
-      QMessageBox(QMessageBox::Warning,
-                  "Advent Of Code",
-                  QString("Failed to load configuration from file \"%1\"\n").arg(m_dir_path + "config.json") + error).exec();
+      QMessageBox(QMessageBox::Warning, "Advent Of Code",
+                  QString("Failed to load configuration from file \"%1\"\n")
+                          .arg(m_dir_path + "config.json") +
+                      error)
+          .exec();
       m_config.reset();
       m_config.updateCookies(this);
     }
@@ -239,23 +246,24 @@ MainWindow::MainWindow(QWidget *parent)
   fillComboBox();
 
   m_manager = new QNetworkAccessManager(this);
-  connect(m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+  connect(m_manager, SIGNAL(finished(QNetworkReply *)), this,
+          SLOT(replyFinished(QNetworkReply *)));
 
   updateLeaderboardDisplay();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
   saveConfig();
   delete m_manager;
   delete ui;
 }
 
-void MainWindow::onSolved(const QString& output)
-{
+void MainWindow::onSolved(const QString &output) {
   if (m_running_solver) {
-    disconnect(m_running_solver, SIGNAL(output(QString)), this, SLOT(onOutputReceived(QString)));
-    disconnect(m_running_solver, SIGNAL(finished(QString)), this, SLOT(onSolved(QString)));
+    disconnect(m_running_solver, SIGNAL(output(QString)), this,
+               SLOT(onOutputReceived(QString)));
+    disconnect(m_running_solver, SIGNAL(finished(QString)), this,
+               SLOT(onSolved(QString)));
     m_running_solver = nullptr;
   }
   ui->m_push_button_solve->setText("SOLVE");
@@ -267,57 +275,54 @@ void MainWindow::onSolved(const QString& output)
   on_m_push_button_solver_output_clicked();
 }
 
-void MainWindow::replyFinished(QNetworkReply* reply)
-{
+void MainWindow::replyFinished(QNetworkReply *reply) {
   QString received(reply->readAll());
 
   while (!received.isEmpty() && received.back() == '\n')
     received.chop(1);
 
   if (m_puzzle_requested) {
-      m_puzzle_requested = false;
-      ui->m_plain_text_edit_input->clear();
-      ui->m_plain_text_edit_input->appendPlainText(received);
-      ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
-      ui->m_plain_text_edit_input->ensureCursorVisible();
-      ui->m_check_box_use_last_input->setChecked(true);
-      QFile file(m_dir_path + "last_input.txt");
-      if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        out << ui->m_plain_text_edit_input->toPlainText();
-        file.close();
-      }
-      solve();
-      return;
+    m_puzzle_requested = false;
+    ui->m_plain_text_edit_input->clear();
+    ui->m_plain_text_edit_input->appendPlainText(received);
+    ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
+    ui->m_plain_text_edit_input->ensureCursorVisible();
+    ui->m_check_box_use_last_input->setChecked(true);
+    QFile file(m_dir_path + "last_input.txt");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+      QTextStream out(&file);
+      out << ui->m_plain_text_edit_input->toPlainText();
+      file.close();
+    }
+    solve();
+    return;
   }
 
   if (m_leaderboard_requested) {
-      m_leaderboard_requested = false;
-      const auto filepath = getCurrentBoardFilepath();
-      QFile file(filepath);
-      if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-          reply->deleteLater();
-          return;
-      }
-      QTextStream out(&file);
-      out << received;
-      file.close();
-      updateLeaderboardDisplay();
+    m_leaderboard_requested = false;
+    const auto filepath = getCurrentBoardFilepath();
+    QFile file(filepath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+      reply->deleteLater();
+      return;
+    }
+    QTextStream out(&file);
+    out << received;
+    file.close();
+    updateLeaderboardDisplay();
   }
 
   reply->deleteLater();
 }
 
-void MainWindow::on_m_push_button_solve_clicked()
-{
+void MainWindow::on_m_push_button_solve_clicked() {
   if (m_running_solver)
     return;
 
   m_display.hide();
   m_display.scene()->clear();
 
-  if (not m_solvers(ui->m_spin_box_year->value(),
-                    ui->m_spin_box_day->value(),
+  if (not m_solvers(ui->m_spin_box_year->value(), ui->m_spin_box_day->value(),
                     ui->m_spin_box_puzzle->value())) {
     QMessageBox msgBox;
     msgBox.setText("Puzzle not implemented");
@@ -334,9 +339,9 @@ void MainWindow::on_m_push_button_solve_clicked()
   ui->m_plain_text_edit_input->clear();
   ui->m_plain_text_edit_solver_output->clear();
   ui->m_plain_text_edit_program_output->clear();
-  m_running_solver = m_solvers(ui->m_spin_box_year->value(),
-                               ui->m_spin_box_day->value(),
-                               ui->m_spin_box_puzzle->value());
+  m_running_solver =
+      m_solvers(ui->m_spin_box_year->value(), ui->m_spin_box_day->value(),
+                ui->m_spin_box_puzzle->value());
   ui->m_push_button_solve->setText("RUNNING");
   ui->m_push_button_solve->setEnabled(false);
   if (!ui->m_check_box_use_last_input->isChecked())
@@ -355,312 +360,311 @@ void MainWindow::on_m_push_button_solve_clicked()
   }
 }
 
-void MainWindow::on_m_push_button_update_cookies_clicked()
-{
+void MainWindow::on_m_push_button_update_cookies_clicked() {
   m_config.updateCookies(this);
 }
 
-void MainWindow::on_m_spin_box_year_valueChanged(int)
-{
+void MainWindow::on_m_spin_box_year_valueChanged(int) {
   ui->m_check_box_use_last_input->setChecked(false);
   updateLeaderboardDisplay();
 }
 
-void MainWindow::on_m_spin_box_day_valueChanged(int)
-{
+void MainWindow::on_m_spin_box_day_valueChanged(int) {
   ui->m_check_box_use_last_input->setChecked(false);
 }
 
-void MainWindow::on_m_push_button_input_clicked()
-{
-  const QString command = "subl " + QFileInfo(QFile(m_dir_path + "last_input.txt")).absoluteFilePath();
+void MainWindow::on_m_push_button_input_clicked() {
+  const QString command =
+      "subl " +
+      QFileInfo(QFile(m_dir_path + "last_input.txt")).absoluteFilePath();
   if (std::system(command.toStdString().c_str()) != 0)
-    QMessageBox(QMessageBox::Warning,
-                "Advent Of Code",
-                "Cannot edit input file with Sublime Text\nCommand: " + command).exec();
+    QMessageBox(QMessageBox::Warning, "Advent Of Code",
+                "Cannot edit input file with Sublime Text\nCommand: " + command)
+        .exec();
 }
 
-void MainWindow::on_m_push_button_solver_output_clicked()
-{
-  QGuiApplication::clipboard()->setText(ui->m_plain_text_edit_solver_output->toPlainText());
+void MainWindow::on_m_push_button_solver_output_clicked() {
+  QGuiApplication::clipboard()->setText(
+      ui->m_plain_text_edit_solver_output->toPlainText());
 }
 
-void MainWindow::on_m_push_button_program_output_clicked()
-{
-  QGuiApplication::clipboard()->setText(ui->m_plain_text_edit_program_output->toPlainText());
+void MainWindow::on_m_push_button_program_output_clicked() {
+  QGuiApplication::clipboard()->setText(
+      ui->m_plain_text_edit_program_output->toPlainText());
 }
 
-void MainWindow::on_m_push_button_sources_clicked()
-{
-  setSources();
-}
+void MainWindow::on_m_push_button_sources_clicked() { setSources(); }
 
-void MainWindow::on_m_add_leaderboard_push_button_clicked()
-{
+void MainWindow::on_m_add_leaderboard_push_button_clicked() {
   bool ok;
-  const auto id = QInputDialog::getText(this, tr("Add Leaderboard"),
-                                        tr("ID:"), QLineEdit::Normal,
-                                        "", &ok);
+  const auto id = QInputDialog::getText(this, tr("Add Leaderboard"), tr("ID:"),
+                                        QLineEdit::Normal, "", &ok);
   if (not ok or id.isEmpty())
     return;
   if (not m_config.m_leaderboards.contains(id)) {
-      m_config.m_leaderboards[id] =  BoardConf();
-      m_last_selected = id;
-      fillComboBox();
+    m_config.m_leaderboards[id] = BoardConf();
+    m_last_selected = id;
+    fillComboBox();
   }
 }
 
-void MainWindow::on_m_delete_leaderboard_push_button_clicked()
-{
-    if (m_config.m_leaderboards.empty())
-        return;
-    const auto id = ui->m_leaderboard_combo_box->currentData().toString();
-    m_config.m_leaderboards.remove(id);
-    m_last_selected.clear();
+void MainWindow::on_m_delete_leaderboard_push_button_clicked() {
+  if (m_config.m_leaderboards.empty())
+    return;
+  const auto id = ui->m_leaderboard_combo_box->currentData().toString();
+  m_config.m_leaderboards.remove(id);
+  m_last_selected.clear();
+  fillComboBox();
+}
+
+void MainWindow::on_m_update_leaderboard_push_button_clicked() {
+  if (m_config.m_leaderboards.empty())
+    return;
+  updateLeaderboard(true);
+}
+
+void MainWindow::on_m_leaderboard_combo_box_currentIndexChanged(int) {
+  if (m_config.m_leaderboards.empty())
+    return;
+  const auto &conf = getCurrentBoardConf(&m_last_selected);
+  ui->m_leaderboard_name_le->blockSignals(true);
+  ui->m_leaderboard_name_le->setText(conf.name);
+  ui->m_leaderboard_name_le->blockSignals(false);
+  updateLeaderboardDisplay();
+}
+
+void MainWindow::on_m_leaderboard_name_le_editingFinished() {
+  if (m_config.m_leaderboards.empty())
+    return;
+  auto &conf = getCurrentBoardConf();
+  if (conf.name != ui->m_leaderboard_name_le->text()) {
+    conf.name = ui->m_leaderboard_name_le->text();
     fillComboBox();
+  }
 }
 
-void MainWindow::on_m_update_leaderboard_push_button_clicked()
-{
-    if (m_config.m_leaderboards.empty())
-        return;
-    updateLeaderboard(true);
-}
+void MainWindow::on_m_leaderboard_table_widget_currentCellChanged(int row,
+                                                                  int column,
+                                                                  int, int) {
+  ui->m_completion_group_box->setVisible(false);
+  if (column < 3)
+    return;
+  const auto *item = ui->m_leaderboard_table_widget->itemAt(row, column);
+  if (not item)
+    return;
+  const auto ranking = m_current_board.ranking();
+  const auto member = m_current_board[ranking[row]];
+  const auto day = static_cast<uint>(column) - 2;
+  if (not member.completion_day_level.contains(day))
+    return;
+  ui->m_completion_group_box->setTitle(
+      QString("Day %1: %2").arg(day).arg(member.name));
 
+  const auto first = member.completion_day_level[day].getFirstTime();
+  ui->m_first_dte->setVisible(first > 0);
+  if (first > 0) {
+    ui->m_first_dte->setDateTime(QDateTime::fromSecsSinceEpoch(first));
+  }
 
-void MainWindow::on_m_leaderboard_combo_box_currentIndexChanged(int)
-{
-    if (m_config.m_leaderboards.empty())
-        return;
-    const auto& conf = getCurrentBoardConf(&m_last_selected);
-    ui->m_leaderboard_name_le->blockSignals(true);
-    ui->m_leaderboard_name_le->setText(conf.name);
-    ui->m_leaderboard_name_le->blockSignals(false);
-    updateLeaderboardDisplay();
-}
-
-void MainWindow::on_m_leaderboard_name_le_editingFinished()
-{
-    if (m_config.m_leaderboards.empty())
-        return;
-    auto& conf = getCurrentBoardConf();
-    if (conf.name != ui->m_leaderboard_name_le->text()) {
-        conf.name = ui->m_leaderboard_name_le->text();
-        fillComboBox();
+  const auto second = member.completion_day_level[day].getSecondTime();
+  ui->m_second_dte->setVisible(second > 0);
+  ui->m_diff_value->setVisible(second > 0 and second >= first);
+  if (second > 0) {
+    ui->m_second_dte->setDateTime(QDateTime::fromSecsSinceEpoch(second));
+    if (second >= first) {
+      auto seconds = second - first;
+      const auto years = seconds / nb_seconds_in_one_year;
+      seconds -= years * nb_seconds_in_one_year;
+      const auto days = seconds / nb_seconds_in_one_day;
+      seconds -= days * nb_seconds_in_one_day;
+      const auto hours = seconds / nb_seconds_in_one_hour;
+      seconds -= hours * nb_seconds_in_one_hour;
+      const auto minutes = seconds / nb_seconds_in_one_minute;
+      seconds -= minutes * nb_seconds_in_one_minute;
+      ui->m_diff_value->setText(
+          QString("%1%2%3%4%5")
+              .arg(years > 0 ? QString("%1 y ").arg(years) : QString(""))
+              .arg(days > 0
+                       ? QString("%1 y ").arg(days, 2, 10, QLatin1Char('0'))
+                       : QString(""))
+              .arg(hours > 0
+                       ? QString("%1 h ").arg(hours, 2, 10, QLatin1Char('0'))
+                       : QString(""))
+              .arg(minutes > 0
+                       ? QString("%1 m ").arg(minutes, 2, 10, QLatin1Char('0'))
+                       : QString(""))
+              .arg(seconds > 0
+                       ? QString("%1 s ").arg(seconds, 2, 10, QLatin1Char('0'))
+                       : QString("")));
     }
+  }
+
+  ui->m_completion_group_box->setVisible(true);
 }
 
-void MainWindow::on_m_leaderboard_table_widget_currentCellChanged(int row, int column, int, int)
-{
-    ui->m_completion_group_box->setVisible(false);
-    if (column < 3)
-        return;
-    const auto* item = ui->m_leaderboard_table_widget->itemAt(row, column);
-    if (not item)
-        return;
-    const auto ranking = m_current_board.ranking();
-    const auto member = m_current_board[ranking[row]];
-    const auto day = static_cast<uint>(column) - 2;
-    if (not member.completion_day_level.contains(day))
-        return;
-    ui->m_completion_group_box->setTitle(QString("Day %1: %2").arg(day).arg(member.name));
-
-    const auto first = member.completion_day_level[day].getFirstTime();
-    ui->m_first_dte->setVisible(first > 0);
-    if (first > 0) {
-        ui->m_first_dte->setDateTime(QDateTime::fromSecsSinceEpoch(first));
-    }
-
-    const auto second = member.completion_day_level[day].getSecondTime();
-    ui->m_second_dte->setVisible(second > 0);
-    ui->m_diff_value->setVisible(second > 0 and second >= first);
-    if (second > 0) {
-        ui->m_second_dte->setDateTime(QDateTime::fromSecsSinceEpoch(second));
-        if (second >= first) {
-            auto seconds = second - first;
-            const auto years = seconds / nb_seconds_in_one_year;
-            seconds -= years * nb_seconds_in_one_year;
-            const auto days = seconds / nb_seconds_in_one_day;
-            seconds -= days * nb_seconds_in_one_day;
-            const auto hours = seconds / nb_seconds_in_one_hour;
-            seconds -= hours * nb_seconds_in_one_hour;
-            const auto minutes = seconds / nb_seconds_in_one_minute;
-            seconds -= minutes * nb_seconds_in_one_minute;
-            ui->m_diff_value->setText(QString("%1%2%3%4%5")
-                                      .arg(years > 0 ? QString("%1 y ").arg(years) : QString(""))
-                                      .arg(days > 0 ? QString("%1 y ").arg(days, 2, 10, QLatin1Char('0')) : QString(""))
-                                      .arg(hours > 0 ? QString("%1 h ").arg(hours, 2, 10, QLatin1Char('0')) : QString(""))
-                                      .arg(minutes > 0 ? QString("%1 m ").arg(minutes, 2, 10, QLatin1Char('0')) : QString(""))
-                                      .arg(seconds > 0 ? QString("%1 s ").arg(seconds, 2, 10, QLatin1Char('0')) : QString("")));
-        }
-    }
-
-    ui->m_completion_group_box->setVisible(true);
-}
-
-void MainWindow::onOutputReceived(const QString& output)
-{
+void MainWindow::onOutputReceived(const QString &output) {
   ui->m_plain_text_edit_program_output->appendPlainText(output);
   ui->m_plain_text_edit_program_output->moveCursor(QTextCursor::Start);
   ui->m_plain_text_edit_program_output->ensureCursorVisible();
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
-{
+void MainWindow::closeEvent(QCloseEvent *event) {
   m_display.close();
   event->accept();
 }
 
-void MainWindow::updateLeaderboard(bool force)
-{
-    if (not m_manager)
-        return;
-    auto& conf = getCurrentBoardConf();
-    if (not conf.last_updated.contains(m_requested_event))
-        conf.last_updated[m_requested_event] = qint64{0};
-    const auto now = QDateTime::currentSecsSinceEpoch();
-    if (force or (now - conf.last_updated[m_requested_event] >= min_delta_update)) {
-        conf.last_updated[m_requested_event] = now;
-        m_leaderboard_requested = true;
-        QNetworkRequest request;
-        request.setUrl(QUrl(QString("https://adventofcode.com/%1/leaderboard/private/view/%2.json")
-                            .arg(m_requested_event)
-                            .arg(m_last_selected)));
-        m_config.setCookies(request);
-        m_manager->get(request);
-    } else {
-        updateLeaderboardDisplay();
-    }
+void MainWindow::updateLeaderboard(bool force) {
+  if (not m_manager)
+    return;
+  auto &conf = getCurrentBoardConf();
+  if (not conf.last_updated.contains(m_requested_event))
+    conf.last_updated[m_requested_event] = qint64{0};
+  const auto now = QDateTime::currentSecsSinceEpoch();
+  if (force or
+      (now - conf.last_updated[m_requested_event] >= min_delta_update)) {
+    conf.last_updated[m_requested_event] = now;
+    m_leaderboard_requested = true;
+    QNetworkRequest request;
+    request.setUrl(QUrl(
+        QString("https://adventofcode.com/%1/leaderboard/private/view/%2.json")
+            .arg(m_requested_event)
+            .arg(m_last_selected)));
+    m_config.setCookies(request);
+    m_manager->get(request);
+  } else {
+    updateLeaderboardDisplay();
+  }
 }
 
-void MainWindow::updateLeaderboardDisplay()
-{
-    m_requested_event = static_cast<qint64>(ui->m_spin_box_year->value());
-    const auto filepath = getCurrentBoardFilepath();
-    QFile file(filepath);
-    if (not file.exists()) {
-        updateLeaderboard(true);
-        return;
+void MainWindow::updateLeaderboardDisplay() {
+  m_requested_event = static_cast<qint64>(ui->m_spin_box_year->value());
+  const auto filepath = getCurrentBoardFilepath();
+  QFile file(filepath);
+  if (not file.exists()) {
+    updateLeaderboard(true);
+    return;
+  }
+  ui->m_completion_group_box->setVisible(false);
+  m_current_board = Leaderboard{filepath};
+  ui->m_leaderboard_owner_le->setText(m_current_board.ownerName());
+  const auto ranking = m_current_board.ranking();
+  const auto nb_rows = std::size(ranking);
+  ui->m_leaderboard_table_widget->clearContents();
+  ui->m_leaderboard_table_widget->setRowCount(nb_rows);
+  for (auto row = 0u; row < nb_rows; ++row) {
+    const auto member = m_current_board[ranking[row]];
+    QTableWidgetItem *name_item = new QTableWidgetItem(member.name);
+    ui->m_leaderboard_table_widget->setItem(row, 0, name_item);
+    QTableWidgetItem *score_item =
+        new QTableWidgetItem(QString("%1").arg(member.local_score));
+    score_item->setTextAlignment(Qt::AlignCenter);
+    ui->m_leaderboard_table_widget->setItem(row, 1, score_item);
+    QTableWidgetItem *stars_item =
+        new QTableWidgetItem(QString("%1").arg(member.stars));
+    stars_item->setTextAlignment(Qt::AlignCenter);
+    ui->m_leaderboard_table_widget->setItem(row, 2, stars_item);
+    for (auto day = 1u; day < 26u; ++day) {
+      auto nb_starts = 0u;
+      if (member.completion_day_level.contains(day)) {
+        if (member.completion_day_level[day].first.has_value())
+          ++nb_starts;
+        if (member.completion_day_level[day].second.has_value())
+          ++nb_starts;
+      }
+      if (nb_starts > 0u) {
+        QTableWidgetItem *completion_item =
+            new QTableWidgetItem(QString("%1").arg(nb_starts > 1 ? "X" : "/"));
+        completion_item->setTextAlignment(Qt::AlignCenter);
+        ui->m_leaderboard_table_widget->setItem(row, static_cast<int>(day) + 2,
+                                                completion_item);
+      }
     }
-    ui->m_completion_group_box->setVisible(false);
-    m_current_board = Leaderboard{filepath};
-    ui->m_leaderboard_owner_le->setText(m_current_board.ownerName());
-    const auto ranking = m_current_board.ranking();
-    const auto nb_rows = std::size(ranking);
-    ui->m_leaderboard_table_widget->clearContents();
-    ui->m_leaderboard_table_widget->setRowCount(nb_rows);
-    for (auto row = 0u; row < nb_rows; ++row) {
-        const auto member = m_current_board[ranking[row]];
-        QTableWidgetItem* name_item = new QTableWidgetItem(member.name);
-        ui->m_leaderboard_table_widget->setItem(row, 0, name_item);
-        QTableWidgetItem* score_item = new QTableWidgetItem(QString("%1").arg(member.local_score));
-        score_item->setTextAlignment(Qt::AlignCenter);
-        ui->m_leaderboard_table_widget->setItem(row, 1, score_item);
-        QTableWidgetItem* stars_item = new QTableWidgetItem(QString("%1").arg(member.stars));
-        stars_item->setTextAlignment(Qt::AlignCenter);
-        ui->m_leaderboard_table_widget->setItem(row, 2, stars_item);
-        for (auto day = 1u; day < 26u; ++day) {
-            auto nb_starts = 0u;
-            if (member.completion_day_level.contains(day)) {
-                if (member.completion_day_level[day].first.has_value())
-                    ++nb_starts;
-                if (member.completion_day_level[day].second.has_value())
-                    ++nb_starts;
-            }
-            if (nb_starts > 0u) {
-                QTableWidgetItem* completion_item = new QTableWidgetItem(QString("%1").arg(nb_starts > 1 ? "X" : "/"));
-                completion_item->setTextAlignment(Qt::AlignCenter);
-                ui->m_leaderboard_table_widget->setItem(row, static_cast<int>(day) + 2, completion_item);
-            }
-        }
-    }
-    ui->m_leaderboard_table_widget->resizeColumnsToContents();
+  }
+  ui->m_leaderboard_table_widget->resizeColumnsToContents();
 }
 
-void MainWindow::fillComboBox()
-{
+void MainWindow::fillComboBox() {
   ui->m_leaderboard_combo_box->blockSignals(true);
   ui->m_leaderboard_name_le->blockSignals(true);
 
   ui->m_leaderboard_combo_box->clear();
 
   if (m_config.m_leaderboards.empty()) {
-      ui->m_leaderboard_name_le->setText("");
-      ui->m_leaderboard_name_le->blockSignals(false);
-      ui->m_leaderboard_combo_box->blockSignals(false);
-      return;
+    ui->m_leaderboard_name_le->setText("");
+    ui->m_leaderboard_name_le->blockSignals(false);
+    ui->m_leaderboard_combo_box->blockSignals(false);
+    return;
   }
 
   auto names_nb_instances = QMap<QString, uint>{};
-  for (auto board = m_config.m_leaderboards.begin(); board != m_config.m_leaderboards.end(); ++board) {
-      const auto& name = board.value().name;
-      if (names_nb_instances.contains(name))
-          names_nb_instances[name] += 1u;
-      else
-          names_nb_instances[name] = 1u;
+  for (auto board = m_config.m_leaderboards.begin();
+       board != m_config.m_leaderboards.end(); ++board) {
+    const auto &name = board.value().name;
+    if (names_nb_instances.contains(name))
+      names_nb_instances[name] += 1u;
+    else
+      names_nb_instances[name] = 1u;
   }
 
-  for (auto board = m_config.m_leaderboards.begin(); board != m_config.m_leaderboards.end(); ++board) {
-    const auto& id = board.key();
-    const auto& name = board.value().name;
+  for (auto board = m_config.m_leaderboards.begin();
+       board != m_config.m_leaderboards.end(); ++board) {
+    const auto &id = board.key();
+    const auto &name = board.value().name;
     const auto text = [&id, &name, &names_nb_instances]() {
-        if (names_nb_instances[name] == 1u)
-            return name;
-        return QString("%1 (%2)").arg(name).arg(id);
+      if (names_nb_instances[name] == 1u)
+        return name;
+      return QString("%1 (%2)").arg(name).arg(id);
     }();
     ui->m_leaderboard_combo_box->addItem(text, id);
   }
 
   if (m_last_selected.isEmpty())
-      m_last_selected =  m_config.m_leaderboards.begin().key();
-  ui->m_leaderboard_combo_box->setCurrentIndex(ui->m_leaderboard_combo_box->findData(m_last_selected));
+    m_last_selected = m_config.m_leaderboards.begin().key();
+  ui->m_leaderboard_combo_box->setCurrentIndex(
+      ui->m_leaderboard_combo_box->findData(m_last_selected));
   on_m_leaderboard_combo_box_currentIndexChanged(0);
 
   ui->m_leaderboard_name_le->blockSignals(false);
   ui->m_leaderboard_combo_box->blockSignals(false);
-
 }
 
-void MainWindow::saveConfig()
-{
+void MainWindow::saveConfig() {
   m_config.m_year = ui->m_spin_box_year->value();
   m_config.m_day = ui->m_spin_box_day->value();
   m_config.m_puzzle_1 = ui->m_spin_box_puzzle->value() == 1;
   m_config.m_use_last_input = ui->m_check_box_use_last_input->isChecked();
   if (!m_config.save(m_dir_path + "config.json"))
-    QMessageBox(QMessageBox::Warning,
-                "Advent Of Code",
-                QString("Failed to save configuration to file \"%1\"").arg(m_dir_path + "config.json")).exec();
+    QMessageBox(QMessageBox::Warning, "Advent Of Code",
+                QString("Failed to save configuration to file \"%1\"")
+                    .arg(m_dir_path + "config.json"))
+        .exec();
 }
 
-
-void MainWindow::solve()
-{
-  m_running_solver = m_solvers(ui->m_spin_box_year->value(),
-                               ui->m_spin_box_day->value(),
-                               ui->m_spin_box_puzzle->value());
+void MainWindow::solve() {
+  m_running_solver =
+      m_solvers(ui->m_spin_box_year->value(), ui->m_spin_box_day->value(),
+                ui->m_spin_box_puzzle->value());
   if (m_running_solver) {
-    connect(m_running_solver, SIGNAL(output(QString)), this, SLOT(onOutputReceived(QString)));
-    connect(m_running_solver, SIGNAL(finished(QString)), this, SLOT(onSolved(QString)));
+    connect(m_running_solver, SIGNAL(output(QString)), this,
+            SLOT(onOutputReceived(QString)));
+    connect(m_running_solver, SIGNAL(finished(QString)), this,
+            SLOT(onSolved(QString)));
     m_running_solver->solve(ui->m_plain_text_edit_input->toPlainText());
-  }
-  else
+  } else
     onSolved("Not Implemented");
 }
 
-void MainWindow::downloadPuzzleInput()
-{
+void MainWindow::downloadPuzzleInput() {
   m_puzzle_requested = true;
   QNetworkRequest request;
   request.setUrl(QUrl(QString("https://adventofcode.com/%1/day/%2/input")
-                      .arg(ui->m_spin_box_year->value())
-                      .arg(ui->m_spin_box_day->value())));
+                          .arg(ui->m_spin_box_year->value())
+                          .arg(ui->m_spin_box_day->value())));
   m_config.setCookies(request);
   m_manager->get(request);
 }
 
-QString MainWindow::createDefault()
-{
+QString MainWindow::createDefault() {
   const auto year = ui->m_spin_box_year->value();
   const auto day = ui->m_spin_box_day->value();
   if (m_solvers(year, day, 0) or m_solvers(year, day, 1))
@@ -670,16 +674,18 @@ QString MainWindow::createDefault()
     if (not setSources())
       return "Error: failed to set sources directory";
   }
-  const auto rootpath =  QDir(m_config.m_src_directory).absolutePath();
+  const auto rootpath = QDir(m_config.m_src_directory).absolutePath();
   const auto dirpath = rootpath + QString("/%1").arg(year);
   if (not QDir().mkpath(dirpath))
     return "Error: cannot create directory " + dirpath;
 
   QDir dir(dirpath);
-  QString header = QString("puzzle_%1_%2.h").arg(year).arg(day, 2, 10, QChar('0'));
+  QString header =
+      QString("puzzle_%1_%2.h").arg(year).arg(day, 2, 10, QChar('0'));
   if (dir.exists(header))
     return "Error: " + header + " already exists";
-  QString implem = QString("puzzle_%1_%2.cpp").arg(year).arg(day, 2, 10, QChar('0'));
+  QString implem =
+      QString("puzzle_%1_%2.cpp").arg(year).arg(day, 2, 10, QChar('0'));
   if (dir.exists(implem))
     return "Error: " + implem + " already exists";
 
@@ -699,7 +705,9 @@ QString MainWindow::createDefault()
                    "{\n"
                    "public:\n"
                    "  void solve(const QString& input) override;\n"
-                   "};\n").arg(year).arg(day, 2, 10, QChar('0'));
+                   "};\n")
+               .arg(year)
+               .arg(day, 2, 10, QChar('0'));
   } else
     return "Error: cannot create file " + header;
 
@@ -751,7 +759,9 @@ QString MainWindow::createDefault()
                    "    emit output(input);\n"
                    "    const auto lines = puzzle_%1_%2::Lines{input};\n"
                    "    emit finished(lines.solveTwo());\n"
-                   "}\n").arg(year).arg(day, 2, 10, QChar('0'));
+                   "}\n")
+               .arg(year)
+               .arg(day, 2, 10, QChar('0'));
   } else {
     return "Error: cannot create file " + implem;
   }
@@ -759,11 +769,12 @@ QString MainWindow::createDefault()
   QFile event_file(dir.absolutePath() + QString("/event_%1.h").arg(year));
   if (event_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
     QTextStream out(&event_file);
-    for (const auto& file : dir.entryList())
+    for (const auto &file : dir.entryList())
       if (file.startsWith("puzzle_") and file.endsWith(".h"))
         out << QString("#include <%1/%2>\n").arg(year).arg(file);
   } else {
-    return "Error: cannot create write in file " + QString("event_%1.h").arg(year);
+    return "Error: cannot create write in file " +
+           QString("event_%1.h").arg(year);
   }
 
   QFile pro_file_in(rootpath + "/AdventOfCode.pro");
@@ -774,8 +785,7 @@ QString MainWindow::createDefault()
     auto push_in_begin = true;
     while (!in.atEnd()) {
       QString line = in.readLine();
-      if (line.contains("SOURCES") or
-          line.contains("HEADERS") or
+      if (line.contains("SOURCES") or line.contains("HEADERS") or
           line.contains("FORMS")) {
         push_in_begin = false;
         while (not begin.empty() and begin.back().isEmpty())
@@ -799,15 +809,21 @@ QString MainWindow::createDefault()
   } else
     return "Error: cannot read file AdventOfCode.pro";
 
-  sources.insert(QString("%1/puzzle_%1_%2.cpp").arg(year).arg(day, 2, 10, QChar('0')).toStdString());
-  headers.insert(QString("%1/puzzle_%1_%2.h").arg(year).arg(day, 2, 10, QChar('0')).toStdString());
+  sources.insert(QString("%1/puzzle_%1_%2.cpp")
+                     .arg(year)
+                     .arg(day, 2, 10, QChar('0'))
+                     .toStdString());
+  headers.insert(QString("%1/puzzle_%1_%2.h")
+                     .arg(year)
+                     .arg(day, 2, 10, QChar('0'))
+                     .toStdString());
 
   QFile pro_file_out(rootpath + "/AdventOfCode.pro");
   if (pro_file_out.open(QIODevice::WriteOnly | QIODevice::Text)) {
     QTextStream out(&pro_file_out);
-    for (const auto& line : begin)
+    for (const auto &line : begin)
       out << line << "\n";
-    const auto write = [&out](const auto& prompt, const auto& data) {
+    const auto write = [&out](const auto &prompt, const auto &data) {
       out << "\n" << prompt << " += \\\n";
       for (auto it = std::begin(data); it != std::end(data); ++it) {
         out << "    " << it->c_str();
@@ -823,7 +839,8 @@ QString MainWindow::createDefault()
     return "Error: cannot write in file AdventOfCode.pro";
 
   std::set<std::string> includes;
-  for (auto y = ui->m_spin_box_year->minimum(); y <= ui->m_spin_box_year->maximum(); ++y) {
+  for (auto y = ui->m_spin_box_year->minimum();
+       y <= ui->m_spin_box_year->maximum(); ++y) {
     auto filename = QString("%1/event_%1.h").arg(y);
     if (QFile(rootpath + "/" + filename).exists())
       includes.insert(QString("#include <%1>").arg(filename).toStdString());
@@ -833,21 +850,30 @@ QString MainWindow::createDefault()
   for (auto y : m_solvers.m_solvers.keys())
     for (auto d : m_solvers.m_solvers[y].keys())
       for (auto p : m_solvers.m_solvers[y][d].keys())
-        solvers.insert(QString("  m_solvers[%1][%2][%3] = new Solver_%1_%4_%3();")
-                       .arg(y).arg(d).arg(p).arg(d, 2, 10, QChar('0')).toStdString());
+        solvers.insert(
+            QString("  m_solvers[%1][%2][%3] = new Solver_%1_%4_%3();")
+                .arg(y)
+                .arg(d)
+                .arg(p)
+                .arg(d, 2, 10, QChar('0'))
+                .toStdString());
   for (auto p = 1; p < 3; ++p)
     solvers.insert(QString("  m_solvers[%1][%2][%3] = new Solver_%1_%4_%3();")
-                   .arg(year).arg(day).arg(p).arg(day, 2, 10, QChar('0')).toStdString());
+                       .arg(year)
+                       .arg(day)
+                       .arg(p)
+                       .arg(day, 2, 10, QChar('0'))
+                       .toStdString());
 
   QFile solvers_file(rootpath + "/solvers.cpp");
   if (solvers_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
     QTextStream out(&solvers_file);
     out << "#include <solvers.h>\n"
            "#include <mainwindow.h>\n\n";
-    for (const auto& include : includes)
+    for (const auto &include : includes)
       out << include.c_str() << "\n";
     out << "\nSolvers::Solvers()\n{\n";
-    for (const auto& solver : solvers)
+    for (const auto &solver : solvers)
       out << solver.c_str() << "\n";
     out << "}\n"
            "\n"
@@ -870,38 +896,40 @@ QString MainWindow::createDefault()
   } else
     return "Error: cannot write in file solvers.cpp";
 
-  return QString("Default file created for puzzle_%1_%2").arg(year).arg(day, 2, 10, QChar('0'));
+  return QString("Default file created for puzzle_%1_%2")
+      .arg(year)
+      .arg(day, 2, 10, QChar('0'));
 }
 
-bool MainWindow::setSources()
-{
+bool MainWindow::setSources() {
   QString current = QDir::homePath();
-  if (not m_config.m_src_directory.isEmpty() and QDir(m_config.m_src_directory).exists())
+  if (not m_config.m_src_directory.isEmpty() and
+      QDir(m_config.m_src_directory).exists())
     current = m_config.m_src_directory;
-  QString dir = QFileDialog::getExistingDirectory(this, tr("Sources Directory"),
-                                                  current,
-                                                  QFileDialog::ShowDirsOnly
-                                                  | QFileDialog::DontResolveSymlinks);
+  QString dir = QFileDialog::getExistingDirectory(
+      this, tr("Sources Directory"), current,
+      QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
   if (dir.isEmpty())
     return false;
   m_config.m_src_directory = dir;
   return true;
 }
 
-BoardConf& MainWindow::getCurrentBoardConf(QString* ret_id)
-{
-    const auto id = ui->m_leaderboard_combo_box->currentData().toString();
-    if (ret_id)
-        *ret_id = id;
-    if (not m_config.m_leaderboards.contains(id)) {
-        const auto message = QString("Cannot find leaderboard with id \"%1\"").arg(id);
-        throw std::invalid_argument{message.toStdString()};
-    }
-    return m_config.m_leaderboards[id];
+BoardConf &MainWindow::getCurrentBoardConf(QString *ret_id) {
+  const auto id = ui->m_leaderboard_combo_box->currentData().toString();
+  if (ret_id)
+    *ret_id = id;
+  if (not m_config.m_leaderboards.contains(id)) {
+    const auto message =
+        QString("Cannot find leaderboard with id \"%1\"").arg(id);
+    throw std::invalid_argument{message.toStdString()};
+  }
+  return m_config.m_leaderboards[id];
 }
 
-QString MainWindow::getCurrentBoardFilepath() const
-{
-    return QString("%1%2_%3.json").arg(m_dir_path).arg(m_last_selected).arg(m_requested_event);
+QString MainWindow::getCurrentBoardFilepath() const {
+  return QString("%1%2_%3.json")
+      .arg(m_dir_path)
+      .arg(m_last_selected)
+      .arg(m_requested_event);
 }
-
