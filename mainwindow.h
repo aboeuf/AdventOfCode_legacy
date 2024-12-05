@@ -4,31 +4,31 @@
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <solvers.h>
-#include <jsonhelper.h>
-#include <unordered_map>
 #include <display/display.h>
+#include <jsonhelper.h>
 #include <leaderboard.h>
+#include <solvers.h>
+#include <unordered_map>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
 
-struct BoardConf
-{
-    BoardConf() = default;
-    QString name{"default_name"};
-    QMap<unsigned int, qint64> last_updated{};
+struct BoardConf {
+  BoardConf() = default;
+  QString name{"default_name"};
+  QMap<unsigned int, qint64> last_updated{};
 };
 
-struct Configuration
-{
+struct Configuration {
   Configuration() = default;
   void reset();
-  QString load(const QString& filepath);
-  bool save(const QString& filepath) const;
-  void updateCookies(QWidget* parent = nullptr);
-  void setCookies(QNetworkRequest& request) const;
+  QString load(const QString &filepath);
+  bool save(const QString &filepath) const;
+  void updateCookies(QWidget *parent = nullptr);
+  void setCookies(QNetworkRequest &request) const;
   int m_year{};
   int m_day{};
   bool m_puzzle_1{};
@@ -38,8 +38,7 @@ struct Configuration
   QString m_src_directory{};
 };
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
   Q_OBJECT
 
 public:
@@ -47,10 +46,10 @@ public:
   ~MainWindow();
 
 public slots:
-  void onSolved(const QString& output);
+  void onSolved(const QString &output);
 
 private slots:
-  void replyFinished(QNetworkReply* reply);
+  void replyFinished(QNetworkReply *reply);
   void on_m_push_button_solve_clicked();
   void on_m_push_button_update_cookies_clicked();
   void on_m_spin_box_year_valueChanged(int);
@@ -64,8 +63,9 @@ private slots:
   void on_m_update_leaderboard_push_button_clicked();
   void on_m_leaderboard_combo_box_currentIndexChanged(int);
   void on_m_leaderboard_name_le_editingFinished();
-  void on_m_leaderboard_table_widget_currentCellChanged(int row, int column, int, int);
-  void onOutputReceived(const QString& output);
+  void on_m_leaderboard_table_widget_currentCellChanged(int row, int column,
+                                                        int, int);
+  void onOutputReceived(const QString &output);
   void closeEvent(QCloseEvent *event);
 
 private:
@@ -77,14 +77,14 @@ private:
   void downloadPuzzleInput();
   QString createDefault();
   bool setSources();
-  BoardConf& getCurrentBoardConf(QString *ret_id = nullptr);
+  BoardConf &getCurrentBoardConf(QString *ret_id = nullptr);
   QString getCurrentBoardFilepath() const;
 
   Ui::MainWindow *ui;
   Display m_display;
   QNetworkAccessManager *m_manager;
   Solvers m_solvers;
-  Solver* m_running_solver{nullptr};
+  Solver *m_running_solver{nullptr};
   Configuration m_config;
   QString m_dir_path;
   QString m_last_selected{""};
@@ -92,5 +92,6 @@ private:
   bool m_leaderboard_requested = false;
   qint64 m_requested_event = 0;
   Leaderboard m_current_board{};
+  BoardConf m_error_access;
 };
 #endif // MAINWINDOW_H

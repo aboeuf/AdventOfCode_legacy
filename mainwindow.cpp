@@ -916,13 +916,14 @@ bool MainWindow::setSources() {
 }
 
 BoardConf &MainWindow::getCurrentBoardConf(QString *ret_id) {
-  const auto id = ui->m_leaderboard_combo_box->currentData().toString();
+  auto id = ui->m_leaderboard_combo_box->currentData().toString();
   if (ret_id)
     *ret_id = id;
   if (not m_config.m_leaderboards.contains(id)) {
     const auto message =
         QString("Cannot find leaderboard with id \"%1\"").arg(id);
-    throw std::invalid_argument{message.toStdString()};
+    // throw std::invalid_argument{message.toStdString()};
+    return m_error_access;
   }
   return m_config.m_leaderboards[id];
 }
