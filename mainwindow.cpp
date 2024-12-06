@@ -344,9 +344,9 @@ void MainWindow::on_m_push_button_solve_clicked() {
                 ui->m_spin_box_puzzle->value());
   ui->m_push_button_solve->setText("RUNNING");
   ui->m_push_button_solve->setEnabled(false);
-  if (!ui->m_check_box_use_last_input->isChecked())
+  if (!ui->m_check_box_use_last_input->isChecked()) {
     downloadPuzzleInput();
-  else {
+  } else {
     QFile file(m_dir_path + "last_input.txt");
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
       ui->m_plain_text_edit_input->clear();
@@ -354,9 +354,15 @@ void MainWindow::on_m_push_button_solve_clicked() {
       ui->m_plain_text_edit_input->moveCursor(QTextCursor::Start);
       ui->m_plain_text_edit_input->ensureCursorVisible();
       file.close();
-      solve();
-    } else
+      try {
+        solve();
+      } catch (const std::exception &e) {
+        QMessageBox(QMessageBox::Icon::Critical, "Solver Error", e.what())
+            .exec();
+      }
+    } else {
       downloadPuzzleInput();
+    }
   }
 }
 
