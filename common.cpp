@@ -1,98 +1,96 @@
-#include <common.h>
 #include <QDebug>
+#include <common.h>
 
 namespace common {
 
-void throwRunTimeError(const QString& message)
-{
-    throw std::runtime_error(message.toStdString());
+void throwRunTimeError(const QString &message) {
+  throw std::runtime_error(message.toStdString());
 }
 
-void throwInvalidArgumentError(const QString& message)
-{
-    throw std::invalid_argument(message.toStdString());
+void throwInvalidArgumentError(const QString &message) {
+  throw std::invalid_argument(message.toStdString());
 }
 
-QStringList splitLines(const QString& input)
-{
+QStringList splitLines(const QString &input) {
   QStringList res = input.split('\n');
   while (!res.isEmpty() && res.back().isEmpty())
     res.pop_back();
   return res;
 }
 
-QStringList splitValues(const QString& input, const QChar& split_char)
-{
+QStringList splitValues(const QString &input, const QChar &split_char) {
   QStringList res = input.split(split_char);
   while (!res.isEmpty() && (res.back().isEmpty() || res.back() == "\n"))
     res.pop_back();
   return res;
 }
 
-QVector<int> toIntValues(const QString& input, const QChar& split_char)
-{
-  const auto string_values = splitValues(input, split_char);
-  QVector<int> int_values;
-  int_values.reserve(string_values.size());
-  bool conversion_ok;
-  for (const QString& string_value : string_values) {
-    if (!string_value.isEmpty()) {
-      int int_value = string_value.toInt(&conversion_ok);
-      if (conversion_ok)
-        int_values << int_value;
+template <typename DataType>
+QVector<DataType> splitAndConvert(
+    const QString &input, const QChar &split_char,
+    const std::function<DataType(const QString &, bool &)> &converter) {
+  const auto tokens = splitValues(input, split_char);
+  auto values = QVector<DataType>{};
+  values.reserve(tokens.size());
+  auto ok = true;
+  for (const auto &token : tokens) {
+    if (not token.isEmpty()) {
+      const auto value = converter(token, ok);
+      if (ok) {
+        values << value;
+      }
     }
   }
-  return int_values;
+  return values;
 }
 
-QVector<long long int> toLongLongIntValues(const QString& input, const QChar& split_char)
-{
-  using Int = long long int;
-  const auto string_values = splitValues(input, split_char);
-  QVector<Int> int_values;
-  int_values.reserve(string_values.size());
-  bool conversion_ok;
-  for (const QString& string_value : string_values) {
-    if (!string_value.isEmpty()) {
-      Int int_value = string_value.toLongLong(&conversion_ok);
-      if (conversion_ok)
-        int_values << int_value;
-    }
-  }
-  return int_values;
+QVector<short> toShort(const QString &input, const QChar &split_char) {
+  return splitAndConvert<short>(
+      input, split_char,
+      [](const QString &token, bool &ok) { return token.toShort(&ok); });
 }
 
-QVector<unsigned long long int> toULongLongIntValues(const QString& input, const QChar& split_char)
-{
-  using Int = unsigned long long int;
-  const auto string_values = splitValues(input, split_char);
-  QVector<Int> int_values;
-  int_values.reserve(string_values.size());
-  bool conversion_ok;
-  for (const QString& string_value : string_values) {
-    if (!string_value.isEmpty()) {
-      Int int_value = string_value.toULongLong(&conversion_ok);
-      if (conversion_ok)
-        int_values << int_value;
-    }
-  }
-  return int_values;
+QVector<ushort> toUShort(const QString &input, const QChar &split_char) {
+  return splitAndConvert<ushort>(
+      input, split_char,
+      [](const QString &token, bool &ok) { return token.toUShort(&ok); });
 }
 
-QVector<uint> toUIntValues(const QString& input, const QChar& split_char)
-{
-  const auto string_values = splitValues(input, split_char);
-  QVector<uint> int_values;
-  int_values.reserve(string_values.size());
-  bool conversion_ok;
-  for (const QString& string_value : string_values) {
-    if (!string_value.isEmpty()) {
-      uint int_value = string_value.toUInt(&conversion_ok);
-      if (conversion_ok)
-        int_values << int_value;
-    }
-  }
-  return int_values;
+QVector<int> toInt(const QString &input, const QChar &split_char) {
+  return splitAndConvert<int>(
+      input, split_char,
+      [](const QString &token, bool &ok) { return token.toInt(&ok); });
 }
 
+QVector<uint> toUInt(const QString &input, const QChar &split_char) {
+  return splitAndConvert<uint>(
+      input, split_char,
+      [](const QString &token, bool &ok) { return token.toUInt(&ok); });
 }
+
+QVector<long> toLong(const QString &input, const QChar &split_char) {
+  return splitAndConvert<long>(
+      input, split_char,
+      [](const QString &token, bool &ok) { return token.toLong(&ok); });
+}
+
+QVector<ulong> toULong(const QString &input, const QChar &split_char) {
+  return splitAndConvert<ulong>(
+      input, split_char,
+      [](const QString &token, bool &ok) { return token.toULong(&ok); });
+}
+
+QVector<long long> toLongLong(const QString &input, const QChar &split_char) {
+  return splitAndConvert<long long>(
+      input, split_char,
+      [](const QString &token, bool &ok) { return token.toLongLong(&ok); });
+}
+
+QVector<unsigned long long> toULongLong(const QString &input,
+                                        const QChar &split_char) {
+  return splitAndConvert<unsigned long long>(
+      input, split_char,
+      [](const QString &token, bool &ok) { return token.toULongLong(&ok); });
+}
+
+} // namespace common

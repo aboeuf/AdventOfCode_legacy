@@ -8,12 +8,11 @@ namespace puzzle_2018_06 {
 
 Point::Point(int x, int y) : QPoint{x, y} {}
 
-VoronoiDiagram::VoronoiDiagram(const QString& input)
-{
+VoronoiDiagram::VoronoiDiagram(const QString &input) {
   const auto lines = common::splitLines(input);
   m_points.reserve(lines.size());
-  for (const auto& line : lines) {
-    const auto values = common::toIntValues(line);
+  for (const auto &line : lines) {
+    const auto values = common::toInt(line);
     if (values.size() == 2) {
       m_points.emplace_back(values[0], values[1]);
       m_xmin = std::min(m_xmin, values[0]);
@@ -26,7 +25,7 @@ VoronoiDiagram::VoronoiDiagram(const QString& input)
   for (auto x = m_xmin; x <= m_xmax; ++x) {
     for (auto y = m_ymin; y <= m_ymax; ++y) {
       const auto closests = closestPoints(x, y);
-      if(closests.size() == 1)
+      if (closests.size() == 1)
         ++m_points[closests[0]].area;
     }
   }
@@ -50,7 +49,7 @@ VoronoiDiagram::VoronoiDiagram(const QString& input)
   }
 }
 
-const std::vector<Point>& VoronoiDiagram::points() const { return m_points; }
+const std::vector<Point> &VoronoiDiagram::points() const { return m_points; }
 
 int VoronoiDiagram::xMin() const { return m_xmin; }
 
@@ -60,22 +59,20 @@ int VoronoiDiagram::xMax() const { return m_xmax; }
 
 int VoronoiDiagram::yMax() const { return m_ymax; }
 
-uint VoronoiDiagram::largestArea() const
-{
+uint VoronoiDiagram::largestArea() const {
   auto largest = 0u;
-  for (const auto& pt : m_points)
+  for (const auto &pt : m_points)
     largest = std::max(largest, pt.area);
   return largest;
 }
 
-uint VoronoiDiagram::safeRegionArea() const
-{
+uint VoronoiDiagram::safeRegionArea() const {
   auto area = 0u;
   for (auto x = m_xmin; x <= m_xmax; ++x) {
     for (auto y = m_ymin; y <= m_ymax; ++y) {
       const auto p = QPoint{x, y};
       auto sum = 0;
-      for (const auto& pt : m_points)
+      for (const auto &pt : m_points)
         sum += (pt - p).manhattanLength();
       if (sum < 10000)
         ++area;
@@ -88,7 +85,7 @@ std::vector<std::size_t> VoronoiDiagram::closestPoints(int x, int y) const {
   auto min_dist = std::numeric_limits<int>::max();
   auto distances = std::vector<int>{};
   distances.reserve(m_points.size());
-  for (const auto& pt : m_points) {
+  for (const auto &pt : m_points) {
     distances.push_back((QPoint{x, y} - pt).manhattanLength());
     min_dist = std::min(min_dist, distances.back());
   }
@@ -100,8 +97,7 @@ std::vector<std::size_t> VoronoiDiagram::closestPoints(int x, int y) const {
   return res;
 }
 
-void VoronoiDiagram::display(Display* display) const
-{
+void VoronoiDiagram::display(Display *display) const {
   if (not display)
     return;
   display->scene()->clear();
@@ -109,11 +105,12 @@ void VoronoiDiagram::display(Display* display) const
     for (auto y = m_ymin - 25; y <= m_ymax + 25; ++y) {
       const auto closests = closestPoints(x, y);
       if (closests.size() == 1) {
-        const auto col = static_cast<double>(closests[0]) / static_cast<double>(m_points.size() - 1);
+        const auto col = static_cast<double>(closests[0]) /
+                         static_cast<double>(m_points.size() - 1);
         const auto color = QColor::fromHslF(col, 0.95, 0.5);
         display->scene()->addRect(static_cast<double>(x) - 0.5,
-                                  static_cast<double>(y) - 0.5,
-                                  1.0, 1.0, QPen{Qt::NoPen}, QBrush{color});
+                                  static_cast<double>(y) - 0.5, 1.0, 1.0,
+                                  QPen{Qt::NoPen}, QBrush{color});
       }
     }
   }
@@ -121,22 +118,21 @@ void VoronoiDiagram::display(Display* display) const
   QPen pen;
   pen.setWidth(0);
   pen.setColor(QColor("Black"));
-  for (const auto& pt : m_points) {
+  for (const auto &pt : m_points) {
     const auto x = static_cast<double>(pt.x());
     const auto y = static_cast<double>(pt.y());
-    display->scene()->addRect(x - 0.5, y - 0.5, 1.0, 1.0, pen, QBrush{Qt::NoBrush});
+    display->scene()->addRect(x - 0.5, y - 0.5, 1.0, 1.0, pen,
+                              QBrush{Qt::NoBrush});
   }
-  display->scene()->addRect(m_xmin, m_ymin,
-                            m_xmax - m_xmin,
-                            m_ymax - m_ymin, pen, QBrush{Qt::NoBrush});
+  display->scene()->addRect(m_xmin, m_ymin, m_xmax - m_xmin, m_ymax - m_ymin,
+                            pen, QBrush{Qt::NoBrush});
   display->show();
   display->fit();
 }
 
-}
+} // namespace puzzle_2018_06
 
-void Solver_2018_06_1::solve(const QString& input)
-{
+void Solver_2018_06_1::solve(const QString &input) {
   const auto diagram = puzzle_2018_06::VoronoiDiagram{input};
   if (m_display)
     diagram.display(m_display);
@@ -145,8 +141,7 @@ void Solver_2018_06_1::solve(const QString& input)
   emit finished(QString{"%1"}.arg(diagram.largestArea()));
 }
 
-void Solver_2018_06_2::solve(const QString& input)
-{
+void Solver_2018_06_2::solve(const QString &input) {
   const auto diagram = puzzle_2018_06::VoronoiDiagram{input};
   emit finished(QString{"%1"}.arg(diagram.safeRegionArea()));
 }

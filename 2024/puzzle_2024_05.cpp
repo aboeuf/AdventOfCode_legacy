@@ -21,14 +21,14 @@ public:
         continue;
       }
       if (line.contains('|')) {
-        const auto values = common::toUIntValues(line, '|');
+        const auto values = common::toUInt(line, '|');
         m_successors[values[0]].insert(values[1]);
       } else {
         if (not memory_reserved) {
           m_updates.reserve(nb_remaining_lines);
           memory_reserved = true;
         }
-        m_updates.emplace_back(common::toUIntValues(line));
+        m_updates.emplace_back(common::toUInt(line));
       }
       --nb_remaining_lines;
     }

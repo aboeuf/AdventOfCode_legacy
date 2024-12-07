@@ -10,7 +10,7 @@ public:
     m_first_list.reserve(lines.size());
     m_second_list.reserve(lines.size());
     for (const auto &line : lines) {
-      const auto values = common::toIntValues(line, ' ');
+      const auto values = common::toUInt(line, ' ');
       if (values.size() != 2) {
         common::throwInvalidArgumentError("cannot parse values");
       }

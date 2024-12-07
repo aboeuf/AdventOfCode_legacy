@@ -3,20 +3,17 @@
 
 using Int = unsigned long long int;
 
-class Fishes
-{
+class Fishes {
 public:
-  Fishes(const QString& input)
-  {
-    const auto values = common::toUIntValues(input);
-    for (const auto& v : values) {
+  Fishes(const QString &input) {
+    const auto values = common::toUInt(input);
+    for (const auto &v : values) {
       if (v < 9u)
         ++m_nb_per_age[v];
     }
   }
 
-  Int nbFishes() const
-  {
+  Int nbFishes() const {
     auto nb_fishes = Int{0};
     for (auto i = 0; i < 9; ++i)
       nb_fishes += m_nb_per_age[i];
@@ -31,15 +28,13 @@ public:
     m_nb_per_age[6] += nb_new;
   }
 
-  QString solvePuzzleOne()
-  {
+  QString solvePuzzleOne() {
     for (auto i = 0; i < 80; ++i)
       increment();
     return QString{"%1"}.arg(nbFishes());
   }
 
-  QString solvePuzzleTwo()
-  {
+  QString solvePuzzleTwo() {
     for (auto i = 0; i < 256; ++i)
       increment();
     return QString{"%1"}.arg(nbFishes());
@@ -49,15 +44,12 @@ private:
   std::array<Int, 9> m_nb_per_age{0, 0, 0, 0, 0, 0, 0, 0, 0};
 };
 
-void Solver_2021_06_1::solve(const QString& input)
-{
+void Solver_2021_06_1::solve(const QString &input) {
   auto fishes = Fishes{input};
   emit finished(fishes.solvePuzzleOne());
 }
 
-void Solver_2021_06_2::solve(const QString& input)
-{
+void Solver_2021_06_2::solve(const QString &input) {
   auto fishes = Fishes{input};
   emit finished(fishes.solvePuzzleTwo());
 }
-
