@@ -135,6 +135,7 @@ SOURCES += \
     2024/puzzle_2024_05.cpp \
     2024/puzzle_2024_06.cpp \
     2024/puzzle_2024_07.cpp \
+    2024/puzzle_2024_08.cpp \
     common.cpp \
     display/display.cpp \
     display/view.cpp \
@@ -277,12 +278,14 @@ HEADERS += \
     2024/puzzle_2024_05.h \
     2024/puzzle_2024_06.h \
     2024/puzzle_2024_07.h \
+    2024/puzzle_2024_08.h \
     common.h \
     display/display.h \
     display/view.h \
     jsonhelper.h \
     leaderboard.h \
     mainwindow.h \
+    qpoint_hash.hpp \
     solvers.h
 
 FORMS += \
