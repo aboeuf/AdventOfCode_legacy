@@ -6,3 +6,4 @@
 #include <2024/puzzle_2024_06.h>
 #include <2024/puzzle_2024_07.h>
 #include <2024/puzzle_2024_08.h>
+#include <2024/puzzle_2024_09.h>
