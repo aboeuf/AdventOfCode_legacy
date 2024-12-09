@@ -1,13 +1,8 @@
 #include <2016/puzzle_2016_04.h>
 #include <common.h>
+#include <qchar_hash.hpp>
 
 #include <set>
-
-template <> struct std::hash<QChar> {
-  std::size_t operator()(const QChar &c) const noexcept {
-    return static_cast<std::size_t>(qHash(c));
-  }
-};
 
 namespace puzzle_2016_04 {
 
