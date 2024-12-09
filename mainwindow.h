@@ -78,7 +78,7 @@ private:
   QString createDefault();
   bool setSources();
   BoardConf &getCurrentBoardConf(QString *ret_id = nullptr);
-  QString getCurrentBoardFilepath() const;
+  QString getCurrentBoardFilepath();
 
   Ui::MainWindow *ui;
   Display m_display;

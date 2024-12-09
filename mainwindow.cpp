@@ -520,8 +520,9 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::updateLeaderboard(bool force) {
-  if (not m_manager)
+  if (not m_manager) {
     return;
+  }
   auto &conf = getCurrentBoardConf();
   if (not conf.last_updated.contains(m_requested_event))
     conf.last_updated[m_requested_event] = qint64{0};
@@ -624,8 +625,9 @@ void MainWindow::fillComboBox() {
     ui->m_leaderboard_combo_box->addItem(text, id);
   }
 
-  if (m_last_selected.isEmpty())
+  if (m_last_selected.isEmpty()) {
     m_last_selected = m_config.m_leaderboards.begin().key();
+  }
   ui->m_leaderboard_combo_box->setCurrentIndex(
       ui->m_leaderboard_combo_box->findData(m_last_selected));
   on_m_leaderboard_combo_box_currentIndexChanged(0);
@@ -934,7 +936,10 @@ BoardConf &MainWindow::getCurrentBoardConf(QString *ret_id) {
   return m_config.m_leaderboards[id];
 }
 
-QString MainWindow::getCurrentBoardFilepath() const {
+QString MainWindow::getCurrentBoardFilepath() {
+  if (m_last_selected.isEmpty()) {
+    m_last_selected = m_config.m_leaderboards.begin().key();
+  }
   return QString("%1%2_%3.json")
       .arg(m_dir_path)
       .arg(m_last_selected)
