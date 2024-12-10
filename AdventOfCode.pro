@@ -25,6 +25,7 @@ SOURCES += \
     2016/puzzle_2016_05.cpp \
     2016/puzzle_2016_06.cpp \
     2016/puzzle_2016_07.cpp \
+    2016/puzzle_2016_08.cpp \
     2017/puzzle_2017_01.cpp \
     2018/puzzle_2018_01.cpp \
     2018/puzzle_2018_02.cpp \
@@ -143,6 +144,7 @@ SOURCES += \
     2024/puzzle_2024_07.cpp \
     2024/puzzle_2024_08.cpp \
     2024/puzzle_2024_09.cpp \
+    2024/puzzle_2024_10.cpp \
     common.cpp \
     display/display.cpp \
     display/view.cpp \
@@ -169,6 +171,7 @@ HEADERS += \
     2016/puzzle_2016_05.h \
     2016/puzzle_2016_06.h \
     2016/puzzle_2016_07.h \
+    2016/puzzle_2016_08.h \
     2017/puzzle_2017_01.h \
     2018/event_2018.h \
     2018/puzzle_2018_01.h \
@@ -293,6 +296,7 @@ HEADERS += \
     2024/puzzle_2024_07.h \
     2024/puzzle_2024_08.h \
     2024/puzzle_2024_09.h \
+    2024/puzzle_2024_10.h \
     common.h \
     display/display.h \
     display/view.h \

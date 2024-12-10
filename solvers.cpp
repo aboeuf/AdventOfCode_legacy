@@ -43,6 +43,8 @@ Solvers::Solvers() {
   m_solvers[2016][6][2] = new Solver_2016_06_2();
   m_solvers[2016][7][1] = new Solver_2016_07_1();
   m_solvers[2016][7][2] = new Solver_2016_07_2();
+  m_solvers[2016][8][1] = new Solver_2016_08_1();
+  m_solvers[2016][8][2] = new Solver_2016_08_2();
   m_solvers[2017][1][1] = new Solver_2017_01_1();
   m_solvers[2017][1][2] = new Solver_2017_01_2();
   m_solvers[2018][1][1] = new Solver_2018_01_1();
@@ -255,6 +257,8 @@ Solvers::Solvers() {
   m_solvers[2023][8][2] = new Solver_2023_08_2();
   m_solvers[2023][9][1] = new Solver_2023_09_1();
   m_solvers[2023][9][2] = new Solver_2023_09_2();
+  m_solvers[2024][10][1] = new Solver_2024_10_1();
+  m_solvers[2024][10][2] = new Solver_2024_10_2();
   m_solvers[2024][1][1] = new Solver_2024_01_1();
   m_solvers[2024][1][2] = new Solver_2024_01_2();
   m_solvers[2024][2][1] = new Solver_2024_02_1();

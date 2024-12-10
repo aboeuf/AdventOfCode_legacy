@@ -5,3 +5,4 @@
 #include <2016/puzzle_2016_05.h>
 #include <2016/puzzle_2016_06.h>
 #include <2016/puzzle_2016_07.h>
+#include <2016/puzzle_2016_08.h>
