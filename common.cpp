@@ -11,10 +11,21 @@ void throwInvalidArgumentError(const QString &message) {
   throw std::invalid_argument(message.toStdString());
 }
 
-QStringList splitLines(const QString &input) {
+QStringList splitLines(const QString &input, bool filter_empty_lines) {
   QStringList res = input.split('\n');
-  while (!res.isEmpty() && res.back().isEmpty())
-    res.pop_back();
+  if (filter_empty_lines) {
+    for (auto it = std::begin(res); it != std::end(res);) {
+      if (it->isEmpty()) {
+        it = res.erase(it);
+      } else {
+        ++it;
+      }
+    }
+  } else {
+    while (!res.isEmpty() && res.back().isEmpty()) {
+      res.pop_back();
+    }
+  }
   return res;
 }
 

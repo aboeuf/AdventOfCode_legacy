@@ -13,7 +13,7 @@ namespace common {
 void throwRunTimeError(const QString &message);
 void throwInvalidArgumentError(const QString &message);
 
-QStringList splitLines(const QString &input);
+QStringList splitLines(const QString &input, bool filter_empty_lines = false);
 QStringList splitValues(const QString &input, const QChar &split_char = ',');
 
 QVector<short> toShort(const QString &input, const QChar &split_char = ',');
