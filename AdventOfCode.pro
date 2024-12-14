@@ -3,7 +3,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++17
 DEFINES += QT_DEPRECATED_WARNINGS
 
-RC_ICONS = icon.ico
+RESOURCES += \
+    resources.qrc
 
 SOURCES += \
     2015/puzzle_2015_01.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
     2017/puzzle_2017_01.cpp \
     2017/puzzle_2017_02.cpp \
     2017/puzzle_2017_03.cpp \
+    2017/puzzle_2017_04.cpp \
     2018/puzzle_2018_01.cpp \
     2018/puzzle_2018_02.cpp \
     2018/puzzle_2018_03.cpp \
@@ -178,6 +180,7 @@ HEADERS += \
     2017/puzzle_2017_01.h \
     2017/puzzle_2017_02.h \
     2017/puzzle_2017_03.h \
+    2017/puzzle_2017_04.h \
     2018/event_2018.h \
     2018/puzzle_2018_01.h \
     2018/puzzle_2018_02.h \
@@ -320,6 +323,3 @@ FORMS += \
     2020/display/puzzle_2020_24/puzzle_2020_24_display.ui \
     display/display.ui \
     mainwindow.ui
-
-RESOURCES += \
-    resources.qrc
