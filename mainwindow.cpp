@@ -357,8 +357,7 @@ void MainWindow::on_m_push_button_solve_clicked() {
       try {
         solve();
       } catch (const std::exception &e) {
-        QMessageBox(QMessageBox::Icon::Critical, "Solver Error", e.what())
-            .exec();
+        onSolved(QString("ERROR: %1").arg(e.what()));
       }
     } else {
       downloadPuzzleInput();

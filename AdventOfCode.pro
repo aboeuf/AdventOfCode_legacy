@@ -3,9 +3,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++17
 DEFINES += QT_DEPRECATED_WARNINGS
 
-INCLUDEPATH += D:/boost_1_78_0
-LIBS += "-LD:/boost_1_53_0/stage/lib/"
-
 RC_ICONS = icon.ico
 
 SOURCES += \
@@ -149,6 +146,7 @@ SOURCES += \
     2024/puzzle_2024_11.cpp \
     2024/puzzle_2024_12.cpp \
     2024/puzzle_2024_13.cpp \
+    2024/puzzle_2024_14.cpp \
     common.cpp \
     display/display.cpp \
     display/view.cpp \
@@ -305,6 +303,7 @@ HEADERS += \
     2024/puzzle_2024_11.h \
     2024/puzzle_2024_12.h \
     2024/puzzle_2024_13.h \
+    2024/puzzle_2024_14.h \
     common.h \
     display/display.h \
     display/view.h \
@@ -319,3 +318,6 @@ FORMS += \
     2020/display/puzzle_2020_24/puzzle_2020_24_display.ui \
     display/display.ui \
     mainwindow.ui
+
+RESOURCES += \
+    resources.qrc
