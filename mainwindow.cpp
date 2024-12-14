@@ -6,7 +6,6 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QInputDialog>
-#include <QMessageBox>
 #include <QProcessEnvironment>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -127,7 +126,16 @@ bool Configuration::save(const QString &filepath) const {
   return true;
 }
 
-void Configuration::updateCookies(QWidget *parent) {
+void Configuration::updateCookies(MainWindow &parent) {
+
+  const auto show_message = [&parent](QMessageBox::Icon icon,
+                                      const QString &title,
+                                      const QString &text) {
+    auto message_box = QMessageBox(icon, title, text);
+    message_box.setWindowIcon(parent.icon());
+    message_box.exec();
+  };
+
 #ifdef WIN32
   QString appdata = QProcessEnvironment::systemEnvironment().value("APPDATA");
   appdata.replace("\\", "/");
@@ -149,13 +157,13 @@ void Configuration::updateCookies(QWidget *parent) {
   }
   if (db_path.isEmpty()) {
     db_path = QFileDialog::getOpenFileName(
-        parent, "Open Cookies Sqlite Database", QDir::homePath(),
+        &parent, "Open Cookies Sqlite Database", QDir::homePath(),
         "Sqlite file (*.sqlite)");
   }
   if (db_path.isEmpty()) {
     return;
   }
-  QMessageBox(QMessageBox::Information, "Advent Of Code", db_path).exec();
+  show_message(QMessageBox::Information, "Advent Of Code", db_path);
   QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
   db.setDatabaseName(db_path);
   if (db.open()) {
@@ -169,23 +177,22 @@ void Configuration::updateCookies(QWidget *parent) {
         if (query.next())
           m_cookies[it.key()] = query.value(0).toString();
         else
-          QMessageBox(QMessageBox::Warning, "Advent Of Code",
-                      "Query \"" + query_str +
-                          "\"\n"
-                          "failed to provide a value.")
-              .exec();
-      } else
-        QMessageBox(QMessageBox::Warning, "Advent Of Code",
-                    "Query \"" + query_str + "\"\n" + "failed with error\n" +
-                        query.lastError().text())
-            .exec();
+          show_message(QMessageBox::Warning, "Advent Of Code",
+                       "Query \"" + query_str +
+                           "\"\n"
+                           "failed to provide a value.");
+      } else {
+        show_message(QMessageBox::Warning, "Advent Of Code",
+                     "Query \"" + query_str + "\"\n" + "failed with error\n" +
+                         query.lastError().text());
+      }
     }
     db.close();
-  } else
-    QMessageBox(QMessageBox::Warning, "Advent Of Code",
-                "Can!open sqlite database \"" + db_path + "\".\n" +
-                    "Close Firefox  and retry.")
-        .exec();
+  } else {
+    show_message(QMessageBox::Warning, "Advent Of Code",
+                 "Can!open sqlite database \"" + db_path + "\".\n" +
+                     "Close Firefox  and retry.");
+  }
 }
 
 void Configuration::setCookies(QNetworkRequest &request) const {
@@ -201,6 +208,8 @@ void Configuration::setCookies(QNetworkRequest &request) const {
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
+  m_icon = QIcon(":/icon.png");
+  this->setWindowIcon(m_icon);
 
   for (auto y : m_solvers.m_solvers.keys())
     for (auto d : m_solvers.m_solvers[y].keys())
@@ -225,17 +234,17 @@ MainWindow::MainWindow(QWidget *parent)
   if (QFile(m_dir_path + "config.json").exists()) {
     const QString error = m_config.load(m_dir_path + "config.json");
     if (!error.isEmpty()) {
-      QMessageBox(QMessageBox::Warning, "Advent Of Code",
-                  QString("Failed to load configuration from file \"%1\"\n")
-                          .arg(m_dir_path + "config.json") +
-                      error)
-          .exec();
+
+          showMessage(QMessageBox::Warning, "Advent Of Code",
+                      QString("Failed to load configuration from file \"%1\"\n")
+                              .arg(m_dir_path + "config.json") +
+                          error);
       m_config.reset();
-      m_config.updateCookies(this);
+      m_config.updateCookies(*this);
     }
   } else {
     m_config.reset();
-    m_config.updateCookies(this);
+    m_config.updateCookies(*this);
   }
 
   ui->m_spin_box_year->setValue(m_config.m_year);
@@ -329,6 +338,7 @@ void MainWindow::on_m_push_button_solve_clicked() {
     msgBox.setInformativeText("Create default files?");
     msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
     msgBox.setDefaultButton(QMessageBox::Yes);
+    msgBox.setWindowIcon(m_icon);
     if (msgBox.exec() == QMessageBox::Yes)
       onSolved(createDefault());
     else
@@ -366,7 +376,7 @@ void MainWindow::on_m_push_button_solve_clicked() {
 }
 
 void MainWindow::on_m_push_button_update_cookies_clicked() {
-  m_config.updateCookies(this);
+  m_config.updateCookies(*this);
 }
 
 void MainWindow::on_m_spin_box_year_valueChanged(int) {
@@ -382,10 +392,11 @@ void MainWindow::on_m_push_button_input_clicked() {
   const QString command =
       "subl " +
       QFileInfo(QFile(m_dir_path + "last_input.txt")).absoluteFilePath();
-  if (std::system(command.toStdString().c_str()) != 0)
-    QMessageBox(QMessageBox::Warning, "Advent Of Code",
-                "Cannot edit input file with Sublime Text\nCommand: " + command)
-        .exec();
+  if (std::system(command.toStdString().c_str()) != 0) {
+    showMessage(
+        QMessageBox::Warning, "Advent Of Code",
+        "Cannot edit input file with Sublime Text\nCommand: " + command);
+  }
 }
 
 void MainWindow::on_m_push_button_solver_output_clicked() {
@@ -518,6 +529,13 @@ void MainWindow::closeEvent(QCloseEvent *event) {
   event->accept();
 }
 
+void MainWindow::showMessage(QMessageBox::Icon icon, const QString &title,
+                             const QString &text) {
+  auto message_box = QMessageBox(icon, title, text);
+  message_box.setWindowIcon(m_icon);
+  message_box.exec();
+}
+
 void MainWindow::updateLeaderboard(bool force) {
   if (not m_manager) {
     return;
@@ -640,11 +658,11 @@ void MainWindow::saveConfig() {
   m_config.m_day = ui->m_spin_box_day->value();
   m_config.m_puzzle_1 = ui->m_spin_box_puzzle->value() == 1;
   m_config.m_use_last_input = ui->m_check_box_use_last_input->isChecked();
-  if (!m_config.save(m_dir_path + "config.json"))
-    QMessageBox(QMessageBox::Warning, "Advent Of Code",
+  if (!m_config.save(m_dir_path + "config.json")) {
+    showMessage(QMessageBox::Warning, "Advent Of Code",
                 QString("Failed to save configuration to file \"%1\"")
-                    .arg(m_dir_path + "config.json"))
-        .exec();
+                    .arg(m_dir_path + "config.json"));
+  }
 }
 
 void MainWindow::solve() {

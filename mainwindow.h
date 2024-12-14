@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <display/display.h>
@@ -22,12 +23,14 @@ struct BoardConf {
   QMap<unsigned int, qint64> last_updated{};
 };
 
+class MainWindow;
+
 struct Configuration {
   Configuration() = default;
   void reset();
   QString load(const QString &filepath);
   bool save(const QString &filepath) const;
-  void updateCookies(QWidget *parent = nullptr);
+  void updateCookies(MainWindow &parent);
   void setCookies(QNetworkRequest &request) const;
   int m_year{};
   int m_day{};
@@ -44,6 +47,8 @@ class MainWindow : public QMainWindow {
 public:
   MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
+
+  const QIcon &icon() const { return m_icon; }
 
 public slots:
   void onSolved(const QString &output);
@@ -69,6 +74,8 @@ private slots:
   void closeEvent(QCloseEvent *event);
 
 private:
+  void showMessage(QMessageBox::Icon icon, const QString &title,
+                   const QString &text);
   void updateLeaderboard(bool force = false);
   void updateLeaderboardDisplay();
   void fillComboBox();
@@ -81,6 +88,7 @@ private:
   QString getCurrentBoardFilepath();
 
   Ui::MainWindow *ui;
+  QIcon m_icon;
   Display m_display;
   QNetworkAccessManager *m_manager;
   Solvers m_solvers;
