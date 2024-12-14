@@ -235,10 +235,10 @@ MainWindow::MainWindow(QWidget *parent)
     const QString error = m_config.load(m_dir_path + "config.json");
     if (!error.isEmpty()) {
 
-          showMessage(QMessageBox::Warning, "Advent Of Code",
-                      QString("Failed to load configuration from file \"%1\"\n")
-                              .arg(m_dir_path + "config.json") +
-                          error);
+      showMessage(QMessageBox::Warning, "Advent Of Code",
+                  QString("Failed to load configuration from file \"%1\"\n")
+                          .arg(m_dir_path + "config.json") +
+                      error);
       m_config.reset();
       m_config.updateCookies(*this);
     }
@@ -393,9 +393,9 @@ void MainWindow::on_m_push_button_input_clicked() {
       "subl " +
       QFileInfo(QFile(m_dir_path + "last_input.txt")).absoluteFilePath();
   if (std::system(command.toStdString().c_str()) != 0) {
-    showMessage(
-        QMessageBox::Warning, "Advent Of Code",
-        "Cannot edit input file with Sublime Text\nCommand: " + command);
+    showMessage(QMessageBox::Warning, "Advent Of Code",
+                "Cannot edit input file with Sublime Text\nCommand: " +
+                    command);
   }
 }
 
@@ -757,10 +757,11 @@ QString MainWindow::createDefault() {
                    "{\n"
                    "public:\n"
                    "    Lines(const QString& input) {\n"
-                   "        auto lines = common::splitLines(input);\n"
-                   "        lines.reserve(lines.size());\n"
-                   "        for (const auto& line : lines)\n"
+                   "        const auto lines = common::splitLines(input);\n"
+                   "        m_lines.reserve(lines.size());\n"
+                   "        for (const auto& line : lines) {\n"
                    "            m_lines.emplace_back(line);\n"
+                   "        }\n"
                    "    }\n"
                    "\n"
                    "    QString solveOne() const { return \"Default\"; }\n"
@@ -774,15 +775,13 @@ QString MainWindow::createDefault() {
                    "\n"
                    "void Solver_%1_%2_1::solve(const QString& input)\n"
                    "{\n"
-                   "    emit output(input);\n"
-                   "    const auto lines = puzzle_%1_%2::Lines{input};\n"
+                   "    const auto lines = puzzle_%1_%2::Lines(input);\n"
                    "    emit finished(lines.solveOne());\n"
                    "}\n"
                    "\n"
                    "void Solver_%1_%2_2::solve(const QString& input)\n"
                    "{\n"
-                   "    emit output(input);\n"
-                   "    const auto lines = puzzle_%1_%2::Lines{input};\n"
+                   "    const auto lines = puzzle_%1_%2::Lines(input);\n"
                    "    emit finished(lines.solveTwo());\n"
                    "}\n")
                .arg(year)
@@ -857,11 +856,13 @@ QString MainWindow::createDefault() {
         out << "\n";
       }
     };
+    out << "RESOURCES += resources.qrc\n\n";
     write("SOURCES", sources);
     write("HEADERS", headers);
     write("FORMS", forms);
-  } else
+  } else {
     return "Error: cannot write in file AdventOfCode.pro";
+  }
 
   std::set<std::string> includes;
   for (auto y = ui->m_spin_box_year->minimum();
