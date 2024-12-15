@@ -12,3 +12,4 @@
 #include <2024/puzzle_2024_12.h>
 #include <2024/puzzle_2024_13.h>
 #include <2024/puzzle_2024_14.h>
+#include <2024/puzzle_2024_15.h>
