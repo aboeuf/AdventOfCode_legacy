@@ -57,6 +57,8 @@ Solvers::Solvers() {
   m_solvers[2017][5][2] = new Solver_2017_05_2();
   m_solvers[2017][6][1] = new Solver_2017_06_1();
   m_solvers[2017][6][2] = new Solver_2017_06_2();
+  m_solvers[2017][7][1] = new Solver_2017_07_1();
+  m_solvers[2017][7][2] = new Solver_2017_07_2();
   m_solvers[2018][1][1] = new Solver_2018_01_1();
   m_solvers[2018][1][2] = new Solver_2018_01_2();
   m_solvers[2018][2][1] = new Solver_2018_02_1();

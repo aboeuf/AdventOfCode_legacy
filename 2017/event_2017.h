@@ -4,4 +4,5 @@
 #include <2017/puzzle_2017_04.h>
 #include <2017/puzzle_2017_05.h>
 #include <2017/puzzle_2017_06.h>
+#include <2017/puzzle_2017_07.h>
 #include <2017/puzzle_2017_09.h>
