@@ -1,171 +1,187 @@
 #include <2018/puzzle_2018_07.h>
 #include <common.h>
-#include <unordered_set>
-#include <unordered_map>
 #include <set>
-#include <optional>
 
-#include <QDebug>
+#include <iostream>
 
-const auto extra_time = std::unordered_map<char, uint>
-{
-  {'A', 1u},
-  {'B', 2u},
-  {'C', 3u},
-  {'D', 4u},
-  {'E', 5u},
-  {'F', 6u},
-  {'G', 7u},
-  {'H', 8u},
-  {'I', 9u},
-  {'J', 10u},
-  {'K', 11u},
-  {'L', 12u},
-  {'M', 13u},
-  {'N', 14u},
-  {'O', 15u},
-  {'P', 16u},
-  {'Q', 17u},
-  {'R', 18u},
-  {'S', 19u},
-  {'T', 20u},
-  {'U', 21u},
-  {'V', 22u},
-  {'W', 23u},
-  {'X', 24u},
-  {'Y', 25u},
-  {'Z', 26u}
-};
+namespace puzzle_2018_07 {
 
-struct Step
-{
-  std::unordered_set<char> m_predecessors{};
-  std::unordered_set<char> m_successors{};
-  uint m_starting_time{0};
-  uint m_ending_time{0};
-};
+class Node;
+using NodePtr = std::shared_ptr<Node>;
 
-class PERT
-{
+constexpr auto minimum_step_duration = 60u;
+constexpr auto nb_workers = 5u;
+
+const auto steps_durations = []() {
+  const auto alphabet = QString("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  auto durations = QHash<QChar, uint>{};
+  auto duration = minimum_step_duration + 1u;
+  for (const auto &c : alphabet) {
+    durations[c] = duration;
+    ++duration;
+  }
+  return durations;
+}();
+
+class Node {
 public:
-  PERT(const QString& /*input*/,
-       uint /*nb_workers*/,
-       uint /*nb_seconds_per_step*/)
-  {
-//    auto waiting_steps = std::unordered_map<char, Step>{};
-//    auto rx = QRegExp{"^Step (.) must be finished before step (.) can begin\\.$"};
-//    const auto lines = common::splitLines(input);
-//    for (const auto& line : lines) {
-//      if (not rx.exactMatch(line)) {
-//        m_error = "Invalid input: " + line;
-//        return;
-//      }
-//      const auto first = rx.cap(1).front().toLatin1();
-//      const auto second = rx.cap(2).front().toLatin1();
-//      auto prev = waiting_steps.insert({first, Step{}}).first;
-//      auto next = waiting_steps.insert({second, Step{}}).first;
-//      prev->second.m_successors.insert(second);
-//      next->second.m_predecessors.insert(first);
-//    }
-    
-//    auto ready_steps = std::set<char>{};
-//    for (const auto& s : steps)
-//      if (s.second.m_predecessors.empty())
-//        ready_steps.insert(s.first);
+  Node(QChar label) : m_label{label} {}
 
-//    using Comp = std::function<bool(const char&, const char&)>;
-//    auto ongoing_steps = std::set<char, Comp>{[&steps](const char& lhs, const char& rhs) {
-//        const auto left = steps.find(lhs);
-//        if (left == std::end(steps))
-//          return false;
-//        const auto right = steps.find(rhs);
-//        if (right == std::end(steps))
-//          return true;
-//        if (left->second.m_ending_time == right->second.m_ending_time)
-//          return lhs < rhs;
-//        return left->second.m_ending_time < right->second.m_ending_time;
-//      }};
+  const QChar &label() const { return m_label; }
+  const QSet<NodePtr> &parents() const { return m_parents; }
+  const QSet<NodePtr> &children() const { return m_children; }
 
-//    const auto debug = [&]()
-//    {
-//      qDebug() << "------------------------------";
-//      qDebug() << "Time:" << current_time;
-//      qDebug() << "Nb workers:" << nb_available_workers;
-//      qDebug() << "Done:" << m_sequence;
-//      auto ready = QString{"Ready:"};
-//      for (const auto& c : ready_steps)
-//        ready.push_back(c);
-//      qDebug() <<  ready.toStdString().c_str();
-//      auto ongoing = QString{"Ongoing:"};
-//      for (const auto& c : ongoing_steps) {
-//        const auto it = steps.find(c);
-//        if (it == steps.end())
-//          ongoing += QString{" (%1, not found)"}.arg(c);
-//        else
-//          ongoing += QString{" (%1, %2, %3)"}.arg(c)
-//              .arg(it->second.m_starting_time)
-//              .arg(it->second.m_ending_time);
-//      }
-//      qDebug() << ongoing.toStdString().c_str();
-//    };
+  void addParent(const NodePtr &parent) { m_parents.insert(parent); }
+  void addChild(const NodePtr &child) { m_children.insert(child); }
 
-//    auto current_time = 0u;
-//    auto nb_available_workers = nb_workers;
-    
-//    for (;;) {
-//      debug();
-//      if (not ongoing_steps.empty() and (ready_steps.empty() or nb_available_workers == 0)) {
-//        const auto label = *std::begin(ongoing_steps);
-//        auto step = waiting_steps.find(label);
-//        if (step == )
-//        qDebug() << "------------------------------";
-//        qDebug() << "--> END" << step.m_label << "at" << step.m_ending_time;
-//        ongoing_steps.erase(std::begin(ongoing_steps));
-//        step.m_status = Step::DONE;
-//        m_sequence.push_back(step.m_label);
-//        ++nb_available_workers;
-//        current_time = step.m_ending_time + 1;
-//        update_ready();
-//      } else if (not ready_steps.empty()) {
-//        if (nb_available_workers == 0) {
-//          m_error = "No more available workers";
-//          return;
-//        }
-//        auto& step = steps[*std::begin(ready_steps)];
-//        step.m_starting_time = current_time;
-//        step.m_ending_time = current_time + nb_seconds_per_step + extraTime(step.m_label);
-//        qDebug() << "------------------------------";
-//        qDebug() << "--> START" << step.m_label << "at" << step.m_starting_time;
-//        ready_steps.erase(std::begin(ready_steps));
-//        ongoing_steps.insert(step.m_label);
-//        --nb_available_workers;
-//      } else {
-//        return;
-//      }
-//    }
+  bool done() const { return m_done; }
+  void setDone(bool done) { m_done = done; }
+
+  bool ready() const {
+    for (const auto &parent : m_parents) {
+      if (not parent->done()) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  const QString& error() const { return m_error; }
-  const QString& sequence() const { return m_sequence; }
-
 private:
-  QString m_sequence{""};
-  QString m_error{""};
+  QChar m_label;
+  QSet<NodePtr> m_parents;
+  QSet<NodePtr> m_children;
+  bool m_done{false};
 };
 
-void Solver_2018_07_1::solve(const QString& input)
-{
-  const auto pert = PERT{input, 1, 0};
-  if (not pert.error().isEmpty())
-    emit output(pert.error());
-  emit finished(pert.sequence());
+inline bool operator<(const NodePtr &lhs, const NodePtr &rhs) {
+  return lhs->label() < rhs->label();
 }
 
-void Solver_2018_07_2::solve(const QString& input)
-{
-  const auto pert = PERT{input, 5, 60};
-  if (not pert.error().isEmpty())
-    emit output(pert.error());
-  emit finished(pert.sequence());
+inline bool operator==(const NodePtr &lhs, const NodePtr &rhs) {
+  return lhs->label() == rhs->label();
 }
 
+inline uint qHash(const NodePtr &node) { return qHash(node->label()); }
+
+struct Worker {
+  NodePtr is_working_on{nullptr};
+  uint remaining_time{0u};
+};
+
+class Graph {
+public:
+  Graph(const QString &input) {
+    const auto lines = common::splitLines(input, true);
+    auto line_index = 1u;
+    for (const auto &line : lines) {
+      auto rx = QRegExp(
+          "^Step ([A-Z]) must be finished before step ([A-Z]) can begin\\.$");
+      const auto valid = rx.exactMatch(line);
+      if (not valid) {
+        common::throwInvalidArgumentError(
+            QString("puzzle_2018_07::Graph: cannot parse line %1: \"%2\"")
+                .arg(line_index)
+                .arg(line));
+      }
+      const auto parent_label = QChar(rx.cap(1).front());
+      const auto child_label = QChar(rx.cap(2).front());
+      auto &parent_node =
+          m_nodes
+              .insert(std::make_pair(parent_label,
+                                     std::make_shared<Node>(parent_label)))
+              .first->second;
+      auto &child_node =
+          m_nodes
+              .insert(std::make_pair(child_label,
+                                     std::make_shared<Node>(child_label)))
+              .first->second;
+      parent_node->addChild(child_node);
+      child_node->addParent(parent_node);
+      ++line_index;
+    }
+  }
+
+  QString solveOne() { return solve().first; }
+
+  QString solveTwo() { return QString("%1").arg(solve().second); }
+
+private:
+  std::pair<QString, uint> solve() {
+    auto ready_nodes = std::set<NodePtr>{};
+    for (auto &[_, node] : m_nodes) {
+      if (node->ready()) {
+        ready_nodes.insert(node);
+      }
+    }
+    auto workers = std::array<Worker, nb_workers>{};
+
+    const auto assign_work = [&ready_nodes, &workers]() {
+      for (auto &worker : workers) {
+        if (ready_nodes.empty()) {
+          break;
+        }
+        if (not worker.is_working_on) {
+          worker.is_working_on = *std::begin(ready_nodes);
+          ready_nodes.erase(std::begin(ready_nodes));
+          worker.remaining_time =
+              steps_durations[worker.is_working_on->label()];
+        }
+      }
+    };
+
+    auto steps = QString{};
+    auto time = 0u;
+    const auto do_work = [&ready_nodes, &workers, &steps, &time]() {
+      auto nb_steps_done = steps.size();
+      for (auto &worker : workers) {
+        if (worker.is_working_on) {
+          if (worker.remaining_time == 1u) {
+            worker.is_working_on->setDone(true);
+            steps.push_back(worker.is_working_on->label());
+            for (const auto &child : worker.is_working_on->children()) {
+              if (child->ready()) {
+                ready_nodes.insert(child);
+              }
+            }
+            worker.is_working_on = nullptr;
+          } else {
+            --worker.remaining_time;
+          }
+        }
+      }
+      ++time;
+      return steps.size() > nb_steps_done;
+    };
+
+    assign_work();
+    const auto nb_steps = static_cast<int>(std::size(m_nodes));
+    while (steps.size() < nb_steps) {
+      if (do_work()) {
+        assign_work();
+        if (steps.size() < nb_steps and
+            std::all_of(std::cbegin(workers), std::cend(workers),
+                        [](const auto &worker) {
+                          return worker.is_working_on == nullptr;
+                        })) {
+          common::throwRunTimeError("puzzle_2018_07::Graph::solve: all "
+                                    "workers are idle after work assignation");
+        }
+      }
+    }
+    return std::make_pair(steps, time);
+  }
+
+  std::map<QChar, NodePtr> m_nodes;
+};
+
+} // namespace puzzle_2018_07
+
+void Solver_2018_07_1::solve(const QString &input) {
+  auto graph = puzzle_2018_07::Graph(input);
+  emit finished(graph.solveOne());
+}
+
+void Solver_2018_07_2::solve(const QString &input) {
+  auto graph = puzzle_2018_07::Graph(input);
+  emit finished(graph.solveTwo());
+}
