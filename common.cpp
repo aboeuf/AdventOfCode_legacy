@@ -49,6 +49,8 @@ QVector<DataType> splitAndConvert(
       const auto value = converter(token, ok);
       if (ok) {
         values << value;
+      } else {
+        throwRunTimeError(token);
       }
     }
   }

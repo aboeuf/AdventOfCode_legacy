@@ -14,3 +14,4 @@
 #include <2024/puzzle_2024_14.h>
 #include <2024/puzzle_2024_15.h>
 #include <2024/puzzle_2024_16.h>
+#include <2024/puzzle_2024_17.h>
