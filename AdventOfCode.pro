@@ -158,6 +158,7 @@ SOURCES += \
     2024/puzzle_2024_18.cpp \
     2024/puzzle_2024_19.cpp \
     2024/puzzle_2024_20.cpp \
+    2024/puzzle_2024_21.cpp \
     common.cpp \
     display/display.cpp \
     display/view.cpp \
@@ -326,6 +327,7 @@ HEADERS += \
     2024/puzzle_2024_18.h \
     2024/puzzle_2024_19.h \
     2024/puzzle_2024_20.h \
+    2024/puzzle_2024_21.h \
     common.h \
     display/display.h \
     display/view.h \

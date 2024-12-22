@@ -303,7 +303,11 @@ void MainWindow::replyFinished(QNetworkReply *reply) {
       out << ui->m_plain_text_edit_input->toPlainText();
       file.close();
     }
-    solve();
+    try {
+      solve();
+    } catch (const std::exception &e) {
+      onSolved(QString("ERROR: %1").arg(e.what()));
+    }
     return;
   }
 
