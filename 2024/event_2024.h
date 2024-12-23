@@ -20,3 +20,4 @@
 #include <2024/puzzle_2024_20.h>
 #include <2024/puzzle_2024_21.h>
 #include <2024/puzzle_2024_22.h>
+#include <2024/puzzle_2024_23.h>
