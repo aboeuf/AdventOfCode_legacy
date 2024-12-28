@@ -299,6 +299,10 @@ Solvers::Solvers() {
   m_solvers[2024][22][2] = new Solver_2024_22_2();
   m_solvers[2024][23][1] = new Solver_2024_23_1();
   m_solvers[2024][23][2] = new Solver_2024_23_2();
+  m_solvers[2024][24][1] = new Solver_2024_24_1();
+  m_solvers[2024][24][2] = new Solver_2024_24_2();
+  m_solvers[2024][25][1] = new Solver_2024_25_1();
+  m_solvers[2024][25][2] = new Solver_2024_25_2();
   m_solvers[2024][2][1] = new Solver_2024_02_1();
   m_solvers[2024][2][2] = new Solver_2024_02_2();
   m_solvers[2024][3][1] = new Solver_2024_03_1();
