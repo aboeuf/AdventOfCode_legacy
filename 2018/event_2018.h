@@ -5,3 +5,4 @@
 #include <2018/puzzle_2018_05.h>
 #include <2018/puzzle_2018_06.h>
 #include <2018/puzzle_2018_07.h>
+#include <2018/puzzle_2018_08.h>

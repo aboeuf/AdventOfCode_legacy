@@ -38,6 +38,7 @@ SOURCES += \
     2018/puzzle_2018_05.cpp \
     2018/puzzle_2018_06.cpp \
     2018/puzzle_2018_07.cpp \
+    2018/puzzle_2018_08.cpp \
     2019/intcodecomputer.cpp \
     2019/puzzle_2019_01.cpp \
     2019/puzzle_2019_02.cpp \
@@ -207,6 +208,7 @@ HEADERS += \
     2018/puzzle_2018_05.h \
     2018/puzzle_2018_06.h \
     2018/puzzle_2018_07.h \
+    2018/puzzle_2018_08.h \
     2019/event_2019.h \
     2019/intcodecomputer.h \
     2019/puzzle_2019_01.h \
