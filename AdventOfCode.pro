@@ -23,6 +23,7 @@ SOURCES += \
     2016/puzzle_2016_06.cpp \
     2016/puzzle_2016_07.cpp \
     2016/puzzle_2016_08.cpp \
+    2016/puzzle_2016_09.cpp \
     2017/puzzle_2017_01.cpp \
     2017/puzzle_2017_02.cpp \
     2017/puzzle_2017_03.cpp \
@@ -192,6 +193,7 @@ HEADERS += \
     2016/puzzle_2016_06.h \
     2016/puzzle_2016_07.h \
     2016/puzzle_2016_08.h \
+    2016/puzzle_2016_09.h \
     2017/puzzle_2017_01.h \
     2017/puzzle_2017_02.h \
     2017/puzzle_2017_03.h \
