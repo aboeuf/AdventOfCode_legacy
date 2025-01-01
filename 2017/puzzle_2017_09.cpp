@@ -3,40 +3,80 @@
 
 namespace puzzle_2017_09 {
 
-class Line {
-public:
-  Line(const QString &input) : m_line{input} {}
-
-private:
-  QString m_line;
-};
-
-class Lines {
-public:
-  Lines(const QString &input) {
-    auto lines = common::splitLines(input);
-    lines.reserve(lines.size());
-    for (const auto &line : lines)
-      m_lines.emplace_back(line);
+struct Group {
+  Group(const QString &data, Group *parent = nullptr, int start = -1)
+      : parent{parent}, start{start}, depth{parent ? parent->depth + 1u : 0u} {
+    auto inside_garbage = false;
+    for (auto i = start + 1; i < data.size();) {
+      if (data[i] == '!') {
+        i += 2;
+      } else if (data[i] == '<') {
+        if (inside_garbage) {
+          ++garbage_size;
+        } else {
+          inside_garbage = true;
+        }
+        ++i;
+      } else if (data[i] == '>') {
+        inside_garbage = false;
+        ++i;
+      } else if (inside_garbage) {
+        ++garbage_size;
+        ++i;
+      } else {
+        if (data[i] == '{') {
+          children << new Group(data, this, i);
+          i = children.back()->stop + 1;
+        } else if (data[i] == '}') {
+          stop = i;
+          return;
+        } else {
+          ++i;
+        }
+      }
+    }
   }
 
-  QString solveOne() const { return "Default"; }
-  QString solveTwo() const { return "Default"; }
+  ~Group() {
+    for (auto *child : children) {
+      delete child;
+    }
+  }
 
-private:
-  std::vector<Line> m_lines;
+  uint totalScore() const {
+    auto score = depth;
+    for (const auto &child : children) {
+      score += child->totalScore();
+    }
+    return score;
+  }
+
+  uint garbageSize() const {
+    auto size = garbage_size;
+    for (const auto &child : children) {
+      size += child->garbageSize();
+    }
+    return size;
+  }
+
+  Group *parent{nullptr};
+  QList<Group *> children{};
+  int start{0};
+  uint depth{0};
+  int stop{0};
+  uint garbage_size{0};
 };
 
 } // namespace puzzle_2017_09
 
 void Solver_2017_09_1::solve(const QString &input) {
-  emit output(input);
-  const auto lines = puzzle_2017_09::Lines{input};
-  emit finished(lines.solveOne());
+  const auto root =
+      puzzle_2017_09::Group(common::splitLines(input, true).front());
+  emit finished(QString("%1").arg(root.totalScore()));
 }
 
 void Solver_2017_09_2::solve(const QString &input) {
-  emit output(input);
-  const auto lines = puzzle_2017_09::Lines{input};
-  emit finished(lines.solveTwo());
+  const auto root =
+      puzzle_2017_09::Group(common::splitLines(input, true).front());
+  emit finished(QString("%1").arg(root.garbageSize()));
 }
