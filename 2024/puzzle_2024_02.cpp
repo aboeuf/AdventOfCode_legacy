@@ -5,7 +5,7 @@ namespace puzzle_2024_02 {
 
 class Report {
 public:
-  Report(const QString &input) : m_levels{common::toInt(input, ' ')} {}
+  Report(const QString &input) : m_levels{common::toVecInt(input, ' ')} {}
 
   Report(QVector<int> &&levels) : m_levels{levels} {}
 

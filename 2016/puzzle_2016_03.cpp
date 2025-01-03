@@ -6,7 +6,7 @@ namespace puzzle_2016_03 {
 class Triangle {
 public:
   Triangle(const QString &input) {
-    const auto values = common::toUInt(input, ' ');
+    const auto values = common::toVecUInt(input, ' ');
     for (auto i = 0; i < 3; ++i) {
       m_side_lengths[i] = values[i];
     }
@@ -67,9 +67,9 @@ public:
     const auto lines = common::splitLines(input);
     m_triangles.reserve(lines.size());
     for (auto i = 0; i + 2 < lines.size(); i += 3) {
-      const auto A = common::toUInt(lines[i], ' ');
-      const auto B = common::toUInt(lines[i + 1], ' ');
-      const auto C = common::toUInt(lines[i + 2], ' ');
+      const auto A = common::toVecUInt(lines[i], ' ');
+      const auto B = common::toVecUInt(lines[i + 1], ' ');
+      const auto C = common::toVecUInt(lines[i + 2], ' ');
       for (auto j = 0; j < 3; ++j) {
         m_triangles.emplace_back(A[j], B[j], C[j]);
       }

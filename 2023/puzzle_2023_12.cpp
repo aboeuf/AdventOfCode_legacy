@@ -23,7 +23,7 @@ public:
   Record(const QString &input, bool v2) {
     const auto splitted = common::splitValues(input, ' ');
     m_record = splitted[0];
-    m_groups = common::toUInt(splitted[1]);
+    m_groups = common::toVecUInt(splitted[1]);
     if (v2) {
       auto unfolded_record = QString{};
       auto unfolded_groups = QVector<uint>{};

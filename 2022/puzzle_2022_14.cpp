@@ -60,7 +60,7 @@ public:
       auto positions = std::vector<Position>{};
       positions.reserve(points_str.size());
       for (const auto &point_str : points_str) {
-        const auto point = common::toUInt(point_str);
+        const auto point = common::toVecUInt(point_str);
         positions.emplace_back(point[0], point[1]);
       }
       for (auto i = 1u; i < positions.size(); ++i) {

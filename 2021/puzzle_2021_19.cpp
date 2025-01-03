@@ -100,7 +100,7 @@ public:
       m_matching_scan = 0;
     m_beacons.reserve(input.m_size);
     for (auto it = input.m_begin; it != input.m_end; ++it) {
-      const auto coordinates = common::toUInt(*it);
+      const auto coordinates = common::toVecUInt(*it);
       if (coordinates.size() > 2)
         m_beacons.emplace_back(coordinates[0], coordinates[1], coordinates[2]);
     }

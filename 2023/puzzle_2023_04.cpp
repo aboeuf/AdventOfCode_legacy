@@ -13,8 +13,8 @@ inline uint twoPower(const uint power) {
 inline uint nbMatchesOnCard(const QString &input) {
   const auto split_index_numbers = common::splitValues(input, ':');
   const auto split_numbers = common::splitValues(split_index_numbers[1], '|');
-  auto winning_numbers = common::toUInt(split_numbers[0], ' ');
-  auto candidate_numbers = common::toUInt(split_numbers[1], ' ');
+  auto winning_numbers = common::toVecUInt(split_numbers[0], ' ');
+  auto candidate_numbers = common::toVecUInt(split_numbers[1], ' ');
   auto nb_matches = 0u;
   for (const auto winning : winning_numbers)
     if (candidate_numbers.contains(winning))

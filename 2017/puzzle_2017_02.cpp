@@ -6,7 +6,7 @@ namespace puzzle_2017_02 {
 
 class Line {
 public:
-  Line(const QString &input) : m_values{common::toUInt(input, '\t')} {}
+  Line(const QString &input) : m_values{common::toVecUInt(input, '\t')} {}
 
   uint partOneCheckSum() const {
     auto min_value = std::numeric_limits<uint>::max();
@@ -50,7 +50,7 @@ public:
   Spreadsheet(const QString &input) {
     const auto lines = common::splitLines(input, true);
     m_lines.reserve(lines.size());
-    for (const auto& line : lines) {
+    for (const auto &line : lines) {
       m_lines.emplace_back(line);
     }
   }

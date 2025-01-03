@@ -33,7 +33,7 @@ public:
       if (it->startsWith("fold")) {
         folds.push_back(it);
       } else {
-        const auto values = common::toUInt(*it);
+        const auto values = common::toVecUInt(*it);
         if (values.size() == 2u)
           m_dots.insert(Dot(values[0], values[1]));
       }

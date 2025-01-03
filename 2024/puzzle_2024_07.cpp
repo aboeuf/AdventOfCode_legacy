@@ -53,7 +53,7 @@ public:
       throw std::runtime_error(
           "puzzle_2024_07::Equation: failed to read test value");
     }
-    m_operands = common::toULongLong(colon_split.back(), ' ');
+    m_operands = common::toVecULongLong(colon_split.back(), ' ');
     if (m_operands.size() < 2) {
       throw std::runtime_error(
           "puzzle_2024_07::Equation: failed to read operands");
@@ -76,9 +76,10 @@ public:
       } else if (operators[i] == '*') {
         result *= m_operands[i + 1];
       } else if (operators[i] == '|') {
-          const auto nb_digits = static_cast<Int>(QString("%1").arg(m_operands[i + 1]).size());
-          result *= pow(Int{10}, nb_digits);
-          result += m_operands[i + 1];
+        const auto nb_digits =
+            static_cast<Int>(QString("%1").arg(m_operands[i + 1]).size());
+        result *= pow(Int{10}, nb_digits);
+        result += m_operands[i + 1];
       } else {
         throw std::invalid_argument(
             QString("puzzle_2024_07::Equation::evaluate: unknown operator '%1'")
@@ -100,13 +101,13 @@ public:
   }
 
   Int solveTwo() const {
-      const auto operators = makeOperators(m_operands.size() - 1, "+*|");
-      for (const auto &ops : operators) {
-          if (evaluate(ops) == m_test_value) {
-              return m_test_value;
-          }
+    const auto operators = makeOperators(m_operands.size() - 1, "+*|");
+    for (const auto &ops : operators) {
+      if (evaluate(ops) == m_test_value) {
+        return m_test_value;
       }
-      return Int{0};
+    }
+    return Int{0};
   }
 
 private:
@@ -132,11 +133,11 @@ public:
   }
 
   QString solveTwo() const {
-      auto result = Int{0};
-      for (const auto &equation : m_equations) {
-          result += equation.solveTwo();
-      }
-      return QString("%1").arg(result);
+    auto result = Int{0};
+    for (const auto &equation : m_equations) {
+      result += equation.solveTwo();
+    }
+    return QString("%1").arg(result);
   }
 
 private:

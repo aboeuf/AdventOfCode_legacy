@@ -9,7 +9,7 @@ struct Sequence : public QVector<Int> {
   Sequence() : QVector<Int>{}, all_zero{true} {}
 
   Sequence(const QString &input)
-      : QVector<Int>{common::toLongLong(input, ' ')}, all_zero{true} {
+      : QVector<Int>{common::toVecLongLong(input, ' ')}, all_zero{true} {
     for (auto value : *this) {
       if (value != Int{0}) {
         all_zero = false;

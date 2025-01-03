@@ -31,7 +31,7 @@ struct Stone {
 class Stones {
 public:
   Stones(const QString &input)
-      : m_initial_stones{common::toULongLong(input, ' ')} {
+      : m_initial_stones{common::toVecULongLong(input, ' ')} {
     for (const auto value : m_initial_stones) {
       addStone(value);
     }

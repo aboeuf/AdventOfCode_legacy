@@ -4,7 +4,7 @@
 namespace puzzle_2017_06 {
 
 inline QString solve(const QString &input, bool v2) {
-  auto banks = common::toUInt(common::splitLines(input, true).front(), '\t');
+  auto banks = common::toVecUInt(common::splitLines(input, true).front(), '\t');
   if (banks.empty()) {
     common::throwInvalidArgumentError("puzzle_2017_06::solve: empty input");
   }

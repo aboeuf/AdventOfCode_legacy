@@ -36,7 +36,7 @@ public:
 
     auto items_str = match("  Starting items: (.*)", lines)[1];
     items_str.remove(' ');
-    const auto items = common::toUInt(items_str, ',');
+    const auto items = common::toVecUInt(items_str, ',');
     for (auto item : items)
       m_items.enqueue(item);
 

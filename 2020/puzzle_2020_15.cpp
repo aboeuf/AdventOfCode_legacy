@@ -7,7 +7,7 @@ namespace puzzle_2020_15 {
 
 struct Game {
   Game(const QString &input) {
-    QVector<uint> start = common::toUInt(input);
+    QVector<uint> start = common::toVecUInt(input);
     for (const uint &i : start)
       speak(i);
   }

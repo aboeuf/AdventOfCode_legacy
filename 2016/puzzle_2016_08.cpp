@@ -36,7 +36,7 @@ public:
   void runInstruction(const QString &instruction) {
     const auto tokens = common::splitValues(instruction, ' ');
     if (tokens.size() == 2 and tokens.front() == "rect") {
-      const auto values = common::toULongLong(tokens.back(), 'x');
+      const auto values = common::toVecULongLong(tokens.back(), 'x');
       if (values.size() == 2) {
         return rect(values[0], values[1]);
       }

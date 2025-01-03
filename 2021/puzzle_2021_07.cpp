@@ -22,7 +22,7 @@ private:
 class Crabs {
 public:
   Crabs(const QString &input) {
-    m_positions = common::toUInt(input);
+    m_positions = common::toVecUInt(input);
     for (const auto &p : m_positions) {
       m_min = std::min(m_min, p);
       m_max = std::max(m_max, p);

@@ -9,7 +9,7 @@ class SectionAssignment {
 public:
   SectionAssignment() = default;
   SectionAssignment(const QString &input) {
-    const auto values = common::toUInt(input, '-');
+    const auto values = common::toVecUInt(input, '-');
     m_min = values[0];
     m_max = values[1];
   }

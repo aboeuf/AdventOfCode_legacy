@@ -44,7 +44,7 @@ struct Problem {
         fields << Field(rx.capturedTexts());
     }
     for (; line != lines.end(); ++line) {
-      const Ticket ticket = common::toUInt(*line);
+      const Ticket ticket = common::toVecUInt(*line);
       if (!ticket.empty())
         tickets << ticket;
     };

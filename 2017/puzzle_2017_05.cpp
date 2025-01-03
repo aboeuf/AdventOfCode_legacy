@@ -6,7 +6,7 @@ namespace puzzle_2017_05 {
 class Instructions {
 public:
   Instructions(const QString &input)
-      : m_intructions{common::toInt(input, '\n')} {}
+      : m_intructions{common::toVecInt(input, '\n')} {}
 
   QString solve(bool v2) const {
     auto copy = m_intructions;

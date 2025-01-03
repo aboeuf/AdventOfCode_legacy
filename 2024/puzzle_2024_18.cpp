@@ -96,7 +96,7 @@ public:
     m_falling_bytes_by_times.reserve(lines.size());
     for (const auto &line : lines) {
       try {
-        const auto coordinates = common::toInt(line);
+        const auto coordinates = common::toVecInt(line);
         if (coordinates.size() != 2) {
           common::throwInvalidArgumentError(
               QString("wrong size (%1 instead of 2)").arg(coordinates.size()));
@@ -132,7 +132,7 @@ public:
     const auto goal_position = QPoint(m_size, m_size);
     for (auto time = 1u; time <= std::size(m_falling_bytes_by_times); ++time) {
       const auto result = solveAtTime(start_position, goal_position, time);
-        const auto &blocker = m_falling_bytes_by_times[time - 1];
+      const auto &blocker = m_falling_bytes_by_times[time - 1];
       if (not result.first) {
         return QString("%1,%2").arg(blocker.x()).arg(blocker.y());
       }

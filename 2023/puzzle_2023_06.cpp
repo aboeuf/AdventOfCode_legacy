@@ -34,9 +34,9 @@ public:
   Races(const QString &input) {
     auto lines = common::splitLines(input);
     const auto times =
-        common::toULongLong(common::splitValues(lines.front(), ':')[1], ' ');
+        common::toVecULongLong(common::splitValues(lines.front(), ':')[1], ' ');
     const auto distances =
-        common::toULongLong(common::splitValues(lines.back(), ':')[1], ' ');
+        common::toVecULongLong(common::splitValues(lines.back(), ':')[1], ' ');
     const auto size = std::min(times.size(), distances.size());
     m_races.reserve(size);
     for (auto i = 0; i < size; ++i)

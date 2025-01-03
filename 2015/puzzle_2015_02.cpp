@@ -4,7 +4,7 @@
 using Int = unsigned long long int;
 
 struct Box {
-  Box(const QString &input) : m_dimensions{common::toULongLong(input, 'x')} {
+  Box(const QString &input) : m_dimensions{common::toVecULongLong(input, 'x')} {
     std::sort(std::begin(m_dimensions), std::end(m_dimensions));
   }
 

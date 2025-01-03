@@ -101,7 +101,7 @@ public:
               .arg(lines[3]));
     }
     try {
-      m_program = common::toULongLong(tokens[1]);
+      m_program = common::toVecULongLong(tokens[1]);
     } catch (const std::exception &e) {
       common::throwInvalidArgumentError(
           QString("puzzle_2024_17::Computer: cannot convert program value from "

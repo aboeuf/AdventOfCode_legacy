@@ -6,7 +6,7 @@ using Int = unsigned long long int;
 class Fishes {
 public:
   Fishes(const QString &input) {
-    const auto values = common::toUInt(input);
+    const auto values = common::toVecUInt(input);
     for (const auto &v : values) {
       if (v < 9u)
         ++m_nb_per_age[v];

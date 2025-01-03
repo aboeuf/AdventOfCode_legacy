@@ -5,7 +5,7 @@ namespace puzzle_2018_08 {
 
 class Data {
 public:
-  Data(const QString &input) : m_data{common::toUInt(input, ' ')} {}
+  Data(const QString &input) : m_data{common::toVecUInt(input, ' ')} {}
 
   uint at(const uint index) const {
     const auto casted = static_cast<int>(index);

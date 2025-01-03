@@ -78,7 +78,7 @@ public:
     if (lines.empty())
       return;
     auto it = std::begin(lines);
-    m_called_numbers = common::toUInt(*it, QChar(','));
+    m_called_numbers = common::toVecUInt(*it, QChar(','));
     auto current_row = 5u;
     ++it;
     for (; it != std::end(lines); ++it) {
@@ -87,7 +87,7 @@ public:
           current_row = 0u;
           m_boards.push_back(BingoBoard{});
         }
-        m_boards.back().setRow(current_row, common::toUInt(*it, QChar(' ')));
+        m_boards.back().setRow(current_row, common::toVecUInt(*it, QChar(' ')));
         ++current_row;
       }
     }

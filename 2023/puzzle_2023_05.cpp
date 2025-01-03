@@ -210,7 +210,7 @@ public:
   Almanac(const QString &input) {
     const auto lines = common::splitLines(input);
     auto line_it = std::begin(lines);
-    m_seeds = common::toULongLong(line_it->mid(7), ' ');
+    m_seeds = common::toVecULongLong(line_it->mid(7), ' ');
     ++line_it;
     const auto end = std::end(lines);
     while (line_it != end) {

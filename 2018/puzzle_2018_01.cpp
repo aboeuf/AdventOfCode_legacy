@@ -3,7 +3,7 @@
 #include <set>
 
 void Solver_2018_01_1::solve(const QString &input) {
-  const auto values = common::toUInt(input, '\n');
+  const auto values = common::toVecUInt(input, '\n');
   auto sum = 0;
   for (const auto &v : values)
     sum += v;
@@ -11,7 +11,7 @@ void Solver_2018_01_1::solve(const QString &input) {
 }
 
 void Solver_2018_01_2::solve(const QString &input) {
-  const auto values = common::toUInt(input, '\n');
+  const auto values = common::toVecUInt(input, '\n');
   auto seen = std::set<int>{};
   auto frequency = 0;
   for (auto it = std::begin(values); seen.insert(frequency).second; ++it) {

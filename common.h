@@ -16,19 +16,32 @@ void throwInvalidArgumentError(const QString &message);
 QStringList splitLines(const QString &input, bool filter_empty_lines = false);
 QStringList splitValues(const QString &input, const QChar &split_char = ',');
 
-QVector<short> toShort(const QString &input, const QChar &split_char = ',');
-QVector<ushort> toUShort(const QString &input, const QChar &split_char = ',');
+short toShort(const QString &input);
+QVector<short> toVecShort(const QString &input, const QChar &split_char = ',');
 
-QVector<int> toInt(const QString &input, const QChar &split_char = ',');
-QVector<uint> toUInt(const QString &input, const QChar &split_char = ',');
+ushort toUShort(const QString &input);
+QVector<ushort> toVecUShort(const QString &input,
+                            const QChar &split_char = ',');
 
-QVector<long> toLong(const QString &input, const QChar &split_char = ',');
-QVector<ulong> toULong(const QString &input, const QChar &split_char = ',');
+int toInt(const QString &input);
+QVector<int> toVecInt(const QString &input, const QChar &split_char = ',');
 
-QVector<long long> toLongLong(const QString &input,
-                              const QChar &split_char = ',');
-QVector<unsigned long long> toULongLong(const QString &input,
-                                        const QChar &split_char = ',');
+uint toUInt(const QString &input);
+QVector<uint> toVecUInt(const QString &input, const QChar &split_char = ',');
+
+long toLong(const QString &input);
+QVector<long> toVecLong(const QString &input, const QChar &split_char = ',');
+
+ulong toULong(const QString &input);
+QVector<ulong> toVecULong(const QString &input, const QChar &split_char = ',');
+
+long long toLongLong(const QString &input);
+QVector<long long> toVecLongLong(const QString &input,
+                                 const QChar &split_char = ',');
+
+unsigned long long toULongLong(const QString &input);
+QVector<unsigned long long> toVecULongLong(const QString &input,
+                                           const QChar &split_char = ',');
 
 template <typename Data, typename Scalar, bool reversed = false> class OpenSet {
 public:

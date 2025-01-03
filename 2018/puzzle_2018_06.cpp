@@ -12,7 +12,7 @@ VoronoiDiagram::VoronoiDiagram(const QString &input) {
   const auto lines = common::splitLines(input);
   m_points.reserve(lines.size());
   for (const auto &line : lines) {
-    const auto values = common::toInt(line);
+    const auto values = common::toVecInt(line);
     if (values.size() == 2) {
       m_points.emplace_back(values[0], values[1]);
       m_xmin = std::min(m_xmin, values[0]);
