@@ -1,1 +1,8 @@
-*.user
+build/*
+AdventOfCode.cflags
+AdventOfCode.config
+AdventOfCode.creator
+AdventOfCode.cxxflags
+AdventOfCode.files
+AdventOfCode.includes
+AdventOfCode.pro.user

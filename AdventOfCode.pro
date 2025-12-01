@@ -360,3 +360,7 @@ FORMS += \
     gui/display/display.ui \
     gui/mainwindow.ui \
     solvers/2020/display/puzzle_2020_24/puzzle_2020_24_display.ui
+
+DISTFILES += \
+    .gitignore \
+    CMakeLists.txt

@@ -867,8 +867,59 @@ QString MainWindow::createDefault() {
     write("SOURCES", sources);
     write("HEADERS", headers);
     write("FORMS", forms);
+    out << "DISTFILES += \\"
+           "    .gitignore \\\n"
+           "    CMakeLists.txt\n";
   } else {
     return "Error: cannot write in file AdventOfCode.pro";
+  }
+
+  QFile cmake_file(rootpath + "/CMakeLists.txt");
+  if (cmake_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QTextStream out(&cmake_file);
+    out << "cmake_minimum_required(VERSION 3.28)\n"
+           "project(advent_of_code)\n"
+           "set(CMAKE_CXX_STANDARD 17)\n"
+           "set(CMAKE_CXX_STANDARD_REQUIRED ON)\n"
+           "\n"
+           "set(CMAKE_AUTOMOC ON)\n"
+           "set(CMAKE_AUTORCC ON)\n"
+           "set(CMAKE_AUTOUIC ON)\n"
+           "\n"
+           "find_package(Qt5 COMPONENTS Core Gui Widgets Network Sql "
+           "REQUIRED)\n"
+           "\n"
+           "add_library(aoc_solvers\n"
+           "  STATIC\n";
+    std::set<std::string> gui_sources;
+    for (const auto &source : sources) {
+      const auto qsource = QString(source.c_str());
+      if (qsource.startsWith("solvers")) {
+        out << "    " << qsource << "\n";
+      } else {
+        gui_sources.insert(source);
+      }
+    }
+    out << ")\n"
+           "\n"
+           "target_include_directories(aoc_solvers PUBLIC "
+           "${CMAKE_CURRENT_SOURCE_DIR})"
+           "\n"
+           "target_link_libraries(aoc_solvers Qt5::Core Qt5::Gui "
+           "Qt5::Widgets)\n"
+           "\n"
+           "add_executable(aoc_gui\n";
+    for (const auto &source : gui_sources) {
+      const auto qsource = QString(source.c_str());
+      out << "  " << qsource << "\n";
+    }
+    out << "  gui/resources.qrc\n"
+           ")\n"
+           "\n"
+           "target_link_libraries(aoc_gui aoc_solvers Qt5::Core Qt5::Gui "
+           "Qt5::Widgets Qt5::Network Qt5::Sql)\n";
+  } else {
+    return "Error: cannot write in file CMakeLists.txt";
   }
 
   std::set<std::string> includes;
