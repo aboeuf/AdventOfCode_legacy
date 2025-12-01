@@ -1,0 +1,16 @@
+#include <solvers/2022/puzzle_2022_01.h>
+#include <solvers/2022/puzzle_2022_02.h>
+#include <solvers/2022/puzzle_2022_03.h>
+#include <solvers/2022/puzzle_2022_04.h>
+#include <solvers/2022/puzzle_2022_05.h>
+#include <solvers/2022/puzzle_2022_06.h>
+#include <solvers/2022/puzzle_2022_07.h>
+#include <solvers/2022/puzzle_2022_08.h>
+#include <solvers/2022/puzzle_2022_09.h>
+#include <solvers/2022/puzzle_2022_10.h>
+#include <solvers/2022/puzzle_2022_11.h>
+#include <solvers/2022/puzzle_2022_12.h>
+#include <solvers/2022/puzzle_2022_13.h>
+#include <solvers/2022/puzzle_2022_14.h>
+#include <solvers/2022/puzzle_2022_15.h>
+#include <solvers/2022/puzzle_2022_16.h>

@@ -1,0 +1,9 @@
+#include <solvers/2015/puzzle_2015_01.h>
+#include <solvers/2015/puzzle_2015_02.h>
+#include <solvers/2015/puzzle_2015_03.h>
+#include <solvers/2015/puzzle_2015_04.h>
+#include <solvers/2015/puzzle_2015_05.h>
+#include <solvers/2015/puzzle_2015_06.h>
+#include <solvers/2015/puzzle_2015_07.h>
+#include <solvers/2015/puzzle_2015_08.h>
+#include <solvers/2015/puzzle_2015_09.h>

@@ -1,0 +1,9 @@
+#include <solvers/2019/puzzle_2019_01.h>
+#include <solvers/2019/puzzle_2019_02.h>
+#include <solvers/2019/puzzle_2019_03.h>
+#include <solvers/2019/puzzle_2019_04.h>
+#include <solvers/2019/puzzle_2019_05.h>
+#include <solvers/2019/puzzle_2019_06.h>
+#include <solvers/2019/puzzle_2019_07.h>
+#include <solvers/2019/puzzle_2019_08.h>
+#include <solvers/2019/puzzle_2019_09.h>
