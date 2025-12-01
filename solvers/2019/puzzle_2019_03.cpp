@@ -1,8 +1,8 @@
 #include <QDebug>
 #include <QPoint>
-#include <solvers/common.h>
 #include <list>
 #include <solvers/2019/puzzle_2019_03.h>
+#include <solvers/common.h>
 
 namespace puzzle_2019_03 {
 

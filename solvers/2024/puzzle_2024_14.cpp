@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2024/puzzle_2024_14.h>
+#include <solvers/common.h>
 
 #include <QDir>
 #include <QImage>

@@ -1,7 +1,7 @@
 #include <cmath>
+#include <solvers/2017/puzzle_2017_03.h>
 #include <solvers/common.h>
 #include <solvers/qpoint_hash.hpp>
-#include <solvers/2017/puzzle_2017_03.h>
 
 namespace puzzle_2017_03 {
 

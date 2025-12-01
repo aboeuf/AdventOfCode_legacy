@@ -1,6 +1,6 @@
+#include <solvers/2024/puzzle_2024_10.h>
 #include <solvers/common.h>
 #include <solvers/qpoint_hash.hpp>
-#include <solvers/2024/puzzle_2024_10.h>
 
 namespace puzzle_2024_10 {
 

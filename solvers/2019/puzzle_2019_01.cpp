@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2019/puzzle_2019_01.h>
+#include <solvers/common.h>
 
 namespace puzzle_2019_01 {
 

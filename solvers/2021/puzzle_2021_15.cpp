@@ -1,8 +1,8 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graph_traits.hpp>
-#include <solvers/common.h>
 #include <solvers/2021/puzzle_2021_15.h>
+#include <solvers/common.h>
 
 using Int = std::size_t;
 

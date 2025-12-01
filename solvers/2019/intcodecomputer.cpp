@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2019/intcodecomputer.h>
+#include <solvers/common.h>
 #include <solvers/solvers.h>
 
 namespace event_2019 {

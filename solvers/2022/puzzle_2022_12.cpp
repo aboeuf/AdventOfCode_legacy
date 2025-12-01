@@ -1,6 +1,6 @@
 #include <QMap>
-#include <solvers/common.h>
 #include <solvers/2022/puzzle_2022_12.h>
+#include <solvers/common.h>
 
 namespace puzzle_2022_12 {
 

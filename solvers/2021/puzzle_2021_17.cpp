@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2021/puzzle_2021_17.h>
+#include <solvers/common.h>
 
 constexpr auto try_area = 500;
 

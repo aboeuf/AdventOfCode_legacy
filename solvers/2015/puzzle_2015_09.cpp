@@ -1,7 +1,7 @@
-#include <solvers/common.h>
 #include <optional>
 #include <set>
 #include <solvers/2015/puzzle_2015_09.h>
+#include <solvers/common.h>
 
 struct ParsedLine {
   ParsedLine(const QString &line) {

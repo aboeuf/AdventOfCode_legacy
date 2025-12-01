@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2024/puzzle_2024_05.h>
+#include <solvers/common.h>
 #include <unordered_set>
 
 namespace puzzle_2024_05 {

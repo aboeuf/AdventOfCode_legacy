@@ -1,7 +1,7 @@
-#include <solvers/common.h>
 #include <functional>
 #include <set>
 #include <solvers/2022/puzzle_2022_09.h>
+#include <solvers/common.h>
 
 namespace puzzle_2022_09 {
 

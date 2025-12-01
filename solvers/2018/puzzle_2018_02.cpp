@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <map>
 #include <solvers/2018/puzzle_2018_02.h>
+#include <solvers/common.h>
 
 namespace {
 

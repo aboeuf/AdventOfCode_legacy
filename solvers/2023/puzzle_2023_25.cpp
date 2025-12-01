@@ -1,7 +1,7 @@
 #include <QQueue>
-#include <solvers/common.h>
 #include <limits>
 #include <solvers/2023/puzzle_2023_25.h>
+#include <solvers/common.h>
 
 namespace puzzle_2023_25 {
 

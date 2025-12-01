@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <set>
 #include <solvers/2018/puzzle_2018_01.h>
+#include <solvers/common.h>
 
 void Solver_2018_01_1::solve(const QString &input) {
   const auto values = common::toVecUInt(input, '\n');

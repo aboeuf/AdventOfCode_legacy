@@ -1,27 +1,26 @@
 #pragma once
 
-#include <QGraphicsView>
-#include <QGraphicsScene>
 #include <QGraphicsItem>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QMouseEvent>
 #include <QWheelEvent>
 
-class View : public QGraphicsView
-{
+class View : public QGraphicsView {
   Q_OBJECT
 
 public:
-  explicit View(QWidget* parent = nullptr);
+  explicit View(QWidget *parent = nullptr);
 
 public slots:
   void fitToItems();
 
 protected:
-  void mouseDoubleClickEvent(QMouseEvent* event) override;
-  void mouseMoveEvent(QMouseEvent* event) override;
-  void mousePressEvent(QMouseEvent* event) override;
-  void mouseReleaseEvent(QMouseEvent* event) override;
-  void wheelEvent(QWheelEvent* event) override;
+  void mouseDoubleClickEvent(QMouseEvent *event) override;
+  void mouseMoveEvent(QMouseEvent *event) override;
+  void mousePressEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
+  void wheelEvent(QWheelEvent *event) override;
 
 private:
   QRectF itemsRect() const;

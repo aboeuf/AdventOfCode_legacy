@@ -1,6 +1,6 @@
+#include <solvers/2016/puzzle_2016_05.h>
 #include <solvers/common.h>
 #include <solvers/qchar_hash.hpp>
-#include <solvers/2016/puzzle_2016_05.h>
 
 #include <QCryptographicHash>
 

@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <set>
 #include <solvers/2018/puzzle_2018_05.h>
+#include <solvers/common.h>
 
 bool operator/(const QChar &lhs, const QChar &rhs) {
   return (lhs.isLower() ^ rhs.isLower()) and (lhs.toLower() == rhs.toLower());

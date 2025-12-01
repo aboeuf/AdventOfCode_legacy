@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <set>
 #include <solvers/2015/puzzle_2015_03.h>
+#include <solvers/common.h>
 
 using Int = long long int;
 

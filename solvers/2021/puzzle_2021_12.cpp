@@ -1,7 +1,7 @@
 #include <QMap>
 #include <QSet>
-#include <solvers/common.h>
 #include <solvers/2021/puzzle_2021_12.h>
+#include <solvers/common.h>
 
 bool isSmall(const QString &label) {
   return std::all_of(std::begin(label), std::end(label),

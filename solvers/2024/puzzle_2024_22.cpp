@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <deque>
 #include <solvers/2024/puzzle_2024_22.h>
+#include <solvers/common.h>
 
 namespace puzzle_2024_22 {
 

@@ -1,6 +1,6 @@
 #include <QStack>
-#include <solvers/common.h>
 #include <solvers/2022/puzzle_2022_05.h>
+#include <solvers/common.h>
 
 namespace puzzle_2022_05 {
 

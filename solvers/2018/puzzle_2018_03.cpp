@@ -1,7 +1,7 @@
 #include <QRegExp>
-#include <solvers/common.h>
 #include <set>
 #include <solvers/2018/puzzle_2018_03.h>
+#include <solvers/common.h>
 #include <unordered_map>
 
 namespace {

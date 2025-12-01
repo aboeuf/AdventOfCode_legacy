@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <solvers/2019/intcodecomputer.h>
 #include <solvers/2019/puzzle_2019_02.h>
+#include <solvers/common.h>
 
 namespace puzzle_2019_02 {
 

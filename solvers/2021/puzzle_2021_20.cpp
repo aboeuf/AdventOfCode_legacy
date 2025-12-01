@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <set>
 #include <solvers/2021/puzzle_2021_20.h>
+#include <solvers/common.h>
 
 namespace puzzle_2021_20 {
 

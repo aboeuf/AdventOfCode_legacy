@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2021/puzzle_2021_01.h>
+#include <solvers/common.h>
 
 class SonarSweepReport {
 public:

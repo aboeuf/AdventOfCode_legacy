@@ -1,7 +1,7 @@
 #include <QQueue>
-#include <solvers/common.h>
 #include <functional>
 #include <solvers/2022/puzzle_2022_11.h>
+#include <solvers/common.h>
 
 namespace puzzle_2022_11 {
 

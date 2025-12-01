@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2021/puzzle_2021_03.h>
+#include <solvers/common.h>
 
 int nbOnes(const QStringList &diagnostic, int bit_index) {
   auto count = 0;

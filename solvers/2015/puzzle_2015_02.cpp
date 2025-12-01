@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2015/puzzle_2015_02.h>
+#include <solvers/common.h>
 
 using Int = unsigned long long int;
 

@@ -1,6 +1,6 @@
 #include <QQueue>
-#include <solvers/common.h>
 #include <solvers/2023/puzzle_2023_23.h>
+#include <solvers/common.h>
 
 #include <QFile>
 #include <QTextStream>

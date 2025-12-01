@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <deque>
 #include <solvers/2021/puzzle_2021_11.h>
+#include <solvers/common.h>
 
 struct GridCoordinates {
   GridCoordinates(int row, int column) : i{row}, j{column} {}

@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2017/puzzle_2017_01.h>
+#include <solvers/common.h>
 
 void Solver_2017_01_1::solve(const QString &input) {
   auto copy = input;

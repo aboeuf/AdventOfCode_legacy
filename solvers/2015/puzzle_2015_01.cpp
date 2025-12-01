@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2015/puzzle_2015_01.h>
+#include <solvers/common.h>
 
 void Solver_2015_01_1::solve(const QString &input) {
   auto floor = 0;

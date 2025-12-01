@@ -1,7 +1,7 @@
-#include <solvers/common.h>
 #include <limits>
-#include <solvers/qchar_hash.hpp>
 #include <solvers/2016/puzzle_2016_06.h>
+#include <solvers/common.h>
+#include <solvers/qchar_hash.hpp>
 
 namespace puzzle_2016_06 {
 

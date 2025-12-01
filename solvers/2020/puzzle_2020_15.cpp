@@ -1,7 +1,7 @@
 #include <QMap>
 #include <QVector>
-#include <solvers/common.h>
 #include <solvers/2020/puzzle_2020_15.h>
+#include <solvers/common.h>
 
 namespace puzzle_2020_15 {
 

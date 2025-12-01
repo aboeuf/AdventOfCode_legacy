@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2021/puzzle_2021_04.h>
+#include <solvers/common.h>
 
 struct BingoCell {
   uint value{0};

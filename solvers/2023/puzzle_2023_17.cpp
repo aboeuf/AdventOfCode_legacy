@@ -1,7 +1,7 @@
-#include <solvers/common.h>
 #include <functional>
 #include <limits>
 #include <solvers/2023/puzzle_2023_17.h>
+#include <solvers/common.h>
 
 #include <fstream>
 #include <iostream>

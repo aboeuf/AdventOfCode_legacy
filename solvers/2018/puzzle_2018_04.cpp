@@ -2,11 +2,11 @@
 #include <QDateTime>
 #include <QRegExp>
 #include <QTime>
-#include <solvers/common.h>
 #include <deque>
 #include <optional>
 #include <set>
 #include <solvers/2018/puzzle_2018_04.h>
+#include <solvers/common.h>
 #include <unordered_map>
 
 namespace {

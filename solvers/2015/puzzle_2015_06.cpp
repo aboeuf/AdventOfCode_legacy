@@ -1,7 +1,7 @@
 #include <QSet>
-#include <solvers/common.h>
 #include <optional>
 #include <solvers/2015/puzzle_2015_06.h>
+#include <solvers/common.h>
 
 using Int = unsigned long long int;
 

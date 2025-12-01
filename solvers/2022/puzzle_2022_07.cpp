@@ -1,7 +1,7 @@
 #include <QMap>
-#include <solvers/common.h>
 #include <set>
 #include <solvers/2022/puzzle_2022_07.h>
+#include <solvers/common.h>
 
 namespace puzzle_2022_07 {
 

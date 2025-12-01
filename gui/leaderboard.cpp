@@ -52,7 +52,7 @@ Member::Member(const QJsonObject &object) {
                                  .arg(helper.error())
                                  .toStdString());
   if (not helper.read(object, "global_score", global_score)) {
-      global_score = 0;
+    global_score = 0;
   }
   QJsonObject completions;
   if (not helper.read(object, "completion_day_level", completions))

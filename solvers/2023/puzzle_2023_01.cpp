@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2023/puzzle_2023_01.h>
+#include <solvers/common.h>
 
 #include <QRegExp>
 #include <fstream>

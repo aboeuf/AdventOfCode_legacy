@@ -1,7 +1,7 @@
 #include <QDebug>
-#include <solvers/common.h>
 #include <deque>
 #include <solvers/2020/puzzle_2020_09.h>
+#include <solvers/common.h>
 
 namespace puzzle_2020_09 {
 

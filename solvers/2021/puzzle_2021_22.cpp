@@ -1,9 +1,9 @@
-#include <solvers/common.h>
 #include <deque>
 #include <initializer_list>
 #include <optional>
 #include <set>
 #include <solvers/2021/puzzle_2021_22.h>
+#include <solvers/common.h>
 
 #include <QDebug>
 #include <QFile>

@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <eigen3/Eigen/LU>
 #include <solvers/2023/puzzle_2023_24.h>
+#include <solvers/common.h>
 
 #include <QFile>
 #include <QTextStream>

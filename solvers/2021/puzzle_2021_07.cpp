@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2021/puzzle_2021_07.h>
+#include <solvers/common.h>
 
 class CostsComputer {
 public:

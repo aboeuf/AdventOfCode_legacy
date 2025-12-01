@@ -1,7 +1,7 @@
 #include <QFile>
-#include <solvers/common.h>
 #include <ranges>
 #include <solvers/2024/puzzle_2024_24.h>
+#include <solvers/common.h>
 
 #include <iostream>
 

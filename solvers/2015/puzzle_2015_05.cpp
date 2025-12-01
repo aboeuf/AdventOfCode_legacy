@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2015/puzzle_2015_05.h>
+#include <solvers/common.h>
 
 const QString vowels("aeiou");
 const QStringList disallowed({"ab", "cd", "pq", "xy"});

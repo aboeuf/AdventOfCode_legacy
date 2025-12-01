@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <limits>
 #include <solvers/2017/puzzle_2017_08.h>
+#include <solvers/common.h>
 
 namespace puzzle_2017_08 {
 

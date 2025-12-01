@@ -1,6 +1,6 @@
 #include <QRect>
-#include <solvers/common.h>
 #include <solvers/2023/puzzle_2023_22.h>
+#include <solvers/common.h>
 
 namespace puzzle_2023_22 {
 

@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2024/puzzle_2024_11.h>
+#include <solvers/common.h>
 
 #include <deque>
 #include <unordered_map>

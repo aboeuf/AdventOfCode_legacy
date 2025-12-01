@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2015/puzzle_2015_08.h>
+#include <solvers/common.h>
 
 inline QString reduct(const QString &str) {
   auto res = QString{};

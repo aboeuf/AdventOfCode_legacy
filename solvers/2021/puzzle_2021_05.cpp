@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2021/puzzle_2021_05.h>
+#include <solvers/common.h>
 
 struct Point {
   uint m_x{0u};

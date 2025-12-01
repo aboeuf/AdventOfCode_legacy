@@ -1,8 +1,8 @@
-#include <solvers/common.h>
 #include <deque>
 #include <optional>
 #include <set>
 #include <solvers/2015/puzzle_2015_07.h>
+#include <solvers/common.h>
 
 using Int = unsigned short;
 

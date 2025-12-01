@@ -1,5 +1,5 @@
-#include <solvers/common.h>
 #include <solvers/2020/puzzle_2020_01.h>
+#include <solvers/common.h>
 
 void Solver_2020_01_1::solve(const QString &input) {
   QStringList lines = common::splitLines(input);

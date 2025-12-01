@@ -1,8 +1,8 @@
-#include <solvers/common.h>
 #include <functional>
 #include <limits>
-#include <solvers/qpoint_hash.hpp>
 #include <solvers/2024/puzzle_2024_21.h>
+#include <solvers/common.h>
+#include <solvers/qpoint_hash.hpp>
 
 namespace puzzle_2024_21 {
 

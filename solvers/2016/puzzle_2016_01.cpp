@@ -1,7 +1,7 @@
 #include <QPoint>
-#include <solvers/common.h>
 #include <set>
 #include <solvers/2016/puzzle_2016_01.h>
+#include <solvers/common.h>
 
 struct Walker {
   Walker(const QString &input, bool stop_at_loop = false) {

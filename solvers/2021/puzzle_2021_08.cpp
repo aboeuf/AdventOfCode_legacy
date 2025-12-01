@@ -1,7 +1,7 @@
 #include <QMap>
-#include <solvers/common.h>
 #include <set>
 #include <solvers/2021/puzzle_2021_08.h>
+#include <solvers/common.h>
 
 #include <iostream>
 

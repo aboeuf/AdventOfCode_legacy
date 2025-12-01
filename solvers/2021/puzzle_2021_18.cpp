@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <optional>
 #include <solvers/2021/puzzle_2021_18.h>
+#include <solvers/common.h>
 
 struct Pair {
   Pair(uint number) { m_number = number; }

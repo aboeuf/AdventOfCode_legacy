@@ -1,6 +1,6 @@
-#include <solvers/common.h>
 #include <set>
 #include <solvers/2018/puzzle_2018_07.h>
+#include <solvers/common.h>
 
 #include <iostream>
 

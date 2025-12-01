@@ -1,7 +1,7 @@
 #include <QSet>
-#include <solvers/common.h>
 #include <optional>
 #include <solvers/2021/puzzle_2021_23.h>
+#include <solvers/common.h>
 
 namespace puzzle_2021_23 {
 

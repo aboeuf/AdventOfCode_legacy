@@ -1,9 +1,9 @@
 #include <QDebug>
-#include <solvers/common.h>
 #include <deque>
 #include <optional>
 #include <set>
 #include <solvers/2021/puzzle_2021_19.h>
+#include <solvers/common.h>
 
 using Int = unsigned long long int;
 

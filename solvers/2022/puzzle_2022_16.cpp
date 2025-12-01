@@ -1,7 +1,7 @@
-#include <solvers/common.h>
 #include <memory>
 #include <set>
 #include <solvers/2022/puzzle_2022_16.h>
+#include <solvers/common.h>
 
 #include <iostream>
 
