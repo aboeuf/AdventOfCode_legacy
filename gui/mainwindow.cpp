@@ -375,6 +375,8 @@ void MainWindow::on_m_push_button_update_cookies_clicked() {
 
 void MainWindow::on_m_spin_box_year_valueChanged(int) {
   ui->m_check_box_use_last_input->setChecked(false);
+  ui->m_spin_box_day->setMaximum(ui->m_spin_box_year->value() == 2025 ? 12
+                                                                      : 25);
   updateLeaderboardDisplay();
 }
 

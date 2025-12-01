@@ -1,0 +1,1 @@
+#include <solvers/2025/puzzle_2025_01.h>

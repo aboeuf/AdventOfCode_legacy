@@ -173,6 +173,7 @@ add_library(aoc_solvers
     solvers/2024/puzzle_2024_23.cpp
     solvers/2024/puzzle_2024_24.cpp
     solvers/2024/puzzle_2024_25.cpp
+    solvers/2025/puzzle_2025_01.cpp
     solvers/common.cpp
     solvers/solvers.cpp
 )

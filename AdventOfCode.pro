@@ -173,6 +173,7 @@ SOURCES += \
     solvers/2024/puzzle_2024_23.cpp \
     solvers/2024/puzzle_2024_24.cpp \
     solvers/2024/puzzle_2024_25.cpp \    
+    solvers/2025/puzzle_2025_01.cpp \
     solvers/common.cpp \
     solvers/solvers.cpp
 
@@ -351,6 +352,8 @@ HEADERS += \
     solvers/2024/puzzle_2024_23.h \
     solvers/2024/puzzle_2024_24.h \
     solvers/2024/puzzle_2024_25.h \
+    solvers/2025/event_2025.h \
+    solvers/2025/puzzle_2025_01.h \
     solvers/common.h \
     solvers/qchar_hash.hpp \
     solvers/qpoint_hash.hpp \
