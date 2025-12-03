@@ -172,8 +172,9 @@ SOURCES += \
     solvers/2024/puzzle_2024_22.cpp \
     solvers/2024/puzzle_2024_23.cpp \
     solvers/2024/puzzle_2024_24.cpp \
-    solvers/2024/puzzle_2024_25.cpp \    
+    solvers/2024/puzzle_2024_25.cpp \
     solvers/2025/puzzle_2025_01.cpp \
+    solvers/2025/puzzle_2025_02.cpp \
     solvers/common.cpp \
     solvers/solvers.cpp
 
@@ -354,6 +355,7 @@ HEADERS += \
     solvers/2024/puzzle_2024_25.h \
     solvers/2025/event_2025.h \
     solvers/2025/puzzle_2025_01.h \
+    solvers/2025/puzzle_2025_02.h \
     solvers/common.h \
     solvers/qchar_hash.hpp \
     solvers/qpoint_hash.hpp \
@@ -363,7 +365,5 @@ FORMS += \
     gui/display/display.ui \
     gui/mainwindow.ui \
     solvers/2020/display/puzzle_2020_24/puzzle_2020_24_display.ui
-
-DISTFILES += \
-    .gitignore \
+DISTFILES += \    .gitignore \
     CMakeLists.txt
