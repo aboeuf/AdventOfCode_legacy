@@ -333,6 +333,8 @@ Solvers::Solvers() {
   m_solvers[2025][1][2] = new Solver_2025_01_2();
   m_solvers[2025][2][1] = new Solver_2025_02_1();
   m_solvers[2025][2][2] = new Solver_2025_02_2();
+  m_solvers[2025][3][1] = new Solver_2025_03_1();
+  m_solvers[2025][3][2] = new Solver_2025_03_2();
 }
 
 Solvers::~Solvers() {
