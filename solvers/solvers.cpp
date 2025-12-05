@@ -12,7 +12,8 @@
 #include <solvers/2024/event_2024.h>
 #include <solvers/2025/event_2025.h>
 
-Solvers::Solvers() {
+Solvers::Solvers()
+{
   m_solvers[2015][1][1] = new Solver_2015_01_1();
   m_solvers[2015][1][2] = new Solver_2015_01_2();
   m_solvers[2015][2][1] = new Solver_2015_02_1();
@@ -339,16 +340,20 @@ Solvers::Solvers() {
   m_solvers[2025][4][2] = new Solver_2025_04_2();
   m_solvers[2025][5][1] = new Solver_2025_05_1();
   m_solvers[2025][5][2] = new Solver_2025_05_2();
+  m_solvers[2025][6][1] = new Solver_2025_06_1();
+  m_solvers[2025][6][2] = new Solver_2025_06_2();
 }
 
-Solvers::~Solvers() {
+Solvers::~Solvers()
+{
   for (auto year : m_solvers.values())
     for (auto day : year.values())
       for (auto solver : day.values())
         delete solver;
 }
 
-Solver *Solvers::operator()(int year, int day, int puzzle) const {
+Solver* Solvers::operator()(int year, int day, int puzzle) const
+{
   if (m_solvers.contains(year))
     if (m_solvers[year].contains(day))
       if (m_solvers[year][day].contains(puzzle))
