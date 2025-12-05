@@ -6,7 +6,7 @@ INCLUDE_EXTENSIONS = ["h", "hpp"]
 ALL_EXTENSIONS = [*INCLUDE_EXTENSIONS, "c", "cpp", "txt", "py", "gitignore"]
 
 FILTERED_DIRECTORIES = ["build", ".git"]
-QT_INCLUDES = "/usr/include/x86_64-linux-gnu/qt5"
+QT_INCLUDE = "/usr/include/x86_64-linux-gnu/qt5"
 
 
 def get_parent_dirpath(path):
@@ -19,9 +19,26 @@ ROOT_DIR = get_parent_dirpath(PYTHON_DIR)
 PROJECT_NAME = ROOT_DIR.split("/")[-1]
 
 
+def get_all_children_directories(path):
+    directories = []
+
+    def recursion(current):
+        nonlocal directories
+        if os.path.isdir(current):
+            if current not in directories:
+                directories.append(current)
+            for name in os.listdir(current):
+                recursion(os.path.join(current, name))
+
+    recursion(path)
+    directories.sort()
+    return directories
+
+
 def get_paths():
     all_paths = [f"{PROJECT_NAME}.pro"]
-    include_paths = [ROOT_DIR, QT_INCLUDES]
+    include_paths = get_all_children_directories(QT_INCLUDE)
+    include_paths.append(ROOT_DIR)
     filtered = [os.path.join(ROOT_DIR, path) for path in FILTERED_DIRECTORIES]
 
     def add_filepath(filepath):
@@ -55,14 +72,14 @@ def get_paths():
 
 
 def main():
-    all_paths, includes_paths = get_paths()
+    all_paths, include_paths = get_paths()
     with open(os.path.join(ROOT_DIR, f"{PROJECT_NAME}.files"), "w") as file:
         for path in all_paths:
             file.write(path)
             file.write("\n")
         file.close()
     with open(os.path.join(ROOT_DIR, f"{PROJECT_NAME}.includes"), "w") as file:
-        for path in includes_paths:
+        for path in include_paths:
             file.write(path)
             file.write("\n")
         file.close()
