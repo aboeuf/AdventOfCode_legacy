@@ -177,6 +177,7 @@ SOURCES += \
     solvers/2025/puzzle_2025_02.cpp \
     solvers/2025/puzzle_2025_03.cpp \
     solvers/2025/puzzle_2025_04.cpp \
+    solvers/2025/puzzle_2025_05.cpp \
     solvers/common.cpp \
     solvers/solvers.cpp
 
@@ -360,6 +361,7 @@ HEADERS += \
     solvers/2025/puzzle_2025_02.h \
     solvers/2025/puzzle_2025_03.h \
     solvers/2025/puzzle_2025_04.h \
+    solvers/2025/puzzle_2025_05.h \
     solvers/common.h \
     solvers/qchar_hash.hpp \
     solvers/qpoint_hash.hpp \

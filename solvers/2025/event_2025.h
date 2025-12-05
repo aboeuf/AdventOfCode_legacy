@@ -2,3 +2,4 @@
 #include <solvers/2025/puzzle_2025_02.h>
 #include <solvers/2025/puzzle_2025_03.h>
 #include <solvers/2025/puzzle_2025_04.h>
+#include <solvers/2025/puzzle_2025_05.h>
