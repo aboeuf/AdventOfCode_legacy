@@ -173,3 +173,4 @@ add_library(aoc_solvers
 
 target_include_directories(aoc_solvers PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(aoc_solvers Qt5::Core Qt5::Gui Qt5::Widgets)
+set_target_properties(aoc_solvers PROPERTIES POSITION_INDEPENDENT_CODE ON)
