@@ -342,6 +342,8 @@ Solvers::Solvers()
   m_solvers[2025][5][2] = new Solver_2025_05_2();
   m_solvers[2025][6][1] = new Solver_2025_06_1();
   m_solvers[2025][6][2] = new Solver_2025_06_2();
+  m_solvers[2025][7][1] = new Solver_2025_07_1();
+  m_solvers[2025][7][2] = new Solver_2025_07_2();
 }
 
 Solvers::~Solvers()

@@ -4,3 +4,4 @@
 #include <solvers/2025/puzzle_2025_04.h>
 #include <solvers/2025/puzzle_2025_05.h>
 #include <solvers/2025/puzzle_2025_06.h>
+#include <solvers/2025/puzzle_2025_07.h>
