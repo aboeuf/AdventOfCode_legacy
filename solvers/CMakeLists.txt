@@ -169,6 +169,7 @@ add_library(aoc_solvers
     2025/puzzle_2025_05.cpp
     2025/puzzle_2025_06.cpp
     2025/puzzle_2025_07.cpp
+    2025/puzzle_2025_08.cpp
     common.cpp
     solvers.cpp
 )
