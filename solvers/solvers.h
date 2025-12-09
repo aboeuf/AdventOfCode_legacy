@@ -43,6 +43,7 @@ template <typename ObjectType> struct DisplayObject {
 
 struct DisplayData {
   std::vector<DisplayObject<QRectF>> rectangles;
+  std::vector<DisplayObject<QPolygonF>> polygons;
 };
 
 Q_DECLARE_METATYPE(DisplayData)

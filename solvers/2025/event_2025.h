@@ -6,3 +6,4 @@
 #include <solvers/2025/puzzle_2025_06.h>
 #include <solvers/2025/puzzle_2025_07.h>
 #include <solvers/2025/puzzle_2025_08.h>
+#include <solvers/2025/puzzle_2025_09.h>

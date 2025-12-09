@@ -15,6 +15,9 @@ void Display::fit() { ui->m_view->fitToItems(); }
 
 void Display::updateData(const DisplayData &data) {
   ui->m_view->scene()->clear();
+  for (const auto &poly : data.polygons) {
+    ui->m_view->scene()->addPolygon(poly.object, poly.pen, poly.brush);
+  }
   for (const auto &rect : data.rectangles) {
     ui->m_view->scene()->addRect(rect.object, rect.pen, rect.brush);
   }
