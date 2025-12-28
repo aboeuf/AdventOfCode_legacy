@@ -1,8 +1,10 @@
-build/*
+build/
+venv/
+__pycache__/
+*.user
 AdventOfCode.cflags
 AdventOfCode.config
 AdventOfCode.cxxflags
 AdventOfCode.files
 AdventOfCode.includes
-AdventOfCode.pro.user
-AdventOfCode.creator*
+AdventOfCode.creator

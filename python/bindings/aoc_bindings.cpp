@@ -1,90 +1,96 @@
+#include <aoc.hpp>
 #include <boost/python.hpp>
-
-#include <solvers/solvers.h>
-
-#include <QObject>
+#include <memory>
 
 namespace bp = boost::python;
 
 namespace aoc_bindings {
 
-struct Result {
-  Result() = default;
-  Result(const QString &solution) : solution{solution.toStdString()} {}
-
-  std::string str() const { return solution; }
-
-  std::string solution;
-  bp::list output;
-  bp::list display;
-};
-
-class Aggregator : public QObject {
-  Q_OBJECT
-
-public:
-  Result result;
-
-  Aggregator(Solver *solver) {
-    connect(solver, SIGNAL(output(QString)), this,
-            SLOT(onOutputReceived(QString)));
-    connect(solver, SIGNAL(display(DisplayData)), this,
-            SLOT(onDisplayDataReceived(DisplayData)));
-    connect(solver, SIGNAL(finished(QString)), this,
-            SLOT(onFinishedReceived(QString)));
+bp::list getPolygonPoints(const std::shared_ptr<aoc::Polygon> &polygon) {
+  auto points = bp::list();
+  for (const auto &point : polygon->points) {
+    points.append(point);
   }
+  return points;
+}
 
-public slots:
-  void onOutputReceived(const QString &data) {
-    result.output.append(data.toStdString());
+bp::list getResultOutput(const std::shared_ptr<aoc::Result> &result) {
+  auto output = bp::list();
+  for (const auto &line : result->output) {
+    output.append(line);
   }
+  return output;
+}
 
-  void onDisplayDataReceived(const DisplayData &data) {
-    for (const auto &rectangle : data.rectangles) {
-      result.display.append(rectangle);
-    }
+bp::dict getResultDisplay(const std::shared_ptr<aoc::Result> &result) {
+  auto display = bp::dict();
+
+  auto rectangles = bp::list();
+  for (const auto &rectangle : result->display.rectangles) {
+    auto display_object = bp::dict();
+    display_object["object"] = rectangle.object;
+    display_object["style"] = rectangle.style;
+    rectangles.append(display_object);
   }
+  display["rectangles"] = rectangles;
 
-  void onFinishedReceived(const QString &solution) {
-    result.solution = solution.toStdString();
+  auto polygons = bp::list();
+  for (const auto &polygon : result->display.polygons) {
+    auto display_object = bp::dict();
+    display_object["object"] = polygon.object;
+    display_object["style"] = polygon.style;
+    polygons.append(display_object);
   }
-};
+  display["polygons"] = polygons;
 
-struct StaticSolvers {
-  static Result solve(int year, int day, int puzzle, const std::string &input) {
-    auto *solver = s_solvers(year, day, puzzle);
-    if (solver == nullptr) {
-      return Result(
-          QString("cannot find solver for year %1, day %2 and puzzle %3")
-              .arg(year)
-              .arg(day)
-              .arg(puzzle));
-    }
-    const auto aggregator = Aggregator(solver);
-    solver->solve(QString(input.c_str()));
-    return aggregator.result;
-  }
+  return display;
+}
 
-  static Solvers s_solvers;
-};
-
-Solvers StaticSolvers::s_solvers = Solvers();
-
-Result solve(int year, int day, int puzzle, const std::string &input) {
-  return StaticSolvers::solve(year, day, puzzle, input);
+std::string resultToString(const std::shared_ptr<aoc::Result> &result) {
+  return result->success ? "Part one: " + result->part_one_solution +
+                               "\nPart two: " + result->part_two_solution
+                         : "failure";
 }
 
 } // namespace aoc_bindings
 
 BOOST_PYTHON_MODULE(aoc) {
-  bp::class_<aoc_bindings::Result>("Result")
+
+  bp::class_<aoc::Position>("Position")
       .def(bp::init<>())
-      .def_readwrite("solution", &aoc_bindings::Result::solution)
-      .def_readwrite("output", &aoc_bindings::Result::output)
-      .def_readwrite("display", &aoc_bindings::Result::display)
-      .def("__str__", &aoc_bindings::Result::str);
+      .def_readwrite("x", &aoc::Position::x)
+      .def_readwrite("y", &aoc::Position::y);
 
-  bp::def("solve", &aoc_bindings::solve);
+  bp::class_<aoc::Pose>("Pose")
+      .def(bp::init<>())
+      .def_readwrite("position", &aoc::Pose::position)
+      .def_readwrite("orientation", &aoc::Pose::orientation);
+
+  bp::class_<aoc::Rectangle>("Rectangle")
+      .def(bp::init<>())
+      .def_readwrite("center", &aoc::Rectangle::center)
+      .def_readwrite("width", &aoc::Rectangle::width)
+      .def_readwrite("length", &aoc::Rectangle::length);
+
+  bp::class_<aoc::Polygon>("Polygon")
+      .def(bp::init<>())
+      .def("points", &aoc_bindings::getPolygonPoints);
+
+  bp::class_<aoc::DisplayStyle>("DisplayStyle")
+      .def(bp::init<>())
+      .def_readwrite("edge_line_width", &aoc::DisplayStyle::edge_line_width)
+      .def_readwrite("edge_color", &aoc::DisplayStyle::edge_color)
+      .def_readwrite("face_color", &aoc::DisplayStyle::face_color);
+
+  bp::class_<aoc::Result>("Result")
+      .def(bp::init<>())
+      .def_readwrite("success", &aoc::Result::success)
+      .def_readwrite("part_one_solution", &aoc::Result::part_one_solution)
+      .def_readwrite("part_two_solution", &aoc::Result::part_two_solution)
+      .def("output", &aoc_bindings::getResultOutput)
+      .def("display", &aoc_bindings::getResultDisplay)
+      .def("__str__", &aoc_bindings::resultToString);
+
+  bp::def("has_solver", &aoc::hasSolver);
+  bp::def("solve", &aoc::solve);
 }
-
-#include "aoc_bindings.moc"

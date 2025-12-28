@@ -182,6 +182,9 @@ SOURCES += \
     solvers/2025/puzzle_2025_07.cpp \
     solvers/2025/puzzle_2025_08.cpp \
     solvers/2025/puzzle_2025_09.cpp \
+    solvers/2025/puzzle_2025_10.cpp \
+    solvers/2025/puzzle_2025_11.cpp \
+    solvers/2025/puzzle_2025_12.cpp \
     solvers/common.cpp \
     solvers/solvers.cpp
 
@@ -370,6 +373,9 @@ HEADERS += \
     solvers/2025/puzzle_2025_07.h \
     solvers/2025/puzzle_2025_08.h \
     solvers/2025/puzzle_2025_09.h \
+    solvers/2025/puzzle_2025_10.h \
+    solvers/2025/puzzle_2025_11.h \
+    solvers/2025/puzzle_2025_12.h \
     solvers/common.h \
     solvers/qchar_hash.hpp \
     solvers/qpoint_hash.hpp \

@@ -13,7 +13,7 @@ set_target_properties(aoc_bindings PROPERTIES OUTPUT_NAME "aoc")
 target_include_directories(aoc_bindings PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 target_link_libraries(aoc_bindings
-  aoc_solvers
+  cpp_solvers
   Boost::python
   Python3::Module
   Qt5::Core

@@ -3,7 +3,7 @@
 import os
 
 INCLUDE_EXTENSIONS = ["h", "hpp"]
-ALL_EXTENSIONS = [*INCLUDE_EXTENSIONS, "c", "cpp", "txt", "py", "gitignore"]
+ALL_EXTENSIONS = [*INCLUDE_EXTENSIONS, "c", "cpp", "txt", "py", "gitignore", "ui", "sh"]
 
 FILTERED_DIRECTORIES = ["build", ".git"]
 QT_INCLUDE = "/usr/include/x86_64-linux-gnu/qt5"

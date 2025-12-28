@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400&display=swap');
+
+:root {
+  --bg: #0f0f23;
+  --white: #cccccc;
+  --green: #048810;
+  --yellow: #ffff66;
+  --grey: #666666;
+  --font: "Source Code Pro", monospace;
+}
+
+body {
+  background-color: var(--bg);
+  font-family: var(--font);
+  color: var(--white);
+  padding: 20px;
+}
+
+h2 {
+  color: var(--green);
+}
+
+code {
+  border: 1px solid var(--grey);
+  padding: 1px;
+  font-family: var(--font);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  vertical-align: middle;
+}
+
+pre {
+  border: 1px solid var(--grey);
+  padding: 2px;
+  font-family: var(--font);
+  overflow-x: auto;
+  width: fit-content;
+}
+
+pre code {
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  font-size: inherit;
+}
+
+em {
+  font-weight: bold;
+  font-style: normal;
+  color: var(--white);
+}
+
+em.star {
+  color: var(--yellow);
+}
+
+p.day-success {
+  font-weight: bold;
+  color: var(--yellow);
+}
+
+.status {
+  border: 2px solid var(--yellow);
+  padding: 5px;
+  font-family: var(--font);
+  font-weight: bold;
+  font-style: normal;
+  color: var(--yellow);
+  overflow-x: auto;
+  width: fit-content;
+}

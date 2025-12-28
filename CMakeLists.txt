@@ -9,6 +9,7 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets Network Sql REQUIRED)
 
+add_subdirectory(cpp_solvers)
 add_subdirectory(solvers)
 add_subdirectory(gui)
 add_subdirectory(python/bindings)
